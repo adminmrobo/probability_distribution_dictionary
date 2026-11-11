@@ -67,11 +67,8 @@ button.chip:hover{border-color:var(--accent)}
 #stage{position:relative;height:min(68vh,620px);min-height:420px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
 #stage canvas{display:block;width:100%;height:100%}
 #stage.dragging{cursor:grabbing}
-.lbl{position:absolute;left:0;top:0;transform-origin:0 0;white-space:nowrap;font:600 12.5px/1.2 var(--body);color:var(--ink);background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--line);border-radius:6px;padding:3px 7px;cursor:pointer;will-change:transform}
-.lbl small{font-weight:400;color:var(--muted);margin-left:4px}
-.lbl.sel{background:var(--ink);color:var(--surface);border-color:var(--ink)}
-.lbl.sel small{color:var(--surface);opacity:.75}
-.lbl.dim{opacity:.28}
+.lbl{position:absolute;left:0;top:0;transform-origin:0 0;background:transparent;border:0;border-radius:8px;padding:0;cursor:pointer;will-change:transform}
+.lbl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .elbl{position:absolute;left:0;top:0;font:600 11.5px/1.25 var(--body);padding:2px 6px;border-radius:5px;background:var(--surface);border:1px solid currentColor;pointer-events:none;white-space:nowrap;display:none}
 .elbl.T{color:var(--transform)} .elbl.L{color:var(--limit)}
 .layerlbl{position:absolute;left:0;top:0;font:600 11px/1.2 var(--body);color:var(--muted);pointer-events:none;letter-spacing:.03em;white-space:nowrap}
@@ -177,7 +174,7 @@ footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px so
   <div class="eyebrow">통계 해설 · 확률분포 21종 관계 지도 · <a href="index.html">목차</a> · <a href="tables.html">분포표 읽기 연구실 →</a></div>
   <h1>확률분포 딕셔너리</h1>
   <div class="byline">글 · 안상선 ((주)M-Robo 대표)</div>
-  <p class="lead">흔히 쓰는 분포는 서로 남남이 아닙니다. 한 분포의 특수한 경우이거나, 변수를 바꿔 얻었거나, 표본이 커질 때 다가가는 극한입니다. 3D 지도에서 분포를 누르면 연결된 길이 밝아지고, 아래 사전 카드에 식·용도·파이썬 호출법·생성 AI 프롬프트가 나옵니다.</p>
+  <p class="lead">흔히 쓰는 분포는 서로 남남이 아닙니다. 한 분포의 특수한 경우이거나, 변수를 바꿔 얻었거나, 표본이 커질 때 다가가는 극한입니다. 3D 지도에서 분포 모양 카드를 누르면 연결된 길이 밝아지고, 아래 사전 카드에 식·용도·파이썬 호출법·생성 AI 프롬프트가 나옵니다.</p>
   <div class="summary" id="summary"></div>
 </header>
 
@@ -193,7 +190,7 @@ footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px so
       <button class="chip" id="v-spin" aria-pressed="true">자동 회전</button>
       <button class="chip" id="v-reset">선택 해제</button>
     </div>
-    <div id="stage" aria-label="확률분포 관계 3D 그래프. 분포 이름을 누르면 선택됩니다."></div>
+    <div id="stage" aria-label="확률분포 관계 3D 그래프. 분포 모양 카드를 누르면 선택됩니다."></div>
     <div class="infobar" id="infobar" aria-live="polite"></div>
     <div class="axisnote" id="axisnote"></div>
   </div>
@@ -422,7 +419,7 @@ const FAM={
 
 /* ---------- distributions ---------- */
 const D=[
-{id:"bernoulli",ko:"베르누이",en:"Bernoulli",sym:"Bernoulli(p)",fam:"count",pos:[6,1.2,3],
+{id:"bernoulli",ko:"베르누이",en:"Bernoulli",sym:"Bernoulli(p)",fam:"count",pos:[-8.3,4,3],
  short:"한 번의 예/아니오",story:"동전을 한 번 던져 성공이면 1, 실패면 0. 모든 이산 계수 분포의 벽돌입니다.",
  sup:"{0, 1}",f:"P(X=1)=p, P(X=0)=1−p",mean:"p",vr:"p(1−p)",
  uses:["클릭·구매·청구 같은 0/1 결과","로지스틱 회귀의 목표 변수","A/B 테스트에서 사용자 한 명의 결과"],
@@ -455,7 +452,7 @@ stats.binom(1000, 0.004).pmf(4), stats.poisson(4).pmf(4)`,
  links:["ch03","poll","ab"],
  sw:{lab:"n (p=0.3)",vals:[5,10,15,20,30,40,50],xr:[0,30],disc:true,fn:(k,n)=>k>n?0:E(lch(n,k)+k*LN(0.3)+(n-k)*LN(0.7))}},
 
-{id:"geometric",ko:"기하",en:"Geometric",sym:"Geom(p)",fam:"count",pos:[-7,7,3],
+{id:"geometric",ko:"기하",en:"Geometric",sym:"Geom(p)",fam:"count",pos:[-7.8,7.2,3],
  short:"첫 성공까지 시행 수",story:"성공할 때까지 몇 번 던져야 하나. 이미 실패한 횟수는 앞날에 영향을 주지 않는 무기억 분포입니다.",
  sup:"{1, 2, …}",f:"P(X=k)=(1−p)ᵏ⁻¹p",mean:"1/p",vr:"(1−p)/p²",
  uses:["첫 구매까지 방문 횟수","네트워크 재전송 횟수","게임 이탈까지 플레이 판 수"],
@@ -518,7 +515,7 @@ np.random.default_rng(0).integers(1, 7, size=10)`,
  links:["ch03b"],
  sw:{lab:"n",vals:[2,3,4,6,8,10],xr:[1,10],disc:true,fn:(k,n)=>(k>=1&&k<=n)?1/n:0}},
 
-{id:"poisson",ko:"포아송",en:"Poisson",sym:"Poisson(λ)",fam:"count",pos:[-4,3.5,3],
+{id:"poisson",ko:"포아송",en:"Poisson",sym:"Poisson(λ)",fam:"count",pos:[-3.8,2.6,3],
  short:"단위 시간당 드문 사건 수",story:"넓은 시간·공간에 드문 사건이 흩어져 일어날 때 그 건수. 평균과 분산이 똑같이 λ입니다. 사건 사이 간격은 지수분포입니다.",
  sup:"{0, 1, 2, …}",f:"P(X=k)=e^(−λ)·λᵏ/k!",mean:"λ",vr:"λ",
  uses:["시간당 콜·주문·청구 건수","웹 트래픽, 서버 오류 수","이상 탐지의 기준선(건수 급증)"],
@@ -550,7 +547,7 @@ stats.fisher_exact([[8, 2], [1, 5]])`,
  links:["ch03","poll"],
  sw:{lab:"뽑는 수 n (N=50, K=20)",vals:[2,5,10,15,20,30],xr:[0,20],disc:true,fn:(k,n)=>{const N=50,K=20;if(k<Math.max(0,n-(N-K))||k>Math.min(n,K))return 0;return E(lch(K,k)+lch(N-K,n-k)-lch(N,n));}}},
 
-{id:"normal",ko:"정규",en:"Normal",sym:"N(μ, σ²)",fam:"normal",pos:[-2,0.5,0],
+{id:"normal",ko:"정규",en:"Normal",sym:"N(μ, σ²)",fam:"normal",pos:[-2,0,0],
  short:"작은 요인의 합, 종 모양",story:"작은 요인이 많이 더해진 결과는 원래 분포와 상관없이 종 모양에 다가갑니다(중심극한정리). 그래서 극한 화살표가 대부분 여기로 모입니다.",
  sup:"(−∞, ∞)",f:"f(x)=1/(σ√(2π))·e^(−(x−μ)²/(2σ²))",mean:"μ",vr:"σ²",
  uses:["측정 오차, 회귀 잔차","평균의 신뢰구간","z-점수 이상 탐지","릿지 회귀의 사전분포(L2)"],
@@ -877,28 +874,62 @@ LAYERS.forEach(([z])=>{
   eg.position.copy(p.position); world.add(eg);
   layerObjs.push({p,eg});
 });
-const layerLbls=LAYERS.map(([z,t],li)=>{const el=document.createElement("div");el.className="layerlbl";el.textContent=t;stage.appendChild(el);return {el,v:new THREE.Vector3(-10,8.2-li*0.75,z)};});
+const layerLbls=LAYERS.map(([z,t],li)=>{const el=document.createElement("div");el.className="layerlbl";el.textContent=t;stage.appendChild(el);return {el,v:new THREE.Vector3(-10,-9.3-li*0.7,z)};});
 
-/* nodes */
+/* nodes: each node is a card showing the distribution's own shape */
+const CW=3.0, CH=2.1;
+const CARD_V={beta:2,uniform:1};
+function cardSeries(d){
+  const sw=d.sw, [x0,x1]=sw.xr;
+  const vals=sw.vals; const v=(d.id in CARD_V)?CARD_V[d.id]:vals[Math.floor(vals.length/2)];
+  const fn=d.id==="stdnormal"?((x)=>Math.exp(-x*x/2)/Math.sqrt(2*Math.PI)):sw.fn;
+  const pts=[];
+  if(sw.disc){ for(let k=Math.ceil(x0);k<=Math.floor(x1);k++) pts.push([k,fn(k,v)]); }
+  else { for(let j=0;j<=140;j++){const x=x0+(x1-x0)*j/140; pts.push([x,fn(x,v)]);} }
+  let cap=0; pts.forEach(([x,y])=>{ if(isFinite(y)&&(sw.disc||x>=x0+0.06*(x1-x0))) cap=Math.max(cap,y); });
+  if(!sw.disc) cap*=1.15; if(!(cap>0)) cap=1;
+  return {pts,cap,x0,x1,disc:sw.disc};
+}
+function drawCard(cv,d,selected){
+  const g=cv.getContext("2d"), W=cv.width, H=cv.height; g.clearRect(0,0,W,H);
+  const fc=famColor(d.fam), surf=cssv("--surface"), ink=cssv("--ink"), mut=cssv("--muted");
+  const r=22; g.beginPath(); g.moveTo(r,4); g.arcTo(W-4,4,W-4,H-4,r); g.arcTo(W-4,H-4,4,H-4,r); g.arcTo(4,H-4,4,4,r); g.arcTo(4,4,W-4,4,r); g.closePath();
+  g.fillStyle=surf; g.fill(); g.lineWidth=selected?12:5; g.strokeStyle=selected?ink:fc; g.stroke();
+  g.fillStyle=ink; g.font="700 38px "+cssv("--body"); g.textBaseline="alphabetic"; g.fillText(d.ko,22,50);
+  g.fillStyle=mut; g.font="24px "+cssv("--mono"); const sym=d.sym.length>16?d.sym.slice(0,16)+"…":d.sym; g.fillText(sym,22,82);
+  const s=cardSeries(d); const L=26,R=W-26,T=98,B=H-26;
+  const X=x=>L+(x-s.x0)/(s.x1-s.x0)*(R-L), Y=y=>B-Math.min(isFinite(y)?y:s.cap,s.cap)/s.cap*(B-T);
+  g.strokeStyle=mut; g.lineWidth=2; g.beginPath(); g.moveTo(L,B+1); g.lineTo(R,B+1); g.stroke();
+  if(s.disc){
+    const n=s.pts.length, bw=Math.min(26,(R-L)/n*0.7);
+    s.pts.forEach(([k,y])=>{ const px=L+((k-s.x0)+0.5)/(s.x1-s.x0+1)*(R-L); g.fillStyle=fc; g.fillRect(px-bw/2,Y(y),bw,B-Y(y)); });
+  } else {
+    g.beginPath(); g.moveTo(X(s.pts[0][0]),B); s.pts.forEach(([x,y])=>g.lineTo(X(x),Y(y))); g.lineTo(X(s.pts[s.pts.length-1][0]),B); g.closePath();
+    g.globalAlpha=0.32; g.fillStyle=fc; g.fill(); g.globalAlpha=1;
+    g.beginPath(); s.pts.forEach(([x,y],i)=>{const px=X(x),py=Y(y); i?g.lineTo(px,py):g.moveTo(px,py);}); g.strokeStyle=fc; g.lineWidth=5; g.lineJoin="round"; g.stroke();
+  }
+}
 const nodeObj={};
 D.forEach(d=>{
-  const r=0.32+0.05*deg[d.id];
-  const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,24,16),new THREE.MeshLambertMaterial({transparent:true,opacity:1}));
-  mesh.position.set(...d.pos); world.add(mesh);
+  const cv=document.createElement("canvas"); cv.width=400; cv.height=280;
+  const tex=new THREE.CanvasTexture(cv); tex.minFilter=THREE.LinearFilter; tex.anisotropy=4;
+  const mesh=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));
+  mesh.scale.set(CW,CH,1); mesh.position.set(...d.pos); world.add(mesh);
   const el=document.createElement("button");
-  el.className="lbl"; el.type="button"; el.innerHTML=esc(d.ko)+"<small>"+esc(d.sym)+"</small>";
-  el.addEventListener("click",ev=>{ev.stopPropagation();select(d.id,false);});
+  el.className="lbl"; el.type="button"; el.setAttribute("aria-label",d.ko+" 분포 "+d.sym+" 선택");
+  el.addEventListener("click",ev=>{ev.stopPropagation(); if(moved>=6)return; select(d.id,false);});
   stage.appendChild(el);
-  nodeObj[d.id]={mesh,el,r,d};
+  nodeObj[d.id]={mesh,el,cv,tex,d};
 });
-
+function redrawCards(){ D.forEach(d=>{const n=nodeObj[d.id]; drawCard(n.cv,d,d.id===sel); n.tex.needsUpdate=true;}); }
 /* edges */
 const edgeObj=[];
 EDGES.forEach(e=>{
   const A=new THREE.Vector3(...byId[e.a].pos), B=new THREE.Vector3(...byId[e.b].pos);
   const dir=B.clone().sub(A).normalize();
-  const s=A.clone().add(dir.clone().multiplyScalar(nodeObj[e.a].r+0.12));
-  const t=B.clone().sub(dir.clone().multiplyScalar(nodeObj[e.b].r+0.12));
+  const cut=Math.min(2.2,Math.min(CW/2/Math.max(1e-6,Math.abs(dir.x)),CH/2/Math.max(1e-6,Math.abs(dir.y))))+0.15;
+  const s=A.clone().add(dir.clone().multiplyScalar(cut));
+  const t=B.clone().sub(dir.clone().multiplyScalar(cut));
   const geo=new THREE.BufferGeometry().setFromPoints([s,t]);
   const mat=e.k==="T"?new THREE.LineBasicMaterial({transparent:true,opacity:0.85})
                      :new THREE.LineDashedMaterial({transparent:true,opacity:0.9,dashSize:0.32,gapSize:0.22});
@@ -912,7 +943,7 @@ EDGES.forEach(e=>{
 function applyTheme(){
   const ink=new THREE.Color(cssv("--ink")), cT=new THREE.Color(cssv("--transform")), cL=new THREE.Color(cssv("--limit"));
   layerObjs.forEach(o=>{o.p.material.color=ink.clone(); o.eg.material.color=new THREE.Color(cssv("--muted"));});
-  D.forEach(d=>nodeObj[d.id].mesh.material.color=new THREE.Color(famColor(d.fam)));
+  redrawCards();
   edgeObj.forEach(o=>{const c=o.e.k==="T"?cT:cL;o.line.material.color=c.clone();o.cone.material.color=c.clone();});
   if(ribbon) ribbon.rebuild();
 }
@@ -926,15 +957,16 @@ function refreshVisibility(){
     o.el.style.display=(sel&&on&&vis)?"block":"none";
   });
   D.forEach(d=>{const n=nodeObj[d.id];const on=!sel||nb.has(d.id);
-    n.mesh.material.opacity=on?1:0.18; n.el.classList.toggle("dim",!on); n.el.classList.toggle("sel",d.id===sel);
-    n.mesh.scale.setScalar(d.id===sel?1.35:1);});
+    n.mesh.material.opacity=on?1:0.2; n.el.classList.toggle("sel",d.id===sel);
+    const k=d.id===sel?1.3:1; n.mesh.scale.set(CW*k,CH*k,1); n.mesh.renderOrder=d.id===sel?2:(on?1:0);});
+  redrawCards();
 }
 function resize(){
   const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false);
   camera.aspect=w/h; camera.updateProjectionMatrix();
 }
 function camDist(){ const a=camera.aspect; return Math.max(26,10.2/(0.384*a))/zoom; }
-const tmp=new THREE.Vector3();
+const tmp=new THREE.Vector3(), tmp2=new THREE.Vector3();
 function place(el,v,dx,dy){
   tmp.copy(v).applyMatrix4(world.matrixWorld).project(camera);
   if(tmp.z>1){el.style.visibility="hidden";return;}
@@ -949,14 +981,17 @@ function frame(){
   camera.position.set(0,0,camDist()); camera.lookAt(0,0,0);
   world.updateMatrixWorld();
   renderer.render(scene,camera);
-  D.forEach(d=>{const n=nodeObj[d.id]; place(n.el,n.mesh.position,el=>-el.offsetWidth/2,()=>12+n.r*6);});
+  const fovT=Math.tan(camera.fov*Math.PI/360);
+  D.forEach(d=>{const n=nodeObj[d.id]; n.mesh.getWorldPosition(tmp2); const dist=camera.position.distanceTo(tmp2); const ppu=stage.clientHeight/(2*dist*fovT);
+    const w=CW*n.mesh.scale.x/CW*ppu, h=CH*n.mesh.scale.y/CH*ppu; n.el.style.width=Math.round(w)+"px"; n.el.style.height=Math.round(h)+"px";
+    place(n.el,n.mesh.position,()=>-w/2,()=>-h/2);});
   edgeObj.forEach(o=>{ if(o.el.style.display==="block") place(o.el,o.mid,el=>-el.offsetWidth/2,el=>-el.offsetHeight/2);});
   layerLbls.forEach(l=>place(l.el,l.v,()=>0,()=>0));
   requestAnimationFrame(frame);
 }
 /* drag */
 let dragging=false, px=0, py=0, pid=null, moved=0;
-stage.addEventListener("pointerdown",e=>{ if(e.target.closest(".lbl"))return; dragging=true;pid=e.pointerId;px=e.clientX;py=e.clientY;moved=0;stage.classList.add("dragging");});
+stage.addEventListener("pointerdown",e=>{ dragging=true;pid=e.pointerId;px=e.clientX;py=e.clientY;moved=0;stage.classList.add("dragging");});
 window.addEventListener("pointermove",e=>{ if(!dragging||e.pointerId!==pid)return; const dx=e.clientX-px,dy=e.clientY-py; px=e.clientX;py=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);
   tYaw+=dx*0.008; if(e.pointerType!=="touch") tPitch=Math.max(-1.3,Math.min(1.3,tPitch+dy*0.006)); });
 const endDrag=()=>{dragging=false;pid=null;stage.classList.remove("dragging");};
@@ -970,7 +1005,7 @@ $("#v-front").onclick=()=>{tYaw=Math.round(tYaw/(2*PI))*2*PI;tPitch=0;};
 $("#v-side").onclick=()=>{tYaw=Math.round(tYaw/(2*PI))*2*PI+PI/2.4;tPitch=0.12;};
 $("#v-spin").onclick=function(){spin=!spin;this.setAttribute("aria-pressed",spin);};
 $("#v-reset").onclick=()=>select(null);
-$("#axisnote").innerHTML="<b>세 층(깊이)</b> 앞부터 이산 사건 → 연속 측정값 → 검정 분포. <b>위아래</b> 극한 근사는 위에서 아래로 흘러 정규로 모입니다. <b>조작</b> 끌어서 돌리기, 휠로 확대, 이름을 눌러 선택. 휴대폰에서는 좌우로 밀어 돌리고, 「옆에서」로 층을 봅니다.";
+$("#axisnote").innerHTML="<b>세 층(깊이)</b> 앞부터 이산 사건 → 연속 측정값 → 검정 분포. <b>위아래</b> 극한 근사는 위에서 아래로 흘러 정규로 모입니다. <b>조작</b> 끌어서 돌리기, 휠로 확대, 분포 카드를 눌러 선택. 휴대폰에서는 좌우로 밀어 돌리고, 「옆에서」로 층을 봅니다.";
 
 /* ---------- dictionary index & detail ---------- */
 let famFilter=null;
@@ -1038,7 +1073,7 @@ ${esc(d.py)}</pre></div>
 }
 function renderInfobar(){
   const ib=$("#infobar");
-  if(!sel){ib.innerHTML=`<span class="none">분포 이름을 누르면 연결된 관계와 조건이 지도에 나타납니다.</span>`;return;}
+  if(!sel){ib.innerHTML=`<span class="none">분포 카드를 누르면 연결된 관계와 조건이 지도에 나타납니다.</span>`;return;}
   const d=byId[sel]; const n=EDGES.filter(e=>e.a===sel||e.b===sel).length;
   ib.innerHTML=`<span class="dot" style="background:var(${FAM[d.fam].v})"></span><span><span class="nm">${esc(d.ko)}</span> · ${esc(d.short)} · 관계 ${n}개</span><span class="sp"></span><button class="chip" id="godetail">사전 카드 보기 ↓</button>`;
   $("#godetail").onclick=()=>$("#detail").scrollIntoView({behavior:"smooth",block:"start"});
