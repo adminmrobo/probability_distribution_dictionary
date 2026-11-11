@@ -77,6 +77,36 @@ button.chip:hover{border-color:var(--accent)}
 .worldlbl span{font:12px/1.3 var(--body);color:var(--muted)}
 .elbl{position:absolute;left:0;top:0;font:600 11.5px/1.25 var(--body);padding:2px 6px;border-radius:5px;background:var(--surface);border:1px solid currentColor;pointer-events:none;white-space:nowrap;display:none}
 .elbl.T{color:var(--transform)} .elbl.L{color:var(--limit)}
+.ebtn{position:absolute;left:0;top:0;font:600 11.5px/1.25 var(--body);padding:2px 6px;border-radius:5px;background:var(--surface);border:1px solid currentColor;cursor:pointer;white-space:nowrap;display:none}
+.ebtn.T{color:var(--transform)} .ebtn.L{color:var(--limit)}
+.ebtn.dot{width:16px;height:16px;padding:0;border-radius:50%;font-size:0;background:currentColor;border:2px solid var(--surface);opacity:.85}
+.ebtn.dot:hover{opacity:1;transform-origin:center}
+.ebtn.on{background:currentColor}
+.ebtn.on.T,.ebtn.on.L{color:var(--surface)}
+.ebtn.on.T{background:var(--transform);border-color:var(--transform)} .ebtn.on.L{background:var(--limit);border-color:var(--limit)}
+.edgebox{border-top:1px solid var(--line);padding:14px 14px 12px;background:var(--paper)}
+.ebhead{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.ebhead b{font-size:17px}
+.ebhead .sp{flex:1}
+.edgebox .kind{font-size:12px;font-weight:700;border-radius:5px;padding:1px 7px;white-space:nowrap}
+.edgebox .kind.T{color:var(--transform);border:1px solid var(--transform)}
+.edgebox .kind.L{color:var(--limit);border:1px dashed var(--limit)}
+.edgebox .kind.B{color:var(--accent);border:1px solid var(--accent)}
+.ebflow{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.ebflow figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px}
+.ebflow canvas{display:block;width:100%;height:90px}
+.ebflow figcaption{font-size:13px;font-weight:700;text-align:center}
+.ebflow figcaption small{font-weight:400;color:var(--muted);font-family:var(--mono);font-size:11.5px}
+.ebarrow{display:flex;flex-direction:column;align-items:center;max-width:180px;text-align:center;font-size:12.5px;font-weight:600}
+.ebarrow i{font-style:normal;font-size:28px;line-height:1}
+.ebarrow.T{color:var(--transform)} .ebarrow.L{color:var(--limit)}
+.ebdl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:12px 0 8px;font-size:14.5px}
+.ebdl dt{color:var(--muted);font-weight:700}
+.ebdl dd{margin:0}
+.ebdl dd.mono{font-family:var(--mono);font-size:13.5px}
+.ebnote{font-size:13.5px;color:var(--muted);margin-bottom:8px}
+.ebbtns{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:520px){.ebflow{grid-template-columns:1fr}.ebarrow{flex-direction:row;gap:8px;max-width:none}.ebarrow i{transform:rotate(90deg)}.ebdl{grid-template-columns:1fr}.ebdl dt{margin-top:4px}}
 .layerlbl{position:absolute;left:0;top:0;font:600 11px/1.2 var(--body);color:var(--muted);pointer-events:none;letter-spacing:.03em;white-space:nowrap}
 .infobar{display:flex;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid var(--line);font-size:14.5px;min-height:52px}
 .infobar .nm{font-weight:700}
@@ -135,6 +165,7 @@ pre{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radiu
 /* tables */
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
 table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+td.easy{min-width:260px;color:var(--muted);font-size:13.5px}
 th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-size:12.5px;color:var(--muted);font-weight:700;background:var(--paper);position:sticky;top:0}
 tr:last-child td{border-bottom:0}
@@ -199,6 +230,7 @@ footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px so
       <button class="chip" id="v-reset">선택 해제</button>
     </div>
     <div id="stage" aria-label="확률분포 관계 3D 그래프. 이산확률분포의 세계와 연속확률분포의 세계로 나뉘어 있고, 분포 이름표를 누르면 선택됩니다."></div>
+    <div id="edgebox" class="edgebox" hidden aria-live="polite"></div>
     <div class="infobar" id="infobar" aria-live="polite"></div>
     <div class="axisnote" id="axisnote"></div>
   </div>
@@ -776,6 +808,45 @@ noise = stats.laplace(scale=1/0.5).rvs(1000, random_state=0)`,
 ];
 const byId={}; D.forEach(d=>byId[d.id]=d);
 
+/* easy explanations for each relation: [쉽게 말하면, 숫자로 보면] */
+const EASY={
+"bernoulli>binomial":["동전을 한 번 던지는 것이 베르누이입니다. 같은 동전을 n번 던져 앞면이 몇 번 나왔는지 세면 이항이 됩니다.","앞면 확률 0.3인 동전을 10번 던지면 앞면 수는 이항(10, 0.3)을 따르고, 평균은 10 × 0.3 = 3번입니다."],
+"bernoulli>geometric":["같은 동전을 앞면이 처음 나올 때까지 계속 던집니다. 그때까지 던진 횟수가 기하분포입니다.","앞면 확률 0.3이면 평균 1 ÷ 0.3 ≈ 3.3번 만에 첫 앞면이 나옵니다."],
+"geometric>negbin":["‘첫 성공까지’를 r번 이어 붙이면 ‘r번째 성공까지’가 됩니다. r = 1이면 기하분포와 같습니다.","성공 확률 0.5에서 3번째 성공까지 겪는 실패 수의 평균은 3 × 0.5 ÷ 0.5 = 3번입니다."],
+"negbin>poisson":["성공을 아주 많이 모으되 실패는 아주 드물어지면, 평균 실패 수 λ 하나만 남습니다. 그 모양이 포아송입니다.","r = 1000, p = 0.996이면 평균 실패 수 λ = 1000 × 0.004 = 4로, 포아송(4)과 거의 같습니다."],
+"beta>betabinom":["가게마다 구매율 p가 조금씩 다르고, 그 p가 베타분포를 따른다고 봅니다. 그 위에서 손님 n명 중 산 사람 수를 세면 베타-이항입니다.","구매율이 가게마다 흔들리는 만큼, 같은 평균의 이항보다 결과가 더 넓게 퍼집니다."],
+"betabinom>binomial":["α + β가 아주 커지면 구매율 p가 한 값에 꽉 모여 더 흔들리지 않습니다. 그러면 보통의 이항과 같아집니다.","α = 300, β = 700이면 p는 거의 0.3에 고정되어 이항(n, 0.3)과 구별하기 어렵습니다."],
+"betabinom>discunif":["α = β = 1이면 성공 확률 p가 0과 1 사이 어디든 똑같이 가능합니다. 그 결과 성공 수 0, 1, …, n이 모두 같은 확률이 됩니다.","n = 10이면 성공 수 0~10이 각각 1/11 ≈ 0.091로 같습니다."],
+"hypergeom>binomial":["주머니가 아주 크면 공을 몇 개 꺼내도 남은 비율이 거의 바뀌지 않습니다. 꺼낸 공을 다시 넣은 것과 같아져 이항이 됩니다.","공 10,000개 중 빨간 공 30%에서 10개를 꺼내면, 넣지 않아도 넣어도 확률이 소수 셋째 자리까지 거의 같습니다."],
+"binomial>poisson":["시행 횟수는 아주 많은데 성공은 아주 드물면, 평균 횟수 λ = np 하나로 모양이 정해집니다. 그것이 포아송입니다.","n = 1000, p = 0.004인 이항과 포아송(4)은 확률 차이가 0.0004보다 작습니다."],
+"binomial>normal":["시행 횟수가 많아지면 막대 그래프의 윤곽이 종 모양이 됩니다. 평균 np, 분산 np(1 − p)인 정규로 바꿔 계산할 수 있습니다.","동전 100번이면 앞면 수는 대략 정규(50, 25), 곧 50 ± 10 안에 약 95%가 들어갑니다. np와 n(1 − p)가 모두 10 이상이면 잘 맞습니다."],
+"poisson>normal":["평균 건수 λ가 커지면 포아송도 종 모양이 됩니다. 평균과 분산이 모두 λ입니다.","하루 평균 100건이면 대략 정규(100, 100), 곧 80~120건 사이가 흔한 범위입니다."],
+"poisson>exponential":["포아송은 ‘한 시간에 몇 번 오나’를 세고, 지수는 ‘다음 번까지 얼마나 기다리나’를 잽니다. 같은 사건 흐름을 두 방향에서 본 것입니다.","시간당 평균 4명이 오면, 손님 사이 간격은 평균 60 ÷ 4 = 15분인 지수분포입니다."],
+"normal>lognormal":["정규를 따르는 값 X를 e의 X제곱으로 바꾸면 늘 양수이고 오른쪽 꼬리가 긴 모양이 됩니다. 그것이 로그정규입니다.","하루 수익률(정규)이 곱해져 쌓인 가격은 로그정규에 가깝습니다."],
+"lognormal>normal":["로그정규를 따르는 값에 로그를 씌우면 다시 정규가 됩니다. 그래서 소득·가격은 로그를 씌운 뒤 정규 도구로 분석합니다.","소득 100만, 1,000만, 1억은 로그로 보면 같은 간격으로 늘어선 값이 됩니다."],
+"normal>stdnormal":["평균을 빼고 표준편차로 나누면 ‘평균에서 표준편차 몇 개만큼 떨어졌나’만 남습니다. 단위가 사라져 Z표 하나로 계산할 수 있습니다.","키 180cm, 평균 170cm, 표준편차 5cm면 Z = (180 − 170) ÷ 5 = 2입니다."],
+"stdnormal>chisq":["표준정규 값을 ν개 뽑아 각각 제곱해 더하면 카이제곱이 됩니다. 제곱이라 음수가 없고 오른쪽으로 늘어집니다.","자유도 4면 제곱 4개의 합이고 평균은 4입니다. 표본분산이 이 분포를 따릅니다."],
+"stdnormal>t":["t는 Z를 분자에 두고, ‘추정한 표준편차’를 분모에 둔 값입니다. Z가 t의 재료 하나입니다.","분모가 흔들리는 만큼 t의 꼬리는 Z보다 두껍습니다. 자유도 10에서 양측 5% 경계는 2.228입니다(Z는 1.96)."],
+"chisq>t":["모표준편차를 모르면 표본으로 추정합니다. 그 추정값이 카이제곱을 따라 흔들리기 때문에 분모가 흔들리고, Z 대신 t가 됩니다.","t = Z ÷ √(χ²/ν). 자유도가 클수록 분모가 1에 가까워집니다."],
+"chisq>f":["두 카이제곱을 각자 자유도로 나눈 뒤 비율을 내면 F입니다. 두 집단의 흩어짐을 비교할 때 씁니다.","세 반 성적의 분산분석에서 ‘반 사이 흩어짐 ÷ 반 안 흩어짐’이 F입니다."],
+"t>f":["t 값을 제곱하면 F(1, ν)가 됩니다. 그래서 두 집단 t검정과 F검정은 같은 결론을 냅니다.","자유도 10: t 경계 2.228을 제곱하면 4.96으로, F(1, 10)의 5% 경계와 같습니다."],
+"t>stdnormal":["자유도가 커지면 표준편차 추정이 정확해져 t가 Z와 같아집니다.","양측 5% 경계: 자유도 10은 2.228, 30은 2.042, 무한대는 1.960입니다."],
+"t>cauchy":["자유도가 1인 t분포가 바로 코시입니다. t 가운데 꼬리가 가장 두껍습니다.","꼬리가 너무 두꺼워 평균이 정해지지 않습니다."],
+"stdnormal>cauchy":["표준정규 둘을 나누면, 분모가 0 근처일 때 엄청나게 큰 값이 튀어나옵니다. 그 결과가 코시입니다.","표본을 아무리 많이 모아도 평균이 한 값으로 모이지 않는 대표적인 예입니다."],
+"chisq>normal":["자유도가 크면 카이제곱도 종 모양이 됩니다. 평균 ν, 분산 2ν인 정규로 어림할 수 있습니다.","자유도 100이면 대략 정규(100, 200), 곧 100 ± 28 안에 약 95%가 들어갑니다."],
+"gamma>chisq":["카이제곱은 감마분포의 한 종류입니다. 감마의 모양 r = ν/2, 비율 λ = 1/2로 두면 카이제곱 ν가 됩니다.","카이제곱(4) = 감마(r = 2, λ = 0.5)입니다."],
+"gamma>exponential":["감마는 ‘r번째 사건까지 기다린 시간’입니다. r = 1이면 ‘첫 사건까지’, 곧 지수분포입니다.","r = 1, λ = 4(시간당 4건)이면 평균 15분 기다리는 지수분포입니다."],
+"exponential>gamma":["지수 대기시간을 r개 이어서 더하면 r번째 사건까지 걸린 시간이 됩니다. 그것이 감마입니다.","손님 간격이 평균 15분이면 3번째 손님까지 평균 45분입니다."],
+"gamma>normal":["대기시간을 아주 많이 더하면(r이 크면) 합이 종 모양이 됩니다. 중심극한정리입니다.","r = 100, λ = 1이면 대략 정규(100, 100)입니다."],
+"gamma>beta":["두 감마 X, Y가 있을 때 X ÷ (X + Y)는 ‘전체 중 X의 몫’입니다. 0과 1 사이 비율이라 베타가 됩니다.","X ~ 감마(2), Y ~ 감마(5)면 X/(X + Y)는 베타(2, 5), 평균 2/7 ≈ 0.29입니다."],
+"exponential>weibull":["지수는 고장률이 늘 같습니다. 시간 눈금을 비틀면(k제곱근) 고장률이 시간에 따라 변하는 와이불이 됩니다. k = 1이면 지수 그대로입니다.","k > 1이면 오래 쓸수록 잘 고장 나고(노화), k < 1이면 초기에 많이 고장 납니다."],
+"exponential>laplace":["두 지수 대기시간의 차 X₁ − X₂는 0 근처가 뾰족하고 양쪽이 대칭인 라플라스가 됩니다.","절댓값을 씌운 |X₁ − X₂|는 다시 지수가 됩니다. 원래 그림의 표기는 이 점에서 틀렸습니다."],
+"uniform>exponential":["0~1 균등 난수 U를 −ln U ÷ λ로 바꾸면 지수 난수가 됩니다. 컴퓨터가 여러 분포의 난수를 만드는 기본 방법(역변환)입니다.","U = 0.5, λ = 2면 −ln 0.5 ÷ 2 ≈ 0.35입니다."],
+"beta>uniform":["α = β = 1이면 베타 곡선이 평평해져 0~1 균등이 됩니다. ‘아무것도 모른다’는 사전분포로 씁니다.","전환율을 전혀 모를 때 베타(1, 1)에서 출발해 자료로 갱신합니다."],
+"beta>normal":["α와 β가 커지면(자료가 많이 쌓이면) 베타가 좁은 종 모양이 됩니다. 정규로 어림할 수 있습니다.","1,000명 중 300명이 샀다면 베타(301, 701)는 평균 0.30 근처의 좁은 종 모양입니다."],
+"discunif>uniform":["1~n 중 하나를 고른 뒤 n으로 나누면, n이 커질수록 칸이 촘촘해져 0~1 연속 균등이 됩니다.","n = 1000이면 0.001 간격의 값이 거의 0~1 전체를 고르게 채웁니다."]
+};
+
 /* ---------- edges ---------- */
 const EDGES=[
 ["bernoulli","binomial","T","n개를 더함","개별 시행을 횟수로 묶음"],
@@ -954,7 +1025,10 @@ EDGES.forEach(e=>{
   const line=new THREE.Line(geo,mat); if(e.k==="L") line.computeLineDistances(); world.add(line);
   const cone=new THREE.Mesh(new THREE.ConeGeometry(0.2,0.6,12),new THREE.MeshBasicMaterial({transparent:true,opacity:0.95}));
   cone.position.copy(conePos); cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),coneDir); world.add(cone);
-  const el=document.createElement("div"); el.className="elbl "+e.k; el.textContent=(bridge?"다리 · ":"")+e.lab; stage.appendChild(el);
+  const el=document.createElement("button"); el.type="button"; el.className="ebtn "+e.k; el.textContent=(bridge?"다리 · ":"")+e.lab;
+  el.setAttribute("aria-label",byId[e.a].ko+" → "+byId[e.b].ko+" 관계 설명 보기");
+  el.addEventListener("click",ev=>{ev.stopPropagation(); if(moved>=6)return; openEdge(e);});
+  stage.appendChild(el);
   edgeObj.push({e,line,cone,el,mid,bridge});
 });
 
@@ -966,21 +1040,56 @@ function applyTheme(){
   edgeObj.forEach(o=>{const c=o.e.k==="T"?cT:cL;o.line.material.color=c.clone();o.cone.material.color=c.clone();});
   if(ribbon) ribbon.rebuild();
 }
+let selEdge=null;
 function refreshVisibility(){
-  const nb=new Set(); if(sel){nb.add(sel); EDGES.forEach(e=>{if(e.a===sel)nb.add(e.b); if(e.b===sel)nb.add(e.a);});}
+  const nb=new Set();
+  if(selEdge){ nb.add(selEdge.a); nb.add(selEdge.b); }
+  else if(sel){nb.add(sel); EDGES.forEach(e=>{if(e.a===sel)nb.add(e.b); if(e.b===sel)nb.add(e.a);});}
+  const any=!!(sel||selEdge);
   edgeObj.forEach(o=>{
     const vis=(o.e.k==="T"?showT:showL);
-    const on=!sel||o.e.a===sel||o.e.b===sel;
+    const on=selEdge?o.e===selEdge:(!sel||o.e.a===sel||o.e.b===sel);
     o.line.visible=o.cone.visible=vis;
     o.line.material.opacity=on?0.95:0.08; o.cone.material.opacity=on?0.95:0.08;
-    o.el.style.display=(sel&&on&&vis)?"block":"none";
+    o.el.style.display=(vis&&on)?"block":"none";
+    o.el.classList.toggle("dot",!any);
+    o.el.classList.toggle("on",o.e===selEdge);
   });
-  D.forEach(d=>{const n=nodeObj[d.id];const on=!sel||nb.has(d.id);
+  D.forEach(d=>{const n=nodeObj[d.id];const on=!any||nb.has(d.id);
     n.mats.forEach(m=>m.opacity=on?(m===n.cmat?0.95:1):0.14);
-    n.cmat.emissive=new THREE.Color(d.id===sel?famColor(d.fam):"#000000"); n.cmat.emissiveIntensity=d.id===sel?0.35:0;
-    n.el.classList.toggle("dim",!on); n.el.classList.toggle("sel",d.id===sel);
-    n.root.scale.setScalar(d.id===sel?1.3:1);});
+    const hl=d.id===sel||(selEdge&&nb.has(d.id));
+    n.cmat.emissive=new THREE.Color(hl?famColor(d.fam):"#000000"); n.cmat.emissiveIntensity=hl?0.35:0;
+    n.el.classList.toggle("dim",!on); n.el.classList.toggle("sel",!!hl);
+    n.root.scale.setScalar(d.id===sel?1.3:(hl?1.15:1));});
 }
+function miniChart(cv,d){
+  const dpr=Math.min(2,window.devicePixelRatio||1), W=cv.clientWidth||150, H=cv.clientHeight||90; cv.width=W*dpr; cv.height=H*dpr;
+  const g=cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
+  const s=chartSeries(d), fc=famColor(d.fam); const L=6,R=W-6,T=6,B=H-8;
+  const X=x=>L+(x-s.x0)/(s.x1-s.x0)*(R-L), Y=y=>B-Math.min(isFinite(y)?y:s.cap,s.cap)/s.cap*(B-T);
+  g.strokeStyle=cssv("--line"); g.beginPath(); g.moveTo(L,B+.5); g.lineTo(R,B+.5); g.stroke();
+  if(s.disc){ const span=s.x1-s.x0+1, bw=Math.max(2,(R-L)/span*0.7); s.pts.forEach(([k,y])=>{const px=L+((k-s.x0)+0.5)/span*(R-L); g.fillStyle=fc; g.fillRect(px-bw/2,Y(y),bw,B-Y(y));}); }
+  else { g.beginPath(); g.moveTo(X(s.pts[0][0]),B); s.pts.forEach(([x,y])=>g.lineTo(X(x),Y(y))); g.lineTo(X(s.pts[s.pts.length-1][0]),B); g.closePath(); g.globalAlpha=.3; g.fillStyle=fc; g.fill(); g.globalAlpha=1;
+    g.beginPath(); s.pts.forEach(([x,y],i)=>i?g.lineTo(X(x),Y(y)):g.moveTo(X(x),Y(y))); g.strokeStyle=fc; g.lineWidth=2.5; g.stroke(); }
+}
+function openEdge(e){
+  sel=null; selEdge=e; spin=false; $("#v-spin").setAttribute("aria-pressed","false");
+  refreshVisibility(); renderIndex(); renderInfobar();
+  const A=byId[e.a], B=byId[e.b], ez=EASY[e.a+">"+e.b]||["",""]; const bridge=A.fam==="count"&&B.fam!=="count";
+  const box=$("#edgebox"); box.hidden=false;
+  box.innerHTML=`<div class="ebhead"><span class="kind ${e.k}">${e.k==="T"?"변환·특수 경우":"극한 근사"}</span>${bridge?'<span class="kind B">두 세계를 잇는 다리</span>':""}<b>${esc(A.ko)} → ${esc(B.ko)}</b><span class="sp"></span><button class="chip" id="ebclose">닫기</button></div>
+  <div class="ebflow"><figure><canvas id="ebA"></canvas><figcaption>${esc(A.ko)} <small>${esc(A.sym)}</small></figcaption></figure>
+  <div class="ebarrow ${e.k}"><span>${esc(e.lab)}</span><i>→</i></div>
+  <figure><canvas id="ebB"></canvas><figcaption>${esc(B.ko)} <small>${esc(B.sym)}</small></figcaption></figure></div>
+  <dl class="ebdl"><dt>조건</dt><dd class="mono">${esc(e.lab)}</dd><dt>쉽게 말하면</dt><dd>${esc(ez[0])}</dd><dt>숫자로 보면</dt><dd>${esc(ez[1])}</dd><dt>어디에 쓰나</dt><dd>${esc(e.why)}</dd></dl>
+  <div class="ebnote">${e.k==="T"?"실선(변환·특수 경우): 조건을 지키면 <b>정확히</b> 같은 분포가 됩니다.":"점선(극한 근사): 조건이 끝까지 가야 같아지고, 중간 단계에서는 <b>비슷해지는</b> 것입니다."}</div>
+  <div class="ebbtns"><button class="chip" data-go="${A.id}">${esc(A.ko)} 사전 카드</button><button class="chip" data-go="${B.id}">${esc(B.ko)} 사전 카드</button></div>`;
+  miniChart($("#ebA"),A); miniChart($("#ebB"),B);
+  if(innerWidth<700) box.scrollIntoView({behavior:"smooth",block:"nearest"});
+  $("#ebclose").onclick=()=>closeEdge();
+  box.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go,true));
+}
+function closeEdge(){ selEdge=null; const box=$("#edgebox"); if(box){box.hidden=true; box.innerHTML="";} refreshVisibility(); renderInfobar(); }
 function resize(){
   const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false);
   camera.aspect=w/h; camera.updateProjectionMatrix();
@@ -1016,7 +1125,7 @@ window.addEventListener("pointermove",e=>{ if(!dragging||e.pointerId!==pid)retur
 const endDrag=()=>{dragging=false;pid=null;stage.classList.remove("dragging");};
 window.addEventListener("pointerup",endDrag); window.addEventListener("pointercancel",endDrag);
 stage.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(0.6,Math.min(3,zoom*Math.exp(-e.deltaY*0.0012)));},{passive:false});
-stage.addEventListener("click",e=>{ if(!e.target.closest(".lbl")&&moved<6&&sel) select(null); });
+stage.addEventListener("click",e=>{ if(e.target.closest(".lbl,.ebtn")||moved>=6)return; if(selEdge) closeEdge(); else if(sel) select(null); });
 
 $("#t-T").onclick=function(){showT=!showT;this.setAttribute("aria-pressed",showT);refreshVisibility();};
 $("#t-L").onclick=function(){showL=!showL;this.setAttribute("aria-pressed",showL);refreshVisibility();};
@@ -1025,7 +1134,7 @@ $("#v-front").onclick=()=>{tYaw=nearTurn(defYaw());tPitch=defPitch();};
 $("#v-side").onclick=()=>{tYaw=nearTurn(defYaw());tPitch=1.42;};
 $("#v-spin").onclick=function(){spin=!spin;this.setAttribute("aria-pressed",spin);};
 $("#v-reset").onclick=()=>select(null);
-$("#axisnote").innerHTML="<b>두 세계</b> 이산확률분포의 세계(막대)와 연속확률분포의 세계(곡선)가 나뉘어 있습니다. <b>다리</b> 두 세계를 잇는 공중 아치는 이산 분포가 극한에서 연속 분포가 되거나(이항 → 정규), 한 과정의 두 얼굴인 관계(포아송 → 지수)입니다. <b>조작</b> 끌어서 돌리기, 휠로 확대, 이름표를 눌러 선택. 휴대폰에서는 좌우로 밀어 돌리고, 「위에서 보기」로 전체 배치를 봅니다.";
+$("#axisnote").innerHTML="<b>두 세계</b> 이산확률분포의 세계(막대)와 연속확률분포의 세계(곡선)가 나뉘어 있습니다. <b>다리</b> 두 세계를 잇는 공중 아치는 이산 분포가 극한에서 연속 분포가 되거나(이항 → 정규), 한 과정의 두 얼굴인 관계(포아송 → 지수)입니다. <b>조작</b> 끌어서 돌리기, 휠로 확대, 이름표를 눌러 분포 선택, <b>선 위의 점(또는 조건 표시)을 눌러 관계 설명</b>. 휴대폰에서는 좌우로 밀어 돌리고, 「위에서 보기」로 전체 배치를 봅니다.";
 
 /* ---------- dictionary index & detail ---------- */
 let famFilter=null;
@@ -1093,12 +1202,14 @@ ${esc(d.py)}</pre></div>
 }
 function renderInfobar(){
   const ib=$("#infobar");
-  if(!sel){ib.innerHTML=`<span class="none">분포 이름표를 누르면 연결된 관계와 조건이 지도에 나타납니다.</span>`;return;}
+  if(selEdge){ib.innerHTML=`<span class="none">관계 설명을 보고 있습니다. 지도 빈 곳을 누르거나 「닫기」를 누르면 돌아갑니다.</span>`;return;}
+  if(!sel){ib.innerHTML=`<span class="none">분포 이름표를 누르면 연결된 관계가, 선 위의 점을 누르면 그 관계의 조건 설명이 나옵니다.</span>`;return;}
   const d=byId[sel]; const n=EDGES.filter(e=>e.a===sel||e.b===sel).length;
   ib.innerHTML=`<span class="dot" style="background:var(${FAM[d.fam].v})"></span><span><span class="nm">${esc(d.ko)}</span> · ${esc(d.short)} · 관계 ${n}개</span><span class="sp"></span><button class="chip" id="godetail">사전 카드 보기 ↓</button>`;
   $("#godetail").onclick=()=>$("#detail").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function select(id,scroll,keepSpin){
+  if(selEdge){ selEdge=null; const bx=$("#edgebox"); if(bx){bx.hidden=true;bx.innerHTML="";} }
   sel=id||null;
   if(sel){ const d=byId[sel]; if(!keepSpin){spin=false; $("#v-spin").setAttribute("aria-pressed","false");}
     // turn so the node faces the viewer
@@ -1174,8 +1285,8 @@ const ribbon=(function(){
 
 /* ---------- relation table ---------- */
 function renderTable(){
-  const rows=EDGES.map(e=>`<tr><td><button class="link" data-go="${e.a}">${esc(byId[e.a].ko)}</button> → <button class="link" data-go="${e.b}">${esc(byId[e.b].ko)}</button></td><td><span class="kind ${e.k}">${e.k==="T"?"변환":"극한"}</span></td><td class="mono">${esc(e.lab)}</td><td>${esc(e.why)}</td></tr>`).join("");
-  $("#reltable").innerHTML=`<thead><tr><th>출발 → 도착</th><th>종류</th><th>조건·식</th><th>왜 쓰나</th></tr></thead><tbody>${rows}</tbody>`;
+  const rows=EDGES.map(e=>`<tr><td><button class="link" data-go="${e.a}">${esc(byId[e.a].ko)}</button> → <button class="link" data-go="${e.b}">${esc(byId[e.b].ko)}</button></td><td><span class="kind ${e.k}">${e.k==="T"?"변환":"극한"}</span></td><td class="mono">${esc(e.lab)}</td><td>${esc(e.why)}</td><td class="easy">${esc((EASY[e.a+">"+e.b]||[""])[0])}</td></tr>`).join("");
+  $("#reltable").innerHTML=`<thead><tr><th>출발 → 도착</th><th>종류</th><th>조건·식</th><th>왜 쓰나</th><th>쉽게 말하면</th></tr></thead><tbody>${rows}</tbody>`;
   $("#reltable").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go,true));
   $("#paramtable").innerHTML=`<thead><tr><th>분포</th><th>교과서 표기</th><th>scipy 호출</th><th>주의</th></tr></thead><tbody>${PT.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td class="mono">${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</tbody>`;
 }
