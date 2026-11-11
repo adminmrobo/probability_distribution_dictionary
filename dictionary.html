@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>확률분포 딕셔너리</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
+<style>
+/* 지도 먼저, 사전은 아래: 3D 관계 지도 → 선택 분포 카드 → 관계표 → 파이썬 → 프롬프트 → 내 콘텐츠 */
+:root{
+  --paper:#f4f6f8; --surface:#ffffff; --ink:#18212c; --muted:#5a6575; --line:#d8dde5;
+  --accent:#1f7a80;
+  --transform:#b8402c; --limit:#2c8a55;
+  --f-count:#d4693a; --f-normal:#1f7a80; --f-wait:#b98613; --f-unit:#7357b8; --f-test:#2d63b8; --f-tail:#6b7280;
+  --code-bg:#eef2f5;
+  --display:"Noto Serif KR", "Nanum Myeongjo", Georgia, serif;
+  --body:"IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#10151c; --surface:#171f29; --ink:#e5e9ef; --muted:#9ba6b4; --line:#2a3441;
+    --accent:#4fb3b9; --transform:#ef7a63; --limit:#5cc48a;
+    --f-count:#f0915f; --f-normal:#4fb3b9; --f-wait:#e2b445; --f-unit:#a58ef0; --f-test:#6e9cf0; --f-tail:#a3abb8;
+    --code-bg:#1d2733; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#10151c; --surface:#171f29; --ink:#e5e9ef; --muted:#9ba6b4; --line:#2a3441;
+  --accent:#4fb3b9; --transform:#ef7a63; --limit:#5cc48a;
+  --f-count:#f0915f; --f-normal:#4fb3b9; --f-wait:#e2b445; --f-unit:#a58ef0; --f-test:#6e9cf0; --f-tail:#a3abb8;
+  --code-bg:#1d2733; color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;-webkit-text-size-adjust:100%}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px}
+header.top{padding:28px 0 8px}
+.eyebrow{font-size:13px;letter-spacing:.06em;color:var(--muted);font-weight:600}
+h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,5vw,44px);line-height:1.2;margin:6px 0 10px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(21px,3vw,27px);margin:0 0 12px;text-wrap:balance}
+h3{font-size:17px;margin:0 0 8px}
+.byline{color:var(--muted);font-size:14px}
+.lead{max-width:68ch;margin:10px 0 0}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:18px 0 6px}
+.sumcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14.5px}
+.sumcard b{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:2px}
+.sumcard .big{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+section{padding:26px 0}
+section+section{border-top:1px solid var(--line)}
+
+/* 3D stage */
+.stagebox{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)}
+.toolbar .sp{flex:1}
+button.chip,.chip{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;line-height:1.3}
+button.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+button.chip:hover{border-color:var(--accent)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.swatch-line{width:22px;height:0;border-top:2.5px solid var(--transform);display:inline-block}
+.swatch-line.dash{border-top:2.5px dashed var(--limit)}
+#stage{position:relative;height:min(68vh,620px);min-height:420px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+#stage canvas{display:block;width:100%;height:100%}
+#stage.dragging{cursor:grabbing}
+.lbl{position:absolute;left:0;top:0;transform-origin:0 0;white-space:nowrap;font:600 12.5px/1.2 var(--body);color:var(--ink);background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--line);border-radius:6px;padding:3px 7px;cursor:pointer;will-change:transform}
+.lbl small{font-weight:400;color:var(--muted);margin-left:4px}
+.lbl.sel{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.lbl.sel small{color:var(--surface);opacity:.75}
+.lbl.dim{opacity:.28}
+.elbl{position:absolute;left:0;top:0;font:600 11.5px/1.25 var(--body);padding:2px 6px;border-radius:5px;background:var(--surface);border:1px solid currentColor;pointer-events:none;white-space:nowrap;display:none}
+.elbl.T{color:var(--transform)} .elbl.L{color:var(--limit)}
+.layerlbl{position:absolute;left:0;top:0;font:600 11px/1.2 var(--body);color:var(--muted);pointer-events:none;letter-spacing:.03em;white-space:nowrap}
+.infobar{display:flex;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid var(--line);font-size:14.5px;min-height:52px}
+.infobar .nm{font-weight:700}
+.infobar .sp{flex:1}
+.axisnote{font-size:13.5px;color:var(--muted);padding:10px 12px;border-top:1px solid var(--line)}
+.axisnote b{color:var(--ink)}
+
+/* dictionary index */
+.searchrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+#q{font:inherit;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);min-width:220px;flex:1;max-width:360px}
+.index{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.ix{text-align:left;font:inherit;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--fc);border-radius:8px;padding:9px 11px;cursor:pointer;color:var(--ink)}
+.ix:hover{border-color:var(--fc)}
+.ix .n{font-weight:700;font-size:15px}
+.ix .e{font-size:12.5px;color:var(--muted);margin-left:4px;font-weight:400}
+.ix .s{font-size:13px;color:var(--muted);line-height:1.45;margin-top:2px}
+.ix[aria-current="true"]{background:var(--ink);color:var(--surface)}
+.ix[aria-current="true"] .s,.ix[aria-current="true"] .e{color:var(--surface);opacity:.8}
+
+/* detail */
+#detail{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:16px;scroll-margin-top:12px}
+.dhead{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px}
+.dhead h2{margin:0}
+.dhead .sym{font-family:var(--mono);font-size:15px;color:var(--muted)}
+.fam{font-size:12.5px;font-weight:600;border-radius:999px;padding:2px 9px;color:#fff;background:var(--fc)}
+.dgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+@media (max-width:820px){.dgrid{grid-template-columns:minmax(0,1fr)}}
+.story{font-size:16.5px;max-width:65ch;margin:0 0 12px}
+dl.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0 0 14px;font-size:14.5px}
+dl.facts dt{color:var(--muted);font-weight:600}
+dl.facts dd{margin:0;font-family:var(--mono);font-size:13.5px;overflow-wrap:anywhere}
+.rels{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
+.rel{font:inherit;font-size:13px;border-radius:7px;padding:4px 9px;cursor:pointer;background:var(--paper);border:1px solid var(--line);color:var(--ink);text-align:left}
+.rel .k{font-weight:700}
+.rel.T{border-left:3px solid var(--transform)} .rel.L{border-left:3px dashed var(--limit)}
+.rel .c{color:var(--muted);margin-left:4px}
+ul.uses{margin:0 0 14px;padding-left:20px}
+ul.uses li{margin:2px 0}
+.subh{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin:16px 0 6px}
+.subh:first-child{margin-top:0}
+#ribbonbox{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+#ribbon{position:relative;height:300px;touch-action:pan-y;cursor:grab}
+#ribbon canvas{display:block;width:100%;height:100%}
+.rcap{font-size:13px;color:var(--muted);padding:8px 10px;border-top:1px solid var(--line)}
+.rcap b{color:var(--ink)}
+pre{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;font:13px/1.55 var(--mono);color:var(--ink);tab-size:4}
+.codebox{position:relative}
+.codebox pre{padding-top:34px}
+.copy{position:absolute;top:6px;right:6px;font:600 12px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:3px 8px;cursor:pointer}
+.prompt pre{white-space:pre-wrap;font-family:var(--body);font-size:14px;line-height:1.6}
+.mylinks{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.mylinks a{display:block;padding:7px 10px;border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink);background:var(--paper);font-size:14px}
+.mylinks a span{display:block;font-size:12px;color:var(--muted)}
+.none{font-size:14px;color:var(--muted)}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--muted);font-weight:700;background:var(--paper);position:sticky;top:0}
+tr:last-child td{border-bottom:0}
+td.mono{font-family:var(--mono);font-size:12.5px}
+.kind{font-size:12px;font-weight:700;border-radius:5px;padding:1px 7px;white-space:nowrap}
+.kind.T{color:var(--transform);border:1px solid var(--transform)}
+.kind.L{color:var(--limit);border:1px dashed var(--limit)}
+td button.link{font:inherit;background:none;border:0;padding:0;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+.prose{max-width:70ch}
+.prose p{margin:0 0 10px}
+.notes{counter-reset:n;list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.notes li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px 10px 44px;position:relative;font-size:14.5px}
+.notes li::before{counter-increment:n;content:counter(n);position:absolute;left:12px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--transform);color:#fff;font:700 12px/22px var(--body);text-align:center}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:12px 0 16px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px}
+.step b{display:block;color:var(--accent);font-size:13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.contentmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.cm{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:14px}
+.cm a{font-weight:700;text-decoration:none}
+.cm .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.cm .tags button{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:1px 8px;cursor:pointer}
+footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px solid var(--line)}
+@media (max-width:520px){
+  .sumcard{font-size:13px;padding:9px 11px}
+  .sumcard .big{font-size:20px}
+  .sumcard.wide{grid-column:1/-1}
+  .wrap{padding:0 16px}
+  #detail{padding:14px}
+  #stage{min-height:400px;height:62vh}
+  .lbl{font-size:11px;padding:2px 5px}
+  .lbl small{display:none}
+  .elbl{font-size:10px}
+}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">통계 해설 · 확률분포 21종 관계 지도 · <a href="index.html">목차</a> · <a href="tables.html">분포표 읽기 연구실 →</a></div>
+  <h1>확률분포 딕셔너리</h1>
+  <div class="byline">글 · 안상선 ((주)M-Robo 대표)</div>
+  <p class="lead">흔히 쓰는 분포는 서로 남남이 아닙니다. 한 분포의 특수한 경우이거나, 변수를 바꿔 얻었거나, 표본이 커질 때 다가가는 극한입니다. 3D 지도에서 분포를 누르면 연결된 길이 밝아지고, 아래 사전 카드에 식·용도·파이썬 호출법·생성 AI 프롬프트가 나옵니다.</p>
+  <div class="summary" id="summary"></div>
+</header>
+
+<section id="map" aria-labelledby="h-map">
+  <h2 id="h-map">3D 관계 지도</h2>
+  <div class="stagebox">
+    <div class="toolbar" role="group" aria-label="지도 보기 설정">
+      <button class="chip" id="t-T" aria-pressed="true"><span class="swatch-line"></span>변환·특수 경우</button>
+      <button class="chip" id="t-L" aria-pressed="true"><span class="swatch-line dash"></span>극한 근사</button>
+      <span class="sp"></span>
+      <button class="chip" id="v-front">정면</button>
+      <button class="chip" id="v-side">옆에서 (층 보기)</button>
+      <button class="chip" id="v-spin" aria-pressed="true">자동 회전</button>
+      <button class="chip" id="v-reset">선택 해제</button>
+    </div>
+    <div id="stage" aria-label="확률분포 관계 3D 그래프. 분포 이름을 누르면 선택됩니다."></div>
+    <div class="infobar" id="infobar" aria-live="polite"></div>
+    <div class="axisnote" id="axisnote"></div>
+  </div>
+</section>
+
+<section id="dict" aria-labelledby="h-dict">
+  <h2 id="h-dict">분포 사전</h2>
+  <div class="searchrow">
+    <label for="q" class="eyebrow">찾기</label>
+    <input id="q" type="search" placeholder="이름·용도로 찾기 (예: 대기, 검정, nbinom)" autocomplete="off">
+    <div id="famchips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+  </div>
+  <div class="index" id="index"></div>
+  <article id="detail" aria-live="polite"></article>
+</section>
+
+<section id="table" aria-labelledby="h-table">
+  <h2 id="h-table">관계 요약표</h2>
+  <p class="prose">지도의 화살표를 한 줄씩 풀었습니다. 실선은 정확히 성립하는 변환이나 특수 경우, 점선은 조건이 극한으로 갈 때 성립하는 근사입니다. 분포 이름을 누르면 사전 카드로 갑니다.</p>
+  <div class="tablewrap"><table id="reltable"></table></div>
+</section>
+
+<section id="notes" aria-labelledby="h-notes">
+  <h2 id="h-notes">원 그림을 읽을 때 고칠 점</h2>
+  <p class="prose">이 사전의 바탕이 된 인포그래픽(matharium)은 관계를 한눈에 보여 주지만, 몇 군데 화살표 방향과 조건이 어긋나 있습니다. 강의 자료로 옮길 때는 아래처럼 고쳐 쓰세요. 각 항목은 아래 파이썬 검증 코드로 직접 확인할 수 있습니다.</p>
+  <ol class="notes">
+    <li><b>지수 → 라플라스</b>: 그림의 |X₁ − X₂|는 다시 지수분포가 됩니다(무기억성). 라플라스는 절댓값 없는 차 X₁ − X₂입니다.</li>
+    <li><b>코시 화살표 방향</b>: 표준정규 둘의 비 Z₁/Z₂가 코시입니다. 그림은 코시에서 표준정규로 그려져 있어 방향이 반대입니다.</li>
+    <li><b>코시 밀도식</b>: 바른 식은 f(x) = 1 / (πγ[1 + ((x − x₀)/γ)²]) 입니다.</li>
+    <li><b>카이제곱 ↔ 감마의 “ν = 2r”</b>: 비율 λ = ½일 때만 성립합니다. χ²(ν) = Gamma(r = ν/2, λ = ½).</li>
+    <li><b>스튜던트 t가 빠짐</b>: 검정에서 가장 많이 쓰는 분포입니다. t = Z / √(χ²_ν/ν), t(1) = 코시, t² ~ F(1, ν), ν → ∞이면 Z. 이 사전에 보충했습니다.</li>
+    <li><b>지수 → 와이불의 “k = γ”</b>: 정확히는 E ~ Exp(1)일 때 λ·E^(1/k) ~ Weibull(k, λ)이고, k = 1이면 지수 그대로입니다.</li>
+    <li><b>음이항 → 포아송</b>: n → ∞만으로는 부족합니다. r(1 − p) = λ를 고정하려면 p → 1이 함께 가야 합니다.</li>
+    <li><b>기하와 음이항의 기준</b>: 그림의 기하는 “시행 수”(1, 2, …), 음이항은 “실패 수”(0, 1, …)로 셉니다. r = 1 음이항은 기하에서 1을 뺀 값입니다. scipy도 같은 기준입니다.</li>
+    <li><b>초기하 표기</b>: 그림의 (M, N, K)와 scipy의 hypergeom(M, n, N)은 글자 뜻이 다릅니다. 아래 파이썬 표를 보세요.</li>
+  </ol>
+</section>
+
+<section id="python" aria-labelledby="h-py">
+  <h2 id="h-py">파이썬으로 부르기</h2>
+  <div class="prose">
+    <p>scipy.stats의 분포는 모두 같은 틀을 씁니다. 매개변수를 넣어 <b>고정된 분포 객체</b>를 만든 뒤 메서드를 부릅니다. 이산 분포는 pmf, 연속 분포는 pdf를 씁니다.</p>
+  </div>
+  <div class="codebox"><button class="copy" data-copy="py-common">복사</button><pre id="py-common">from scipy import stats
+import numpy as np
+
+X = stats.norm(loc=0, scale=1)   # 분포 객체 만들기 (loc=위치, scale=척도)
+
+X.pdf(1.0)        # 밀도 (이산 분포는 X.pmf(k))
+X.cdf(1.96)       # 누적확률 P(X ≤ x)
+X.sf(1.96)        # 꼬리확률 P(X > x) = 1 − cdf, 단측 p-값
+X.ppf(0.975)      # 분위수 (cdf의 역함수) → 1.959…
+X.mean(), X.var(), X.interval(0.95)
+X.rvs(size=1000, random_state=42)   # 난수 뽑기
+
+# 자료에 맞추기 (연속 분포)
+data = stats.gamma(a=2, scale=3).rvs(500, random_state=1)
+a, loc, scale = stats.gamma.fit(data, floc=0)   # loc 고정이 보통 안전</pre></div>
+
+  <h3 style="margin-top:20px">교과서 표기 → scipy 매개변수</h3>
+  <p class="prose">생성 AI가 가장 자주 틀리는 부분입니다. 특히 지수·감마는 비율 λ가 아니라 척도 scale = 1/λ를 받습니다.</p>
+  <div class="tablewrap"><table id="paramtable"></table></div>
+
+  <h3 style="margin-top:20px">관계 검증 실험</h3>
+  <p class="prose">지도의 화살표를 난수로 직접 확인합니다. 콜모고로프-스미르노프(KS) 검정의 p-값이 0.01보다 크면 “목표 분포와 다르다고 볼 근거가 없다”는 뜻입니다. 코시처럼 꼬리가 두꺼운 경우는 실행마다 p-값이 크게 흔들립니다.</p>
+  <div class="codebox"><button class="copy" data-copy="py-verify">복사</button><pre id="py-verify">import numpy as np
+from scipy import stats
+rng = np.random.default_rng(42)
+N = 200_000
+
+# 1) 표준정규 둘의 비 → 코시
+z1, z2 = rng.standard_normal((2, N))
+print("Z1/Z2 ~ Cauchy      ", stats.kstest(z1 / z2, "cauchy").pvalue)
+
+# 2) 표준정규 제곱 4개의 합 → χ²(4)
+q = (rng.standard_normal((N, 4)) ** 2).sum(axis=1)
+print("ΣZ² ~ χ²(4)         ", stats.kstest(q, "chi2", args=(4,)).pvalue)
+
+# 3) Z / √(χ²/ν) → t(ν),  t² → F(1, ν)
+c = rng.chisquare(9, N)
+t = rng.standard_normal(N) / np.sqrt(c / 9)
+print("t(9)                ", stats.kstest(t, "t", args=(9,)).pvalue)
+print("t² ~ F(1, 9)        ", stats.kstest(t**2, "f", args=(1, 9)).pvalue)
+
+# 4) 지수 둘의 차 → 라플라스, 차의 절댓값 → 다시 지수
+e1, e2 = rng.exponential(1.0, (2, N))
+print("E1−E2 ~ Laplace     ", stats.kstest(e1 - e2, "laplace").pvalue)
+print("|E1−E2| ~ Exp       ", stats.kstest(np.abs(e1 - e2), "expon").pvalue)
+
+# 5) −ln U → 지수 (역변환 표집)
+u = rng.uniform(size=N)
+print("−ln U ~ Exp(1)      ", stats.kstest(-np.log(u), "expon").pvalue)
+
+# 6) 감마 비율 → 베타
+x, y = rng.gamma(2, 1, N), rng.gamma(5, 1, N)
+print("X/(X+Y) ~ Beta(2,5) ", stats.kstest(x / (x + y), "beta", args=(2, 5)).pvalue)
+
+# 7) 이항(1000, 0.004) ≈ 포아송(4): pmf 최대 차이
+k = np.arange(15)
+gap = np.abs(stats.binom.pmf(k, 1000, 0.004) - stats.poisson.pmf(k, 4)).max()
+print("max |Bin − Poi|     ", gap)   # 약 0.0004</pre></div>
+  <p class="prose" style="margin-top:8px;font-size:14px;color:var(--muted)">scipy 1.18.1에서 실행해 확인했습니다. 코시 항목만 p ≈ 0.03으로 낮게 나왔고, 다른 시드로 돌리면 크게 달라집니다.</p>
+</section>
+
+<section id="prompt" aria-labelledby="h-prompt">
+  <h2 id="h-prompt">생성 AI 프롬프트 작성법</h2>
+  <div class="prose">
+    <p>“이 데이터 무슨 분포야?”라고만 물으면 AI는 정규분포부터 꺼냅니다. 분포는 모양보다 <b>자료가 만들어진 이야기</b>로 고르는 것이 맞습니다. 그 이야기를 프롬프트에 먼저 써 주세요.</p>
+  </div>
+  <div class="steps">
+    <div class="step"><b>1 · 역할과 독자</b>누가 읽을 결과인지 (강의용, 보고서용, 코드만)</div>
+    <div class="step"><b>2 · 자료의 생성 이야기</b>셌는가 쟀는가, 단위, 범위(0 이상? 0~1?), 독립인가</div>
+    <div class="step"><b>3 · 후보와 이유</b>후보 2~3개를 지도 위 관계와 함께 설명하게 함</div>
+    <div class="step"><b>4 · 검증 요구</b>평균·분산 비교, QQ 플롯, AIC, scipy 모수화 표를 먼저</div>
+    <div class="step"><b>5 · 출력 형식</b>코드와 해석을 나누고 길이를 정함</div>
+  </div>
+  <div class="two">
+    <div>
+      <h3>기본 틀</h3>
+      <div class="codebox prompt"><button class="copy" data-copy="pr-base">복사</button><pre id="pr-base">너는 통계 분석가야. 결과는 [비전공 관리자 / 수강생]이 읽어.
+
+[자료 이야기]
+- 무엇을: [하루 콜센터 접수 건수 / 수리 완료까지 걸린 시간 …]
+- 셌는가 쟀는가: [정수 건수 / 연속 시간(분)]
+- 범위: [0 이상, 상한 없음]
+- 독립성: [날짜끼리 독립이라고 가정 / 요일 효과 있음]
+
+[요청]
+1. 후보 분포 2~3개와, 각각이 위 이야기와 맞는 이유
+2. 후보 사이 관계(특수 경우·극한)를 한 줄씩
+3. scipy.stats 매개변수 표를 먼저 쓰고 (특히 scale = 1/λ 여부)
+4. 적합 코드, QQ 플롯, AIC 비교
+5. 결론은 3줄, 가정이 깨질 때의 대안 1개
+
+모르는 값은 지어내지 말고 질문으로 남겨 줘.</pre></div>
+    </div>
+    <div>
+      <h3>자주 틀리는 것을 미리 막는 줄</h3>
+      <ul class="uses">
+        <li>“지수·감마는 rate인지 scale인지 표로 밝혀 줘.”</li>
+        <li>“기하분포가 1부터 세는지 0부터 세는지 적어 줘.”</li>
+        <li>“hypergeom(M, n, N) 인자의 뜻을 우리 문제의 숫자로 대입해 보여 줘.”</li>
+        <li>“lognorm은 s=σ, scale=e^μ로 써 줘.”</li>
+        <li>“평균과 분산이 크게 다르면 포아송 대신 음이항을 검토해 줘.”</li>
+        <li>“정규 근사를 쓰면 근사가 괜찮은 조건(np ≥ 10 등)을 함께 써 줘.”</li>
+      </ul>
+      <p class="prose" style="font-size:14px">각 분포 카드에 그 분포에 맞춘 프롬프트 예가 있습니다. 프롬프트 설계 전반은 <a href="https://adminmrobo.github.io/generative-ai-prompt-strategy/">생성형 AI 활용 전략 해설</a>에서 이어집니다.</p>
+    </div>
+  </div>
+  <h3 style="margin-top:18px">강의 준비용 예</h3>
+  <div class="codebox prompt"><button class="copy" data-copy="pr-lecture">복사</button><pre id="pr-lecture">통계학 입문 수강생용 10분 활동을 만들어 줘.
+주제: 이항분포가 포아송과 정규로 다가가는 과정.
+- n = 10, 50, 500일 때 p = 0.01, 0.3 두 경우를 표로
+- 각 경우 어느 근사가 나은지 학생이 맞히는 퀴즈 4문항 (정답·해설 포함)
+- 확인용 파이썬 코드 (scipy.stats.binom, poisson, norm만 사용, 20줄 이내)
+- 근사 조건(np, n(1−p))은 숫자로 보여 주고 외우라고 하지 말 것</pre></div>
+</section>
+
+<section id="mine" aria-labelledby="h-mine">
+  <h2 id="h-mine">함께 보는 내 콘텐츠</h2>
+  <p class="prose">각 해설 페이지가 어느 분포와 이어지는지 모았습니다. 분포 이름을 누르면 지도에서 그 분포가 선택됩니다.</p>
+  <div class="contentmap" id="contentmap"></div>
+</section>
+
+<footer>
+  <div>원 그림: “How Probability Distributions Are Connected” (matharium) 인포그래픽을 바탕으로 관계를 다시 정리하고, 스튜던트 t와 몇 가지 관계를 보충했습니다.</div>
+  <div style="margin-top:6px"><a href="tables.html">다음: 분포표 읽기 연구실 (표 보는 법·단측과 양측·신뢰구간·검정력)</a></div>
+  <div style="margin-top:6px">글 · 안상선 ((주)M-Robo 대표) · <a href="https://adminmrobo.github.io/who_am_i/who_am_i.html">저자 소개</a></div>
+</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+/* ---------- math ---------- */
+const LG=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+function lgam(x){ if(x<0.5) return Math.log(Math.PI/Math.abs(Math.sin(Math.PI*x)))-lgam(1-x); x-=1; let a=LG[0]; const t=x+7.5; for(let i=1;i<9;i++) a+=LG[i]/(x+i); return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a); }
+const lbeta=(a,b)=>lgam(a)+lgam(b)-lgam(a+b);
+const lch=(n,k)=>(k<0||k>n)?-Infinity:lgam(n+1)-lgam(k+1)-lgam(n-k+1);
+const E=Math.exp, LN=Math.log, SQ=Math.sqrt, PI=Math.PI;
+const nrm=(x,m,s)=>E(-((x-m)**2)/(2*s*s))/(s*SQ(2*PI));
+const tpdf=(x,v)=>E(lgam((v+1)/2)-lgam(v/2))/SQ(v*PI)*Math.pow(1+x*x/v,-(v+1)/2);
+const gpdf=(x,r,l)=>x<=0?0:E(r*LN(l)+(r-1)*LN(x)-l*x-lgam(r));
+function irwinMean(m,n){ const s=m*n; let tot=0; for(let k=0;k<=n;k++){ const d=s-k; tot+=((k%2)?-1:1)*E(lch(n,k))*Math.pow(d,n-1)*Math.sign(d);} return n*tot/(2*E(lgam(n))); }
+
+/* ---------- content links ---------- */
+const G="https://adminmrobo.github.io/";
+const C={
+  ch03:[G+"statistics_note_ch03_discrete-probability-distribution/1-1_discrete_distributions.html","통계 노트 3장 · 이산 확률분포","statistics_note_ch03"],
+  ch03b:[G+"statistics_note_ch03_discrete-probability-distribution/1-2_pmf_pdf.html","통계 노트 3장 · 확률질량함수와 확률밀도함수","statistics_note_ch03"],
+  normal:[G+"statistics_note_ch04_statistical-estimation/2-2_normal_distribution.html","통계 노트 4장 · 정규분포","statistics_note_ch04"],
+  tcf:[G+"statistics_note_ch04_statistical-estimation/2-3_t_chi_f.html","통계 노트 4장 · t, 카이제곱, F","statistics_note_ch04"],
+  samp:[G+"statistics_note_ch04_statistical-estimation/2-4_sampling_distribution.html","통계 노트 4장 · 표본분포","statistics_note_ch04"],
+  dof:[G+"statistics_note_ch04_statistical-estimation/2-5_degrees_of_freedom.html","통계 노트 4장 · 자유도","statistics_note_ch04"],
+  beer:[G+"statistics_note_ch04_statistical-estimation/2-7_beer_yeast_t.html","통계 노트 4장 · 맥주 효모와 t","statistics_note_ch04"],
+  hyp:[G+"statistics_note_ch05_hypothesis-testing/3-1_hypothesis_testing.html","통계 노트 5장 · 가설검정","statistics_note_ch05"],
+  two:[G+"statistics_note_ch05_hypothesis-testing/3-4_two_sample_tests.html","통계 노트 5장 · 두 표본 검정","statistics_note_ch05"],
+  anova:[G+"statistics_note_ch05_hypothesis-testing/3-5_anova.html","통계 노트 5장 · 분산분석","statistics_note_ch05"],
+  bprob:[G+"bayesian-statistics-for-data-scientists/02_probability.html","베이즈 통계 · 확률","bayesian-statistics"],
+  bthink:[G+"bayesian-statistics-for-data-scientists/03_bayesian_thinking.html","베이즈 통계 · 베이즈적 사고","bayesian-statistics"],
+  ab:[G+"bayesian-statistics-for-data-scientists/04_ab_test.html","베이즈 통계 · A/B 테스트","bayesian-statistics"],
+  mc:[G+"bayesian-statistics-for-data-scientists/08_monte_carlo.html","베이즈 통계 · 몬테카를로","bayesian-statistics"],
+  risk:[G+"my_article_00_Korean_stockmarket_volatility_study/ch1/1-3_risk-measures.html","박사논문 해설 1장 · 위험 측정","my_article_00"],
+  garch:[G+"my_article_00_Korean_stockmarket_volatility_study/ch1/1-5_arch-garch.html","박사논문 해설 1장 · ARCH와 GARCH","my_article_00"],
+  btc:[G+"my_article_01_bitcoin_price_analytics/crypto_info_efficiency.html","암호화폐 자산의 정보 효율성","my_article_01"],
+  poll:[G+"my_article_08_poll_reweighting_lab/X1_poll_reweighting.html","여론조사 편향 보정","my_article_08"],
+  claim:[G+"insurtech__case_classification_model_01/1_claim_question.html","인슈어테크 분류 사례 · 청구 여부","insurtech_classification"],
+  charge:[G+"insurtech__case_regreesion_model_01/1_charges_question.html","인슈어테크 회귀 사례 · 보험료","insurtech_regression"],
+  anomaly:[G+"Anomaly_detection_tatics/","이상 탐지 전술","Anomaly_detection"],
+  markov:[G+"markov_player/markov_player.html","플레이어의 다음 수 (마르코프)","markov_player"],
+  ridge:[G+"Regression_ridge_lasso/RG_ridge_lasso.html","릿지와 라쏘","Regression_ridge_lasso"],
+  ts:[G+"timeseries-trilogy/1_3_arima14.html","시계열 3부작 · ARIMA","timeseries-trilogy"],
+  prompt:[G+"generative-ai-prompt-strategy/","생성형 AI 활용 전략","generative-ai-prompt-strategy"]
+};
+
+/* ---------- families ---------- */
+const FAM={
+  count:{ko:"이산 계수",v:"--f-count"},
+  normal:{ko:"정규 계열",v:"--f-normal"},
+  wait:{ko:"양수·대기시간",v:"--f-wait"},
+  unit:{ko:"0~1 구간",v:"--f-unit"},
+  test:{ko:"검정 통계량",v:"--f-test"},
+  tail:{ko:"두꺼운 꼬리",v:"--f-tail"}
+};
+
+/* ---------- distributions ---------- */
+const D=[
+{id:"bernoulli",ko:"베르누이",en:"Bernoulli",sym:"Bernoulli(p)",fam:"count",pos:[6,1.2,3],
+ short:"한 번의 예/아니오",story:"동전을 한 번 던져 성공이면 1, 실패면 0. 모든 이산 계수 분포의 벽돌입니다.",
+ sup:"{0, 1}",f:"P(X=1)=p, P(X=0)=1−p",mean:"p",vr:"p(1−p)",
+ uses:["클릭·구매·청구 같은 0/1 결과","로지스틱 회귀의 목표 변수","A/B 테스트에서 사용자 한 명의 결과"],
+ py:`X = stats.bernoulli(p=0.3)
+X.pmf([0, 1])                 # [0.7, 0.3]
+X.rvs(size=10, random_state=0)`,
+ pr:`보험 청구 여부(0/1) 열이 있는 데이터를 줄게. 베르누이 분포로 보고
+1) 전체 청구 확률 p와 95% 신뢰구간
+2) 나이대별 p 비교 표
+3) scipy.stats 코드
+4) 비전공자용 3줄 요약
+을 만들어 줘. p가 0.05보다 작으면 불균형 자료 주의점도 적어 줘.`,
+ links:["ch03","claim"],
+ sw:{lab:"p",vals:[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9],xr:[0,1],disc:true,fn:(k,p)=>k===1?p:(k===0?1-p:0)}},
+
+{id:"binomial",ko:"이항",en:"Binomial",sym:"Bin(n, p)",fam:"count",pos:[2,3.5,3],
+ short:"n번 중 성공 횟수",story:"베르누이를 n번 독립으로 되풀이해 성공 횟수를 셉니다. 포아송과 정규 근사가 모두 여기서 출발합니다.",
+ sup:"{0, 1, …, n}",f:"P(X=k)=C(n,k)·pᵏ(1−p)ⁿ⁻ᵏ",mean:"np",vr:"np(1−p)",
+ uses:["로트의 불량품 수","여론조사 찬성자 수","전환율 검정(비율 검정)"],
+ py:`X = stats.binom(n=10, p=0.3)
+X.pmf(3), X.cdf(3)
+stats.binomtest(k=37, n=100, p=0.3)        # 정확 이항검정
+# 극한: n 크고 p 작으면 포아송과 거의 같음
+stats.binom(1000, 0.004).pmf(4), stats.poisson(4).pmf(4)`,
+ pr:`여론조사 표본 1,000명 중 찬성 412명이야. 이항분포로
+1) 찬성 비율의 95% 신뢰구간을 정확법(Clopper-Pearson)과 정규 근사 둘 다
+2) 두 방법 차이가 언제 커지는지 n·p 조건으로 설명
+3) scipy 코드
+를 줘. 표본이 성·연령 비율과 다르면 어떤 보정이 필요한지도 한 단락.`,
+ links:["ch03","poll","ab"],
+ sw:{lab:"n (p=0.3)",vals:[5,10,15,20,30,40,50],xr:[0,30],disc:true,fn:(k,n)=>k>n?0:E(lch(n,k)+k*LN(0.3)+(n-k)*LN(0.7))}},
+
+{id:"geometric",ko:"기하",en:"Geometric",sym:"Geom(p)",fam:"count",pos:[-7,7,3],
+ short:"첫 성공까지 시행 수",story:"성공할 때까지 몇 번 던져야 하나. 이미 실패한 횟수는 앞날에 영향을 주지 않는 무기억 분포입니다.",
+ sup:"{1, 2, …}",f:"P(X=k)=(1−p)ᵏ⁻¹p",mean:"1/p",vr:"(1−p)/p²",
+ uses:["첫 구매까지 방문 횟수","네트워크 재전송 횟수","게임 이탈까지 플레이 판 수"],
+ py:`X = stats.geom(p=0.3)          # scipy도 1부터 셈 (시행 수)
+X.pmf(1)                         # 0.3
+X.mean()                         # 1/p = 3.33`,
+ pr:`앱 사용자가 첫 결제까지 방문한 횟수 자료가 있어. 기하분포로
+1) p 추정과 "5번 안에 결제할 확률"
+2) 무기억성 가정이 맞는지 확인하는 방법(방문 회차별 결제율 표)
+3) 맞지 않으면 음이항이나 이산 와이불 대안
+을 scipy 코드와 함께 설명해 줘. 1부터 세는지 0부터 세는지 먼저 밝혀 줘.`,
+ links:["ch03","markov"],
+ sw:{lab:"p",vals:[0.1,0.2,0.3,0.4,0.5,0.6],xr:[1,15],disc:true,fn:(k,p)=>k<1?0:Math.pow(1-p,k-1)*p}},
+
+{id:"negbin",ko:"음이항",en:"Negative binomial",sym:"NB(r, p)",fam:"count",pos:[-2.5,7,3],
+ short:"r번째 성공까지 실패 수",story:"기하분포를 r개 더한 것. 실전에서는 분산이 평균보다 큰 건수 자료(과산포)를 다루는 포아송의 대안으로 더 많이 씁니다.",
+ sup:"{0, 1, 2, …} (실패 수)",f:"P(X=k)=C(k+r−1,k)·pʳ(1−p)ᵏ",mean:"r(1−p)/p",vr:"r(1−p)/p²",
+ uses:["과산포 건수: 보험 청구, 결함, 사고","유전자 발현 수(RNA-seq)","고객별 구매 횟수"],
+ py:`X = stats.nbinom(n=5, p=0.5)    # n=r, 실패 수를 셈
+X.pmf(0)                          # 0.5**5 = 0.03125
+# 평균 μ, 분산 v로 바꾸기: p = μ/v, r = μ²/(v−μ)
+mu, v = 4.0, 9.0
+stats.nbinom(n=mu**2/(v-mu), p=mu/v).mean()   # 4.0`,
+ pr:`월별 고객 민원 건수가 평균 4, 분산 9야.
+1) 포아송이 맞지 않는 이유를 평균·분산으로 설명
+2) 음이항 매개변수 (r, p)를 scipy.stats.nbinom 기준으로 계산
+3) 포아송과 음이항의 AIC 비교 코드
+4) 결과를 운영 담당자용 3줄로
+를 줘. scipy nbinom이 실패 수를 센다는 점을 표로 확인해 줘.`,
+ links:["ch03"],
+ sw:{lab:"r (p=0.5)",vals:[1,2,3,5,7,10],xr:[0,25],disc:true,fn:(k,r)=>E(lch(k+r-1,k)+r*LN(0.5)+k*LN(0.5))}},
+
+{id:"betabinom",ko:"베타-이항",en:"Beta-binomial",sym:"BetaBin(n, α, β)",fam:"count",pos:[2.5,7,3],
+ short:"확률이 흔들리는 이항",story:"성공확률 p가 사람·매장마다 다르고 그 차이가 베타분포를 따를 때의 성공 횟수입니다. 이항보다 퍼짐이 큽니다.",
+ sup:"{0, 1, …, n}",f:"P(X=k)=C(n,k)·B(k+α, n−k+β)/B(α, β)",mean:"nα/(α+β)",vr:"nαβ(α+β+n)/[(α+β)²(α+β+1)]",
+ uses:["매장·광고별 전환율 차이","베이즈 A/B 테스트의 예측분포","선수별 타율 같은 과산포 비율"],
+ py:`X = stats.betabinom(n=10, a=2, b=3)
+X.pmf(4), X.mean()
+stats.betabinom(10, 1, 1).pmf([0, 5, 10])   # α=β=1 → 0~10 균등`,
+ pr:`매장 30곳의 방문자 수와 구매자 수가 있어.
+1) 매장 간 구매율 차이가 우연인지 이항 vs 베타-이항으로 비교
+2) α, β 추정 (적률법과 최대우도 둘 다)
+3) 새 매장 방문자 200명일 때 구매자 수 예측 구간
+을 scipy.stats.betabinom 코드로 보여 줘.`,
+ links:["ab","bthink"],
+ sw:{lab:"α = β (n=10)",vals:[0.5,1,2,4,8,20],xr:[0,10],disc:true,fn:(k,a)=>E(lch(10,k)+lbeta(k+a,10-k+a)-lbeta(a,a))}},
+
+{id:"discunif",ko:"이산 균등",en:"Discrete uniform",sym:"DU{1, …, n}",fam:"count",pos:[7.5,7,3],
+ short:"주사위처럼 모두 같은 확률",story:"n개 값이 모두 1/n의 확률을 갖습니다. 무작위 추첨과 무작위 배정의 기본입니다.",
+ sup:"{1, …, n}",f:"P(X=k)=1/n",mean:"(n+1)/2",vr:"(n²−1)/12",
+ uses:["추첨·무작위 배정","부트스트랩에서 인덱스 뽑기","공정성 검정의 귀무가설"],
+ py:`X = stats.randint(1, 7)       # 1~6 (끝값 7은 제외)
+X.pmf(3), X.mean()             # 1/6, 3.5
+np.random.default_rng(0).integers(1, 7, size=10)`,
+ pr:`주사위 600번 결과 표가 있어. 이산 균등분포를 귀무가설로
+1) 카이제곱 적합도 검정 (scipy.stats.chisquare)
+2) 어떤 눈이 기대보다 많은지 잔차 표
+3) 검정력: 한 눈이 1/5 확률일 때 600번이면 잡아낼 수 있는지 시뮬레이션
+을 해 줘.`,
+ links:["ch03b"],
+ sw:{lab:"n",vals:[2,3,4,6,8,10],xr:[1,10],disc:true,fn:(k,n)=>(k>=1&&k<=n)?1/n:0}},
+
+{id:"poisson",ko:"포아송",en:"Poisson",sym:"Poisson(λ)",fam:"count",pos:[-4,3.5,3],
+ short:"단위 시간당 드문 사건 수",story:"넓은 시간·공간에 드문 사건이 흩어져 일어날 때 그 건수. 평균과 분산이 똑같이 λ입니다. 사건 사이 간격은 지수분포입니다.",
+ sup:"{0, 1, 2, …}",f:"P(X=k)=e^(−λ)·λᵏ/k!",mean:"λ",vr:"λ",
+ uses:["시간당 콜·주문·청구 건수","웹 트래픽, 서버 오류 수","이상 탐지의 기준선(건수 급증)"],
+ py:`X = stats.poisson(mu=4)
+X.pmf(2), X.sf(9)             # P(X>9): 하루 10건 이상일 확률
+counts = X.rvs(365, random_state=0)
+counts.mean(), counts.var()   # 둘이 비슷해야 포아송`,
+ pr:`하루 접수 건수 365일치 csv(date, claims)를 줄게. 포아송으로
+1) 평균과 분산 비교로 과산포 판단
+2) 요일 효과를 넣은 포아송 회귀 (statsmodels GLM)
+3) 과산포면 음이항 대안과 AIC 비교
+4) "하루 15건 이상"이 연중 몇 번 나올지
+를 코드와 해석으로 나눠 줘.`,
+ links:["ch03","anomaly"],
+ sw:{lab:"λ",vals:[1,2,4,7,10,15],xr:[0,30],disc:true,fn:(k,l)=>E(k*LN(l)-l-lgam(k+1))}},
+
+{id:"hypergeom",ko:"초기하",en:"Hypergeometric",sym:"HG(N, K, n)",fam:"count",pos:[7.5,4,3],
+ short:"되돌려 놓지 않고 뽑기",story:"N개 중 성공 K개가 든 상자에서 n개를 되돌려 놓지 않고 뽑을 때 성공 개수. 상자가 크면 이항과 같아집니다.",
+ sup:"max(0, n−N+K) ~ min(n, K)",f:"P(X=k)=C(K,k)·C(N−K,n−k)/C(N,n)",mean:"nK/N",vr:"n(K/N)(1−K/N)(N−n)/(N−1)",
+ uses:["로트 샘플 검사","피셔의 정확검정","유전자 집합 농축 분석"],
+ py:`# scipy 순서: M=전체 N, n=성공 개수 K, N=뽑는 수 n  ← 이름 주의
+X = stats.hypergeom(M=50, n=20, N=10)
+X.pmf(4), X.mean()             # 평균 10·20/50 = 4
+stats.fisher_exact([[8, 2], [1, 5]])`,
+ pr:`부품 500개 로트에서 20개를 비복원으로 뽑아 검사해. 불량이 2개 이하면 합격이야.
+1) 로트 불량률 1%, 3%, 5%, 10%일 때 합격 확률 (OC 곡선)
+2) 이항 근사와 차이가 얼마나 나는지 표
+3) scipy.stats.hypergeom 코드 — 인자 M, n, N에 우리 숫자를 대입한 줄을 따로 보여 줘.`,
+ links:["ch03","poll"],
+ sw:{lab:"뽑는 수 n (N=50, K=20)",vals:[2,5,10,15,20,30],xr:[0,20],disc:true,fn:(k,n)=>{const N=50,K=20;if(k<Math.max(0,n-(N-K))||k>Math.min(n,K))return 0;return E(lch(K,k)+lch(N-K,n-k)-lch(N,n));}}},
+
+{id:"normal",ko:"정규",en:"Normal",sym:"N(μ, σ²)",fam:"normal",pos:[-2,0.5,0],
+ short:"작은 요인의 합, 종 모양",story:"작은 요인이 많이 더해진 결과는 원래 분포와 상관없이 종 모양에 다가갑니다(중심극한정리). 그래서 극한 화살표가 대부분 여기로 모입니다.",
+ sup:"(−∞, ∞)",f:"f(x)=1/(σ√(2π))·e^(−(x−μ)²/(2σ²))",mean:"μ",vr:"σ²",
+ uses:["측정 오차, 회귀 잔차","평균의 신뢰구간","z-점수 이상 탐지","릿지 회귀의 사전분포(L2)"],
+ py:`X = stats.norm(loc=170, scale=6)   # scale은 표준편차 σ (분산 아님)
+X.cdf(180) - X.cdf(160)            # 160~180 사이 비율
+X.ppf([0.025, 0.975])
+stats.shapiro(data)                  # 정규성 검정
+stats.probplot(data, dist="norm")    # QQ 플롯 좌표`,
+ pr:`센서 측정값 2,000개가 있어. 정규분포 가정을 점검하고 싶어.
+1) 히스토그램 + 정규 곡선, QQ 플롯 코드
+2) Shapiro, Anderson 검정 결과 해석 (표본이 크면 작은 차이도 유의하다는 점 포함)
+3) 꼬리가 두꺼우면 t분포 적합과 비교
+4) 3σ 밖 값을 이상치로 볼 때 기대 개수와 실제 개수
+를 줘. scale이 표준편차라는 점을 코드 주석에 적어 줘.`,
+ links:["normal","samp","anomaly","ridge","ts"],
+ sw:{lab:"σ",vals:[0.5,0.75,1,1.5,2,3],xr:[-6,6],disc:false,fn:(x,s)=>nrm(x,0,s)}},
+
+{id:"stdnormal",ko:"표준정규",en:"Standard normal",sym:"Z ~ N(0, 1)",fam:"test",pos:[-6,-3.5,-3],
+ short:"단위를 지운 정규, 검정의 재료",story:"정규변수에서 평균을 빼고 표준편차로 나누면 표준정규가 됩니다. 카이제곱·t·F·코시가 모두 Z를 재료로 만들어집니다.",
+ sup:"(−∞, ∞)",f:"φ(z)=e^(−z²/2)/√(2π)",mean:"0",vr:"1",
+ uses:["z-검정, 비율 검정","표준화 점수 비교","분위수 1.645, 1.96, 2.576"],
+ py:`Z = stats.norm()                # loc=0, scale=1
+Z.ppf(0.975)                     # 1.959964
+2 * Z.sf(2.3)                    # 양측 p-값
+stats.zscore(data)               # 자료 표준화`,
+ pr:`두 반의 시험 점수(평균·표준편차가 다름)가 있어.
+1) 각 학생 점수를 z-점수로 바꿔 반 사이 비교
+2) 상위 5%를 가르는 원점수를 반별로 계산
+3) z가 2.3일 때 단측·양측 p-값
+을 scipy.stats.norm 코드와 비전공자용 설명으로 줘.`,
+ links:["normal","hyp"],
+ sw:{lab:"t(ν)가 Z로 다가감",vals:[1,2,4,8,16,64],xr:[-5,5],disc:false,fn:(x,v)=>tpdf(x,v)}},
+
+{id:"lognormal",ko:"로그정규",en:"Lognormal",sym:"LogN(μ, σ²)",fam:"wait",pos:[-8,0,0],
+ short:"곱해서 커지는 양",story:"여러 비율이 곱해져 커지는 양은 로그를 취하면 정규가 됩니다. 오른쪽 꼬리가 길고 항상 양수입니다.",
+ sup:"(0, ∞)",f:"f(y)=1/(yσ√(2π))·e^(−(ln y−μ)²/(2σ²))",mean:"e^(μ+σ²/2)",vr:"(e^(σ²)−1)·e^(2μ+σ²)",
+ uses:["주가(기하 브라운 운동)","소득, 보험금, 부동산 가격","웹 응답 시간"],
+ py:`mu, sigma = 0.0, 0.6
+Y = stats.lognorm(s=sigma, scale=np.exp(mu))   # s=σ, scale=e^μ
+Y.mean(), Y.median()                          # 평균 > 중앙값
+s, loc, scale = stats.lognorm.fit(data, floc=0)
+np.log(scale)                                  # μ 추정`,
+ pr:`보험금 지급액 자료(양수, 오른쪽 꼬리 김)가 있어.
+1) 로그정규·감마·와이불 세 후보를 적합하고 AIC와 QQ 플롯으로 비교
+2) 상위 1% 지급액(99% 분위수)을 후보별로
+3) scipy lognorm의 s와 scale이 μ, σ와 어떻게 대응하는지 표로 먼저
+를 줘. 평균과 중앙값 차이도 해석해 줘.`,
+ links:["risk","btc","charge"],
+ sw:{lab:"σ (μ=0)",vals:[0.25,0.4,0.6,0.8,1,1.3],xr:[0.001,5],disc:false,fn:(y,s)=>y<=0?0:E(-((LN(y))**2)/(2*s*s))/(y*s*SQ(2*PI))}},
+
+{id:"beta",ko:"베타",en:"Beta",sym:"Beta(α, β)",fam:"unit",pos:[3.5,0,0],
+ short:"확률에 대한 확률",story:"0과 1 사이 값의 분포. 성공 α−1번, 실패 β−1번을 본 사람의 믿음으로 읽으면 쉽습니다. 이항 자료를 보면 베타가 그대로 갱신됩니다.",
+ sup:"(0, 1)",f:"f(x)=x^(α−1)(1−x)^(β−1)/B(α, β)",mean:"α/(α+β)",vr:"αβ/[(α+β)²(α+β+1)]",
+ uses:["베이즈 A/B 테스트의 사전·사후분포","톰슨 샘플링(밴딧)","비율·점유율 자료, 일정 추정(PERT)"],
+ py:`prior = stats.beta(a=1, b=1)                 # 균등 사전분포
+post = stats.beta(a=1 + 37, b=1 + 63)          # 100명 중 37명 전환
+post.mean(), post.interval(0.95)
+# B안이 A안보다 좋을 확률
+rng = np.random.default_rng(0)
+(stats.beta(1+45, 1+55).rvs(10**5, random_state=rng) >
+ post.rvs(10**5, random_state=rng)).mean()`,
+ pr:`A안 1,000명 중 37명, B안 1,000명 중 45명이 전환했어. 베이즈 방식으로
+1) 균등 사전분포 Beta(1,1)일 때 두 안의 사후분포
+2) B가 A보다 나을 확률과 기대 손실
+3) 사전분포를 Beta(2,50)으로 바꾸면 결론이 바뀌는지
+를 scipy 코드와 그래프로 보여 줘. 빈도주의 비율 검정 결과도 나란히.`,
+ links:["bthink","ab"],
+ sw:{lab:"α (β=3)",vals:[0.5,1,2,3,5,8],xr:[0.001,0.999],disc:false,fn:(x,a)=>E((a-1)*LN(x)+2*LN(1-x)-lbeta(a,3))}},
+
+{id:"uniform",ko:"균등",en:"Uniform",sym:"U(0, 1)",fam:"unit",pos:[8,0,0],
+ short:"모든 난수의 출발점",story:"0과 1 사이 어디나 똑같이. U를 cdf의 역함수에 넣으면 어떤 분포든 뽑을 수 있어(역변환 표집) 모든 시뮬레이션의 출발점이 됩니다.",
+ sup:"(0, 1)",f:"f(x)=1",mean:"1/2",vr:"1/12",
+ uses:["몬테카를로 시뮬레이션","역변환 표집 (−ln U → 지수)","귀무가설 아래 p-값의 분포"],
+ py:`U = stats.uniform(loc=0, scale=1)     # 구간 [loc, loc+scale]
+u = U.rvs(5, random_state=0)
+-np.log(u) / 2.0                        # 지수(λ=2) 난수
+stats.norm.ppf(u)                       # 표준정규 난수`,
+ pr:`몬테카를로로 원주율을 추정하는 수업 예제를 만들어 줘.
+1) 균등 난수 n = 100, 10,000, 1,000,000일 때 추정값과 오차
+2) 오차가 1/√n로 줄어드는 그래프
+3) 같은 균등 난수로 지수·정규 난수를 만드는 역변환 표집 코드
+를 30줄 이내로.`,
+ links:["mc"],
+ sw:{lab:"균등 n개의 평균 (중심극한)",vals:[1,2,3,4,6,8],xr:[0,1],disc:false,fn:(x,n)=>Math.max(0,irwinMean(x,n))}},
+
+{id:"chisq",ko:"카이제곱",en:"Chi-squared",sym:"χ²(ν)",fam:"test",pos:[-1,-3.5,-3],
+ short:"표준정규 제곱의 합",story:"표준정규 ν개를 제곱해 더한 값. 표본분산이 이 분포를 따르기 때문에 분산 추정과 적합도 검정에 쓰입니다.",
+ sup:"(0, ∞)",f:"f(x)=x^(ν/2−1)e^(−x/2)/(2^(ν/2)Γ(ν/2))",mean:"ν",vr:"2ν",
+ uses:["분산의 신뢰구간","적합도·독립성 검정","우도비 검정의 기준 분포"],
+ py:`X = stats.chi2(df=4)
+X.ppf(0.95)                      # 임계값 9.488
+stats.chisquare(observed, expected)
+chi2, p, dof, exp = stats.chi2_contingency(table)
+# 감마의 한 경우: χ²(ν) = Gamma(a=ν/2, scale=2)
+stats.gamma(a=2, scale=2).ppf(0.95)   # 9.488`,
+ pr:`성별(2) × 선호 요금제(3) 교차표가 있어.
+1) 카이제곱 독립성 검정과 자유도 계산 이유
+2) 기대빈도 5 미만 칸이 있으면 대안(피셔 정확검정, 범주 합치기)
+3) 효과 크기 크래머 V
+를 scipy 코드와 함께. 카이제곱이 표준정규 제곱합이라는 점을 시뮬레이션 5줄로 보여 줘.`,
+ links:["tcf","dof"],
+ sw:{lab:"ν",vals:[1,2,3,4,6,9,12],xr:[0.01,25],disc:false,fn:(x,v)=>gpdf(x,v/2,0.5)}},
+
+{id:"t",ko:"스튜던트 t",en:"Student t",sym:"t(ν)",fam:"test",pos:[-4,-6.5,-3],
+ short:"σ를 모를 때의 Z",story:"모집단 표준편차를 표본으로 추정하면 Z보다 꼬리가 두꺼운 t가 됩니다. ν=1이면 코시, ν가 커지면 Z입니다. 원 그림에 없어 보충했습니다.",
+ sup:"(−∞, ∞)",f:"f(x)=Γ((ν+1)/2)/(√(νπ)Γ(ν/2))·(1+x²/ν)^(−(ν+1)/2)",mean:"0 (ν>1)",vr:"ν/(ν−2) (ν>2)",
+ uses:["소표본 평균·두 집단 비교","회귀계수 검정","두꺼운 꼬리 수익률(GARCH-t)"],
+ py:`T = stats.t(df=9)
+T.ppf(0.975)                      # 2.262 (Z는 1.96)
+stats.ttest_1samp(x, popmean=5)
+stats.ttest_ind(a, b, equal_var=False)   # 웰치 검정
+df, loc, scale = stats.t.fit(returns)     # 수익률 꼬리 적합`,
+ pr:`신제품 A와 B의 만족도 점수(각 12명)가 있어.
+1) 웰치 t검정과 스튜던트 t검정 중 무엇을 쓸지 등분산 확인과 함께
+2) 95% 신뢰구간과 효과 크기(코헨 d)
+3) 표본이 12명이라 정규성 가정이 의심되면 순열 검정으로 확인
+을 scipy 코드와 함께. 임계값 2.20을 1.96 대신 쓰는 이유도 설명해 줘.`,
+ links:["tcf","beer","two","garch"],
+ sw:{lab:"ν",vals:[1,2,3,5,10,30],xr:[-5,5],disc:false,fn:(x,v)=>tpdf(x,v)}},
+
+{id:"f",ko:"F",en:"F (Fisher–Snedecor)",sym:"F(ν₁, ν₂)",fam:"test",pos:[-0.5,-7.5,-3],
+ short:"두 분산의 비",story:"자유도로 나눈 카이제곱 둘의 비. 집단 간 변동이 집단 안 변동보다 큰지를 재는 분산분석과 회귀 전체 검정의 기준입니다.",
+ sup:"(0, ∞)",f:"X=(χ²₁/ν₁)/(χ²₂/ν₂)",mean:"ν₂/(ν₂−2) (ν₂>2)",vr:"2ν₂²(ν₁+ν₂−2)/[ν₁(ν₂−2)²(ν₂−4)] (ν₂>4)",
+ uses:["일원·이원 분산분석","회귀모형 전체 유의성","두 집단 등분산 검정"],
+ py:`F = stats.f(dfn=5, dfd=10)
+F.sf(3.2)                          # p-값
+stats.f_oneway(g1, g2, g3)          # 일원 분산분석
+stats.t(10).ppf(0.975)**2, stats.f(1, 10).ppf(0.95)   # 같음: t² = F(1,ν)`,
+ pr:`광고 문구 3종의 클릭률(일별 30일치)이 있어.
+1) 일원 분산분석 표(제곱합, 자유도, F, p)를 손계산 순서대로
+2) 유의하면 사후검정(Tukey HSD)
+3) 등분산이 깨지면 웰치 ANOVA 대안
+을 scipy·statsmodels 코드로. F가 두 카이제곱의 비라는 점을 그림 한 장으로 설명해 줘.`,
+ links:["tcf","anova"],
+ sw:{lab:"ν₁ (ν₂=10)",vals:[1,2,5,10,20,50],xr:[0.01,5],disc:false,fn:(x,d1)=>{const d2=10;return E(0.5*(d1*LN(d1*x)+d2*LN(d2)-(d1+d2)*LN(d1*x+d2))-LN(x)-lbeta(d1/2,d2/2));}}},
+
+{id:"gamma",ko:"감마",en:"Gamma",sym:"Gamma(r, λ)",fam:"wait",pos:[3.5,-3.5,0],
+ short:"r번째 사건까지 대기시간",story:"지수 대기시간 r개의 합. r이 정수가 아니어도 되며, 양수이고 오른쪽으로 치우친 양을 유연하게 맞춥니다. 카이제곱과 지수가 모두 감마의 특수 경우입니다.",
+ sup:"(0, ∞)",f:"f(x)=λʳ·x^(r−1)·e^(−λx)/Γ(r)",mean:"r/λ",vr:"r/λ²",
+ uses:["보험금 크기, 강우량","포아송 비율 λ의 켤레 사전분포","여러 단계 공정의 총 소요 시간"],
+ py:`r, lam = 3, 1.0
+X = stats.gamma(a=r, scale=1/lam)   # scale = 1/λ ← 가장 흔한 실수
+X.mean()                             # r/λ = 3
+a, loc, scale = stats.gamma.fit(data, floc=0)
+a, 1/scale                           # (r, λ) 추정`,
+ pr:`수리 요청부터 완료까지 걸린 시간(시간 단위) 800건이 있어.
+1) 감마·로그정규·와이불 적합과 AIC 비교
+2) 감마의 r, λ를 scipy의 a, scale로 바꾸는 표 (scale = 1/λ 확인)
+3) "48시간 안에 끝날 확률"과 90% 분위수
+를 코드와 해석으로 나눠 줘.`,
+ links:["charge","bprob"],
+ sw:{lab:"r (λ=1)",vals:[1,1.5,2,3,5,8],xr:[0.01,15],disc:false,fn:(x,r)=>gpdf(x,r,1)}},
+
+{id:"exponential",ko:"지수",en:"Exponential",sym:"Exp(λ)",fam:"wait",pos:[8,-3.5,0],
+ short:"다음 사건까지 대기시간",story:"포아송 과정에서 다음 사건까지 기다리는 시간. 이미 기다린 시간은 앞으로 기다릴 시간에 영향을 주지 않습니다(무기억성).",
+ sup:"[0, ∞)",f:"f(x)=λe^(−λx)",mean:"1/λ",vr:"1/λ²",
+ uses:["고객 도착 간격, 대기행렬","고장률이 일정한 부품 수명","생존분석의 기본 모형"],
+ py:`lam = 2.0
+X = stats.expon(scale=1/lam)      # rate 아님, scale=1/λ
+X.mean(), X.sf(1.0)               # 0.5, e^(−2)
+loc, scale = stats.expon.fit(gaps, floc=0)
+1/scale                           # λ 추정 = 1/표본평균`,
+ pr:`매장 고객 도착 시각 로그가 있어.
+1) 도착 간격을 계산해 지수분포 적합, QQ 플롯
+2) 시간대별 λ가 다른지 확인 (비균질 포아송 과정 가능성)
+3) 계산원 2명일 때 평균 대기시간 (M/M/2 공식)
+을 코드와 함께. scipy expon이 scale=1/λ를 받는 점을 주석으로.`,
+ links:["markov"],
+ sw:{lab:"λ",vals:[0.5,0.75,1,1.5,2,3],xr:[0,5],disc:false,fn:(x,l)=>x<0?0:l*E(-l*x)}},
+
+{id:"cauchy",ko:"코시",en:"Cauchy",sym:"Cauchy(x₀, γ)",fam:"tail",pos:[-8,-7,0],
+ short:"평균이 없는 분포",story:"표준정규 둘의 비. 꼬리가 너무 두꺼워 평균도 분산도 없습니다. 표본평균을 아무리 모아도 수렴하지 않는 큰수의 법칙의 반례입니다.",
+ sup:"(−∞, ∞)",f:"f(x)=1/(πγ[1+((x−x₀)/γ)²])",mean:"없음",vr:"없음",
+ uses:["공명 스펙트럼(로런츠 선형)","강건 추정의 스트레스 테스트","t(1)로서 극단 꼬리 모형"],
+ py:`X = stats.cauchy(loc=0, scale=1)
+x = X.rvs(10**5, random_state=0)
+np.cumsum(x)[[99, 9999, 99999]] / [100, 10000, 100000]  # 평균이 안정되지 않음
+np.median(x)                                          # 중앙값은 안정`,
+ pr:`수업에서 "평균이 없는 분포"를 보여 주고 싶어.
+1) 코시 난수 10만 개의 누적 평균 그래프와 정규 난수의 누적 평균 비교
+2) 중앙값은 왜 안정적인지 직관적으로
+3) 실제 금융 수익률에서 꼬리가 두꺼울 때 평균·표준편차 대신 쓸 지표
+를 15줄 코드와 함께.`,
+ links:["risk"],
+ sw:{lab:"γ",vals:[0.5,0.75,1,1.5,2],xr:[-6,6],disc:false,fn:(x,g)=>1/(PI*g*(1+(x/g)**2))}},
+
+{id:"weibull",ko:"와이불",en:"Weibull",sym:"Weibull(k, λ)",fam:"wait",pos:[4,-7.5,0],
+ short:"고장률이 변하는 수명",story:"모양 k로 고장률의 흐름을 나타냅니다. k<1이면 초기 불량처럼 고장률이 줄고, k=1이면 지수, k>1이면 노화처럼 늘어납니다.",
+ sup:"[0, ∞)",f:"f(x)=(k/λ)(x/λ)^(k−1)·e^(−(x/λ)ᵏ)",mean:"λΓ(1+1/k)",vr:"λ²[Γ(1+2/k)−Γ(1+1/k)²]",
+ uses:["설비·부품 수명, 예지 정비","풍속 분포(풍력 발전)","재료 강도"],
+ py:`X = stats.weibull_min(c=1.5, scale=1.0)   # c=k, scale=λ
+X.mean(), X.sf(2.0)                         # 2시간 넘게 버틸 확률
+c, loc, scale = stats.weibull_min.fit(life, floc=0)
+c > 1                                       # True면 노화형 고장`,
+ pr:`설비 펌프 60대의 고장까지 가동시간(일부는 아직 고장 안 남, 중도절단)이 있어.
+1) 중도절단을 고려한 와이불 적합 (lifelines WeibullFitter)
+2) k 추정값으로 초기 고장형/우발형/노화형 판단
+3) 고장 확률 10%가 되는 시점(B10 수명)으로 정비 주기 제안
+을 코드와 현장 담당자용 설명으로 나눠 줘.`,
+ links:[],
+ sw:{lab:"k (λ=1)",vals:[0.5,1,1.5,2,3,5],xr:[0.01,3],disc:false,fn:(x,k)=>x<=0?0:k*Math.pow(x,k-1)*E(-Math.pow(x,k))}},
+
+{id:"laplace",ko:"라플라스",en:"Laplace (double exponential)",sym:"Laplace(μ, b)",fam:"tail",pos:[8.5,-7.5,0],
+ short:"뾰족하고 양쪽 꼬리가 긴 분포",story:"지수 대기시간 둘의 차. 가운데가 뾰족하고 꼬리는 정규보다 두껍습니다. 이 분포를 사전분포로 두면 라쏘(L1) 회귀가 됩니다.",
+ sup:"(−∞, ∞)",f:"f(x)=e^(−|x−μ|/b)/(2b)",mean:"μ",vr:"2b²",
+ uses:["라쏘 회귀의 사전분포","차분 프라이버시의 잡음","중앙값 회귀(최소절대편차)"],
+ py:`X = stats.laplace(loc=0, scale=1)     # scale=b
+X.var()                                 # 2b² = 2
+# 차분 프라이버시: 민감도 1, ε=0.5인 잡음
+noise = stats.laplace(scale=1/0.5).rvs(1000, random_state=0)`,
+ pr:`릿지와 라쏘를 베이즈 관점으로 설명하는 강의 슬라이드 내용을 써 줘.
+1) 정규 사전분포 → 릿지(L2), 라플라스 사전분포 → 라쏘(L1)인 이유를 식 3줄로
+2) 두 사전분포 밀도를 같은 그래프에 그리는 코드
+3) 라쏘가 계수를 정확히 0으로 만드는 이유를 뾰족한 꼭짓점으로 설명
+을 비전공자 눈높이로.`,
+ links:["ridge"],
+ sw:{lab:"b",vals:[0.5,0.75,1,1.5,2],xr:[-6,6],disc:false,fn:(x,b)=>E(-Math.abs(x)/b)/(2*b)}}
+];
+const byId={}; D.forEach(d=>byId[d.id]=d);
+
+/* ---------- edges ---------- */
+const EDGES=[
+["bernoulli","binomial","T","n개를 더함","개별 시행을 횟수로 묶음"],
+["bernoulli","geometric","T","첫 성공까지 반복","성공까지 걸린 시행 수"],
+["geometric","negbin","T","r개를 더함 (r=1이면 기하)","r번째 성공까지 대기"],
+["negbin","poisson","L","r→∞, p→1, r(1−p)=λ","과산포가 사라지면 포아송"],
+["beta","betabinom","T","p ~ Beta 위에 이항 (혼합)","확률이 집단마다 다를 때"],
+["betabinom","binomial","L","α+β→∞, α/(α+β)=p","확률 차이가 사라지면 이항"],
+["betabinom","discunif","T","α=β=1 (0~n 균등)","모든 횟수가 똑같이 가능"],
+["hypergeom","binomial","L","N→∞, K/N=p","모집단이 크면 비복원 ≈ 복원"],
+["binomial","poisson","L","n→∞, np=λ","드문 사건의 근사"],
+["binomial","normal","L","n→∞, μ=np, σ²=np(1−p)","비율 검정의 정규 근사"],
+["poisson","normal","L","λ→∞, μ=σ²=λ","건수가 많을 때 정규로"],
+["poisson","exponential","T","사건 사이 간격","건수와 대기시간은 한 과정의 두 얼굴"],
+["normal","lognormal","T","Y = eˣ","곱셈 성장"],
+["lognormal","normal","T","X = ln Y","로그 변환 후 정규 분석"],
+["normal","stdnormal","T","Z = (X−μ)/σ","단위 제거, 표 하나로 계산"],
+["stdnormal","chisq","T","Z₁²+…+Z_ν²","표본분산의 분포"],
+["stdnormal","t","T","Z / √(χ²_ν/ν) 의 분자","σ를 추정할 때"],
+["chisq","t","T","√(χ²_ν/ν) 가 분모","σ를 추정할 때"],
+["chisq","f","T","(χ²₁/ν₁)/(χ²₂/ν₂)","분산 두 개 비교"],
+["t","f","T","T² ~ F(1, ν)","t검정 = 두 집단 F검정"],
+["t","stdnormal","L","ν→∞","표본이 크면 z와 같음"],
+["t","cauchy","T","ν = 1","가장 꼬리가 두꺼운 t"],
+["stdnormal","cauchy","T","Z₁ / Z₂","정규끼리 나누면 평균이 사라짐"],
+["chisq","normal","L","ν→∞","자유도 크면 정규 근사"],
+["gamma","chisq","T","r=ν/2, λ=½","카이제곱은 감마의 한 경우"],
+["gamma","exponential","T","r = 1","사건 하나만 기다림"],
+["exponential","gamma","T","r개를 더함","r번째 사건까지 대기"],
+["gamma","normal","L","r→∞","합이 많으면 정규"],
+["gamma","beta","T","X/(X+Y), X~Γ(α), Y~Γ(β)","전체 중 비율의 분포"],
+["exponential","weibull","T","λ·E^(1/k) (k=1이면 지수)","고장률이 변하는 수명"],
+["exponential","laplace","T","X₁ − X₂","양쪽으로 대칭인 잡음"],
+["uniform","exponential","T","−ln U / λ","역변환 표집"],
+["beta","uniform","T","α = β = 1","정보 없는 사전분포"],
+["beta","normal","L","α, β→∞","자료가 많으면 정규 근사"],
+["discunif","uniform","L","n→∞, X/n","격자가 촘촘해지면 연속"]
+].map(([a,b,k,lab,why],i)=>({i,a,b,k,lab,why}));
+
+/* ---------- param table ---------- */
+const PT=[
+["베르누이","p","stats.bernoulli(p)",""],
+["이항","n, p","stats.binom(n, p)",""],
+["기하","p (시행 수, 1부터)","stats.geom(p)","1부터 셈"],
+["음이항","r, p (실패 수)","stats.nbinom(n=r, p=p)","실패 수를 셈"],
+["베타-이항","n, α, β","stats.betabinom(n, a, b)","scipy 1.4 이상"],
+["이산 균등","1 … n","stats.randint(1, n+1)","끝값 제외"],
+["포아송","λ","stats.poisson(mu=λ)",""],
+["초기하","전체 N, 성공 K, 뽑기 n","stats.hypergeom(M=N, n=K, N=n)","글자 뜻이 바뀜"],
+["정규","μ, σ²","stats.norm(loc=μ, scale=σ)","scale은 σ (분산 아님)"],
+["로그정규","μ, σ","stats.lognorm(s=σ, scale=e^μ)","s와 scale"],
+["베타","α, β","stats.beta(a, b)",""],
+["균등","a, b","stats.uniform(loc=a, scale=b−a)","끝점이 아니라 폭"],
+["카이제곱","ν","stats.chi2(df=ν)",""],
+["t","ν","stats.t(df=ν)",""],
+["F","ν₁, ν₂","stats.f(dfn=ν₁, dfd=ν₂)",""],
+["감마","r, λ (비율)","stats.gamma(a=r, scale=1/λ)","scale = 1/λ"],
+["지수","λ (비율)","stats.expon(scale=1/λ)","scale = 1/λ"],
+["코시","x₀, γ","stats.cauchy(loc=x₀, scale=γ)",""],
+["와이불","k, λ","stats.weibull_min(c=k, scale=λ)","weibull_max와 혼동 주의"],
+["라플라스","μ, b","stats.laplace(loc=μ, scale=b)",""]
+];
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const famColor=f=>cssv(FAM[f].v);
+const deg={}; D.forEach(d=>deg[d.id]=0); EDGES.forEach(e=>{deg[e.a]++;deg[e.b]++;});
+
+/* summary */
+(function(){
+  const nT=EDGES.filter(e=>e.k==="T").length, nL=EDGES.length-nT;
+  const hubs=Object.entries(deg).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([id,n])=>byId[id].ko+" "+n);
+  $("#summary").innerHTML=
+   `<div class="sumcard"><b>분포</b><span class="big">${D.length}</span> 이산 ${D.filter(d=>d.fam==="count").length} · 연속 ${D.filter(d=>d.fam!=="count").length}</div>
+    <div class="sumcard"><b>관계</b><span class="big">${EDGES.length}</span> 변환·특수 경우 ${nT} · 극한 근사 ${nL}</div>
+    <div class="sumcard wide"><b>가장 많이 이어진 분포 (연결 수)</b>${hubs.join(" · ")}</div>
+    <div class="sumcard wide"><b>읽는 법</b>극한 근사는 위에서 아래로 흘러 정규로 모이고, 검정 분포는 모두 표준정규에서 만들어집니다.</div>`;
+})();
+
+/* ---------- 3D relation map ---------- */
+const stage=$("#stage");
+let sel=null, showT=true, showL=true, spin=!matchMedia("(prefers-reduced-motion: reduce)").matches;
+$("#v-spin").setAttribute("aria-pressed",String(spin));
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+stage.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(42,1,0.1,300);
+const world=new THREE.Group(); scene.add(world);
+scene.add(new THREE.AmbientLight(0xffffff,0.75));
+const dl=new THREE.DirectionalLight(0xffffff,0.55); dl.position.set(5,10,12); scene.add(dl);
+let yaw=-0.45, pitch=0.22, tYaw=yaw, tPitch=pitch, zoom=1;
+
+/* layers */
+const LAYERS=[[3,"이산 · 셀 수 있는 사건"],[0,"연속 · 측정값 모형"],[-3,"검정 · 표본 분포"]];
+const layerObjs=[];
+LAYERS.forEach(([z])=>{
+  const g=new THREE.PlaneGeometry(20,17);
+  const m=new THREE.MeshBasicMaterial({transparent:true,opacity:0.03,side:THREE.DoubleSide,depthWrite:false});
+  const p=new THREE.Mesh(g,m); p.position.set(0,-0.3,z); world.add(p);
+  const eg=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({transparent:true,opacity:0.35}));
+  eg.position.copy(p.position); world.add(eg);
+  layerObjs.push({p,eg});
+});
+const layerLbls=LAYERS.map(([z,t],li)=>{const el=document.createElement("div");el.className="layerlbl";el.textContent=t;stage.appendChild(el);return {el,v:new THREE.Vector3(-10,8.2-li*0.75,z)};});
+
+/* nodes */
+const nodeObj={};
+D.forEach(d=>{
+  const r=0.32+0.05*deg[d.id];
+  const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,24,16),new THREE.MeshLambertMaterial({transparent:true,opacity:1}));
+  mesh.position.set(...d.pos); world.add(mesh);
+  const el=document.createElement("button");
+  el.className="lbl"; el.type="button"; el.innerHTML=esc(d.ko)+"<small>"+esc(d.sym)+"</small>";
+  el.addEventListener("click",ev=>{ev.stopPropagation();select(d.id,false);});
+  stage.appendChild(el);
+  nodeObj[d.id]={mesh,el,r,d};
+});
+
+/* edges */
+const edgeObj=[];
+EDGES.forEach(e=>{
+  const A=new THREE.Vector3(...byId[e.a].pos), B=new THREE.Vector3(...byId[e.b].pos);
+  const dir=B.clone().sub(A).normalize();
+  const s=A.clone().add(dir.clone().multiplyScalar(nodeObj[e.a].r+0.12));
+  const t=B.clone().sub(dir.clone().multiplyScalar(nodeObj[e.b].r+0.12));
+  const geo=new THREE.BufferGeometry().setFromPoints([s,t]);
+  const mat=e.k==="T"?new THREE.LineBasicMaterial({transparent:true,opacity:0.85})
+                     :new THREE.LineDashedMaterial({transparent:true,opacity:0.9,dashSize:0.32,gapSize:0.22});
+  const line=new THREE.Line(geo,mat); if(e.k==="L") line.computeLineDistances(); world.add(line);
+  const cone=new THREE.Mesh(new THREE.ConeGeometry(0.17,0.5,12),new THREE.MeshBasicMaterial({transparent:true,opacity:0.95}));
+  cone.position.copy(s.clone().lerp(t,0.62)); cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir); world.add(cone);
+  const el=document.createElement("div"); el.className="elbl "+e.k; el.textContent=e.lab; stage.appendChild(el);
+  edgeObj.push({e,line,cone,el,mid:s.clone().lerp(t,0.5)});
+});
+
+function applyTheme(){
+  const ink=new THREE.Color(cssv("--ink")), cT=new THREE.Color(cssv("--transform")), cL=new THREE.Color(cssv("--limit"));
+  layerObjs.forEach(o=>{o.p.material.color=ink.clone(); o.eg.material.color=new THREE.Color(cssv("--muted"));});
+  D.forEach(d=>nodeObj[d.id].mesh.material.color=new THREE.Color(famColor(d.fam)));
+  edgeObj.forEach(o=>{const c=o.e.k==="T"?cT:cL;o.line.material.color=c.clone();o.cone.material.color=c.clone();});
+  if(ribbon) ribbon.rebuild();
+}
+function refreshVisibility(){
+  const nb=new Set(); if(sel){nb.add(sel); EDGES.forEach(e=>{if(e.a===sel)nb.add(e.b); if(e.b===sel)nb.add(e.a);});}
+  edgeObj.forEach(o=>{
+    const vis=(o.e.k==="T"?showT:showL);
+    const on=!sel||o.e.a===sel||o.e.b===sel;
+    o.line.visible=o.cone.visible=vis;
+    o.line.material.opacity=on?0.9:0.1; o.cone.material.opacity=on?0.95:0.1;
+    o.el.style.display=(sel&&on&&vis)?"block":"none";
+  });
+  D.forEach(d=>{const n=nodeObj[d.id];const on=!sel||nb.has(d.id);
+    n.mesh.material.opacity=on?1:0.18; n.el.classList.toggle("dim",!on); n.el.classList.toggle("sel",d.id===sel);
+    n.mesh.scale.setScalar(d.id===sel?1.35:1);});
+}
+function resize(){
+  const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false);
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+}
+function camDist(){ const a=camera.aspect; return Math.max(26,10.2/(0.384*a))/zoom; }
+const tmp=new THREE.Vector3();
+function place(el,v,dx,dy){
+  tmp.copy(v).applyMatrix4(world.matrixWorld).project(camera);
+  if(tmp.z>1){el.style.visibility="hidden";return;}
+  el.style.visibility="visible";
+  const x=(tmp.x*0.5+0.5)*stage.clientWidth, y=(-tmp.y*0.5+0.5)*stage.clientHeight;
+  el.style.transform=`translate(${Math.round(x+dx(el))}px,${Math.round(y+dy(el))}px)`;
+}
+function frame(){
+  if(spin&&!dragging) tYaw+=0.0022;
+  yaw+=(tYaw-yaw)*0.12; pitch+=(tPitch-pitch)*0.12;
+  world.rotation.set(pitch,yaw,0);
+  camera.position.set(0,0,camDist()); camera.lookAt(0,0,0);
+  world.updateMatrixWorld();
+  renderer.render(scene,camera);
+  D.forEach(d=>{const n=nodeObj[d.id]; place(n.el,n.mesh.position,el=>-el.offsetWidth/2,()=>12+n.r*6);});
+  edgeObj.forEach(o=>{ if(o.el.style.display==="block") place(o.el,o.mid,el=>-el.offsetWidth/2,el=>-el.offsetHeight/2);});
+  layerLbls.forEach(l=>place(l.el,l.v,()=>0,()=>0));
+  requestAnimationFrame(frame);
+}
+/* drag */
+let dragging=false, px=0, py=0, pid=null, moved=0;
+stage.addEventListener("pointerdown",e=>{ if(e.target.closest(".lbl"))return; dragging=true;pid=e.pointerId;px=e.clientX;py=e.clientY;moved=0;stage.classList.add("dragging");});
+window.addEventListener("pointermove",e=>{ if(!dragging||e.pointerId!==pid)return; const dx=e.clientX-px,dy=e.clientY-py; px=e.clientX;py=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);
+  tYaw+=dx*0.008; if(e.pointerType!=="touch") tPitch=Math.max(-1.3,Math.min(1.3,tPitch+dy*0.006)); });
+const endDrag=()=>{dragging=false;pid=null;stage.classList.remove("dragging");};
+window.addEventListener("pointerup",endDrag); window.addEventListener("pointercancel",endDrag);
+stage.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(0.6,Math.min(2.6,zoom*Math.exp(-e.deltaY*0.0012)));},{passive:false});
+stage.addEventListener("click",e=>{ if(!e.target.closest(".lbl")&&moved<6&&sel) select(null); });
+
+$("#t-T").onclick=function(){showT=!showT;this.setAttribute("aria-pressed",showT);refreshVisibility();};
+$("#t-L").onclick=function(){showL=!showL;this.setAttribute("aria-pressed",showL);refreshVisibility();};
+$("#v-front").onclick=()=>{tYaw=Math.round(tYaw/(2*PI))*2*PI;tPitch=0;};
+$("#v-side").onclick=()=>{tYaw=Math.round(tYaw/(2*PI))*2*PI+PI/2.4;tPitch=0.12;};
+$("#v-spin").onclick=function(){spin=!spin;this.setAttribute("aria-pressed",spin);};
+$("#v-reset").onclick=()=>select(null);
+$("#axisnote").innerHTML="<b>세 층(깊이)</b> 앞부터 이산 사건 → 연속 측정값 → 검정 분포. <b>위아래</b> 극한 근사는 위에서 아래로 흘러 정규로 모입니다. <b>조작</b> 끌어서 돌리기, 휠로 확대, 이름을 눌러 선택. 휴대폰에서는 좌우로 밀어 돌리고, 「옆에서」로 층을 봅니다.";
+
+/* ---------- dictionary index & detail ---------- */
+let famFilter=null;
+function renderFamChips(){
+  $("#famchips").innerHTML=Object.entries(FAM).map(([k,f])=>`<button class="chip" data-fam="${k}" aria-pressed="${famFilter===k}"><span class="dot" style="background:var(${f.v})"></span>${f.ko}</button>`).join("");
+  $("#famchips").querySelectorAll("button").forEach(b=>b.onclick=()=>{famFilter=famFilter===b.dataset.fam?null:b.dataset.fam;renderFamChips();renderIndex();});
+}
+function renderIndex(){
+  const q=$("#q").value.trim().toLowerCase();
+  const list=D.filter(d=>(!famFilter||d.fam===famFilter)&&(!q||[d.ko,d.en,d.sym,d.short,d.story,d.uses.join(" "),d.py].join(" ").toLowerCase().includes(q)));
+  $("#index").innerHTML=list.length?list.map(d=>`<button class="ix" data-id="${d.id}" style="--fc:var(${FAM[d.fam].v})" aria-current="${d.id===sel}"><span class="n">${esc(d.ko)}</span><span class="e">${esc(d.en)}</span><div class="s">${esc(d.short)}</div></button>`).join(""):`<p class="none">찾는 분포가 없습니다. 다른 낱말로 찾아 보세요.</p>`;
+  $("#index").querySelectorAll(".ix").forEach(b=>b.onclick=()=>select(b.dataset.id,true));
+}
+$("#q").addEventListener("input",renderIndex);
+
+function relBtn(e,dir){
+  const other=dir==="out"?e.b:e.a; const d=byId[other];
+  return `<button class="rel ${e.k}" data-go="${other}"><span class="k">${dir==="out"?"→ ":"← "}${esc(d.ko)}</span><span class="c">${esc(e.lab)}</span></button>`;
+}
+function linkList(keys){
+  if(!keys.length) return `<p class="none">아직 연결된 해설이 없습니다. 후속 콘텐츠 후보입니다.</p>`;
+  return `<ul class="mylinks">${keys.map(k=>`<li><a href="${C[k][0]}">${esc(C[k][1])}<span>${esc(C[k][2])}</span></a></li>`).join("")}</ul>`;
+}
+function renderDetail(){
+  const box=$("#detail");
+  if(!sel){ box.innerHTML=`<p class="none" style="margin:0">위 목록이나 3D 지도에서 분포를 고르면 이 자리에 사전 카드가 열립니다.</p>`; if(ribbon) ribbon.clear(); return; }
+  const d=byId[sel]; const out=EDGES.filter(e=>e.a===d.id), inn=EDGES.filter(e=>e.b===d.id);
+  box.style.setProperty("--fc",`var(${FAM[d.fam].v})`);
+  box.innerHTML=`
+  <div class="dhead"><h2>${esc(d.ko)} 분포</h2><span class="sym">${esc(d.sym)}</span><span class="fam">${FAM[d.fam].ko}</span><span class="sym" style="font-family:var(--body)">${esc(d.en)}</span></div>
+  <div class="dgrid">
+    <div>
+      <p class="story">${esc(d.story)}</p>
+      <dl class="facts"><dt>값의 범위</dt><dd>${esc(d.sup)}</dd><dt>${d.fam==="count"?"확률질량":"확률밀도"}</dt><dd>${esc(d.f)}</dd><dt>평균</dt><dd>${esc(d.mean)}</dd><dt>분산</dt><dd>${esc(d.vr)}</dd></dl>
+      <div class="subh">이 분포에서 나가는 길</div>
+      <div class="rels">${out.length?out.map(e=>relBtn(e,"out")).join(""):'<span class="none">없음</span>'}</div>
+      <div class="subh">이 분포로 들어오는 길</div>
+      <div class="rels">${inn.length?inn.map(e=>relBtn(e,"in")).join(""):'<span class="none">없음</span>'}</div>
+      <div class="subh">어디에 쓰나</div>
+      <ul class="uses">${d.uses.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>
+    </div>
+    <div>
+      <div class="subh">3D 모양 지형 · 매개변수를 바꿔 가며</div>
+      <div id="ribbonbox"><div id="ribbon"></div><div class="rcap" id="rcap"></div></div>
+    </div>
+  </div>
+  <div class="dgrid" style="margin-top:6px">
+    <div>
+      <div class="subh">파이썬 호출 (scipy.stats)</div>
+      <div class="codebox"><button class="copy" data-copy="py-${d.id}">복사</button><pre id="py-${d.id}">from scipy import stats
+import numpy as np
+
+${esc(d.py)}</pre></div>
+    </div>
+    <div>
+      <div class="subh">생성 AI 프롬프트 예</div>
+      <div class="codebox prompt"><button class="copy" data-copy="pr-${d.id}">복사</button><pre id="pr-${d.id}">${esc(d.pr)}</pre></div>
+      <div class="subh">함께 보는 내 콘텐츠</div>
+      ${linkList(d.links)}
+    </div>
+  </div>`;
+  box.querySelectorAll(".rel").forEach(b=>b.onclick=()=>select(b.dataset.go,false));
+  wireCopy(box);
+  ribbon.mount($("#ribbon"),d);
+}
+function renderInfobar(){
+  const ib=$("#infobar");
+  if(!sel){ib.innerHTML=`<span class="none">분포 이름을 누르면 연결된 관계와 조건이 지도에 나타납니다.</span>`;return;}
+  const d=byId[sel]; const n=EDGES.filter(e=>e.a===sel||e.b===sel).length;
+  ib.innerHTML=`<span class="dot" style="background:var(${FAM[d.fam].v})"></span><span><span class="nm">${esc(d.ko)}</span> · ${esc(d.short)} · 관계 ${n}개</span><span class="sp"></span><button class="chip" id="godetail">사전 카드 보기 ↓</button>`;
+  $("#godetail").onclick=()=>$("#detail").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function select(id,scroll,keepSpin){
+  sel=id||null;
+  if(sel){ const d=byId[sel]; if(!keepSpin){spin=false; $("#v-spin").setAttribute("aria-pressed","false");}
+    // turn so the node faces the viewer
+    const target=-Math.atan2(d.pos[0],d.pos[2]+14)*0.6; tYaw=Math.round(tYaw/(2*PI))*2*PI+target;
+    try{history.replaceState(null,"","#"+sel);}catch(e){}
+  } else { try{history.replaceState(null,"",location.pathname+location.search);}catch(e){} }
+  refreshVisibility(); renderIndex(); renderInfobar(); renderDetail();
+  if(scroll&&sel) $("#detail").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+/* ---------- ribbon (3D shape terrain) ---------- */
+const ribbon=(function(){
+  const r=new THREE.WebGLRenderer({antialias:true,alpha:true}); r.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+  const sc=new THREE.Scene(), cam=new THREE.PerspectiveCamera(38,1,0.1,100), grp=new THREE.Group(); sc.add(grp);
+  let host=null, cur=null, ry=-0.6, rx=0.42, tRy=ry, labels=[], drag=false, lx=0, ly=0, rid=null;
+  r.domElement.addEventListener("pointerdown",e=>{drag=true;rid=e.pointerId;lx=e.clientX;ly=e.clientY;});
+  window.addEventListener("pointermove",e=>{if(!drag||e.pointerId!==rid)return;tRy+=(e.clientX-lx)*0.01;if(e.pointerType!=="touch")rx=Math.max(-0.2,Math.min(1.3,rx+(e.clientY-ly)*0.008));lx=e.clientX;ly=e.clientY;});
+  window.addEventListener("pointerup",()=>drag=false); window.addEventListener("pointercancel",()=>drag=false);
+  function clear(){ while(grp.children.length){const o=grp.children.pop();o.geometry&&o.geometry.dispose();o.material&&o.material.dispose();} labels.forEach(l=>l.el.remove()); labels=[]; }
+  function build(){
+    clear(); if(!cur||!host) return;
+    const sw=cur.sw, nv=sw.vals.length, [x0,x1]=sw.xr;
+    const X=x=>(x-x0)/(x1-x0)*12-6, Z=i=>4-(i/(Math.max(1,nv-1)))*8;
+    const series=sw.vals.map(v=>{
+      if(sw.disc){const pts=[];for(let k=Math.ceil(x0);k<=Math.floor(x1);k++)pts.push([k,sw.fn(k,v)]);return pts;}
+      const pts=[];for(let j=0;j<=160;j++){const x=x0+(x1-x0)*j/160;pts.push([x,sw.fn(x,v)]);}return pts;
+    });
+    let cap=0; series.forEach(s=>s.forEach(([x,y])=>{ if(isFinite(y)&&x>=x0+0.06*(x1-x0)) cap=Math.max(cap,y); }));
+    if(sw.disc) series.forEach(s=>s.forEach(([,y])=>{if(isFinite(y))cap=Math.max(cap,y);}));
+    cap*= sw.disc?1:1.25; if(!(cap>0)) cap=1;
+    const Y=y=>Math.min(isFinite(y)?y:cap,cap)/cap*4.4;
+    const c0=new THREE.Color(cssv("--f-test")), c1=new THREE.Color(famColor(cur.fam)), mut=new THREE.Color(cssv("--muted"));
+    // floor
+    const fl=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-6,0,4.6),new THREE.Vector3(6,0,4.6),new THREE.Vector3(6,0,-4.6),new THREE.Vector3(-6,0,-4.6),new THREE.Vector3(-6,0,4.6)]);
+    grp.add(new THREE.Line(fl,new THREE.LineBasicMaterial({color:mut,transparent:true,opacity:0.5})));
+    const ax=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-6,0,4.6),new THREE.Vector3(-6,4.8,4.6)]);
+    grp.add(new THREE.Line(ax,new THREE.LineBasicMaterial({color:mut,transparent:true,opacity:0.6})));
+    series.forEach((s,i)=>{
+      const col=c0.clone().lerp(c1,nv>1?i/(nv-1):1); const z=Z(i);
+      if(sw.disc){
+        const seg=[]; s.forEach(([x,y])=>{seg.push(new THREE.Vector3(X(x),0,z),new THREE.Vector3(X(x),Y(y),z));});
+        grp.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(seg),new THREE.LineBasicMaterial({color:col})));
+        grp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(s.map(([x,y])=>new THREE.Vector3(X(x),Y(y),z))),new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.35})));
+      }else{
+        const top=s.map(([x,y])=>new THREE.Vector3(X(x),Y(y),z));
+        grp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(top),new THREE.LineBasicMaterial({color:col})));
+        // translucent curtain
+        const pos=[]; for(let j=0;j<top.length-1;j++){const a=top[j],b=top[j+1];pos.push(a.x,0,z,b.x,0,z,b.x,b.y,z, a.x,0,z,b.x,b.y,z,a.x,a.y,z);}
+        const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));
+        grp.add(new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.13,side:THREE.DoubleSide,depthWrite:false})));
+      }
+      const el=document.createElement("div"); el.className="layerlbl"; el.style.color="var(--ink)";
+      el.textContent=String(sw.vals[i]); host.appendChild(el); labels.push({el,v:new THREE.Vector3(6.4,0,z)});
+    });
+    const fmt=v=>Math.abs(v)>=100||Number.isInteger(v)?String(v):(+v.toFixed(2)).toString();
+    [[x0,-6],[x1,6]].forEach(([v,x])=>{const el=document.createElement("div");el.className="layerlbl";el.textContent="x = "+fmt(v);host.appendChild(el);labels.push({el,v:new THREE.Vector3(x,-0.5,4.6),c:true});});
+    const yl=document.createElement("div"); yl.className="layerlbl"; yl.textContent=cur.fam==="count"?"확률":"밀도"; host.appendChild(yl); labels.push({el:yl,v:new THREE.Vector3(-6,5.2,4.6),c:true});
+    $("#rcap").innerHTML=`앞줄부터 <b>${esc(sw.lab)}</b> = ${sw.vals.join(", ")}. 색이 진해질수록 뒤쪽 값입니다. 좌우로 밀어 돌려 보세요.`;
+  }
+  const v=new THREE.Vector3();
+  function loop(){
+    if(host&&cur&&host.isConnected){
+      ry+=(tRy-ry)*0.15; grp.rotation.set(rx,ry,0); cam.position.set(0,1.2,19); cam.lookAt(0,1.2,0); grp.updateMatrixWorld();
+      r.render(sc,cam);
+      labels.forEach(l=>{v.copy(l.v).applyMatrix4(grp.matrixWorld).project(cam);const x=(v.x*.5+.5)*host.clientWidth,y=(-v.y*.5+.5)*host.clientHeight;l.el.style.transform=`translate(${Math.round(x+(l.c?-l.el.offsetWidth/2:4))}px,${Math.round(y-l.el.offsetHeight/2)}px)`;});
+    }
+    requestAnimationFrame(loop);
+  }
+  function size(){ if(!host)return; const w=host.clientWidth,h=host.clientHeight; r.setSize(w,h,false); cam.aspect=w/h; cam.fov=w<420?48:38; cam.updateProjectionMatrix(); }
+  function mount(el,d){ host=el; cur=d; host.appendChild(r.domElement); size(); build(); }
+  requestAnimationFrame(loop);
+  return {mount,clear,size,rebuild:build};
+})();
+
+/* ---------- relation table ---------- */
+function renderTable(){
+  const rows=EDGES.map(e=>`<tr><td><button class="link" data-go="${e.a}">${esc(byId[e.a].ko)}</button> → <button class="link" data-go="${e.b}">${esc(byId[e.b].ko)}</button></td><td><span class="kind ${e.k}">${e.k==="T"?"변환":"극한"}</span></td><td class="mono">${esc(e.lab)}</td><td>${esc(e.why)}</td></tr>`).join("");
+  $("#reltable").innerHTML=`<thead><tr><th>출발 → 도착</th><th>종류</th><th>조건·식</th><th>왜 쓰나</th></tr></thead><tbody>${rows}</tbody>`;
+  $("#reltable").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go,true));
+  $("#paramtable").innerHTML=`<thead><tr><th>분포</th><th>교과서 표기</th><th>scipy 호출</th><th>주의</th></tr></thead><tbody>${PT.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td class="mono">${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</tbody>`;
+}
+/* ---------- my content map ---------- */
+function renderContentMap(){
+  const map={}; D.forEach(d=>d.links.forEach(k=>{(map[k]=map[k]||[]).push(d.id);}));
+  map.prompt=map.prompt||[];
+  const order=Object.keys(C).filter(k=>map[k]);
+  $("#contentmap").innerHTML=order.map(k=>`<div class="cm"><a href="${C[k][0]}">${esc(C[k][1])}</a><div style="font-size:12px;color:var(--muted)">${esc(C[k][2])}</div><div class="tags">${map[k].length?map[k].map(id=>`<button data-go="${id}">${esc(byId[id].ko)}</button>`).join(""):'<span class="none" style="font-size:12.5px">프롬프트 작성법 전반</span>'}</div></div>`).join("");
+  $("#contentmap").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{select(b.dataset.go,false);$("#map").scrollIntoView({behavior:"smooth"});});
+}
+/* ---------- copy ---------- */
+function wireCopy(root){
+  root.querySelectorAll(".copy").forEach(b=>{ if(b._w)return; b._w=1; b.onclick=async()=>{
+    const pre=document.getElementById(b.dataset.copy); const txt=pre.innerText;
+    try{ await navigator.clipboard.writeText(txt); b.textContent="복사됨"; }
+    catch(e){ const rg=document.createRange(); rg.selectNodeContents(pre); const s=getSelection(); s.removeAllRanges(); s.addRange(rg); b.textContent="선택됨 · 길게 눌러 복사"; }
+    setTimeout(()=>b.textContent="복사",1800);
+  };});
+}
+
+/* ---------- init ---------- */
+renderFamChips(); renderTable(); renderContentMap(); wireCopy(document);
+applyTheme(); resize();
+const h=(location.hash||"").slice(1);
+select(byId[h]?h:"normal",false,!byId[h]);
+window.addEventListener("resize",()=>{resize();ribbon.size();});
+if(window.ResizeObserver){ new ResizeObserver(()=>{resize();}).observe(stage); }
+window.addEventListener("hashchange",()=>{const k=location.hash.slice(1); if(byId[k]&&k!==sel) select(k,false);});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
