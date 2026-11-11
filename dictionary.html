@@ -67,8 +67,14 @@ button.chip:hover{border-color:var(--accent)}
 #stage{position:relative;height:min(68vh,620px);min-height:420px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
 #stage canvas{display:block;width:100%;height:100%}
 #stage.dragging{cursor:grabbing}
-.lbl{position:absolute;left:0;top:0;transform-origin:0 0;background:transparent;border:0;border-radius:8px;padding:0;cursor:pointer;will-change:transform}
-.lbl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lbl{position:absolute;left:0;top:0;transform-origin:0 0;white-space:nowrap;font:600 12.5px/1.2 var(--body);color:var(--ink);background:color-mix(in srgb,var(--surface) 85%,transparent);border:1px solid var(--line);border-radius:6px;padding:3px 7px;cursor:pointer;will-change:transform}
+.lbl small{font-weight:400;color:var(--muted);margin-left:4px}
+.lbl.sel{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.lbl.sel small{color:var(--surface);opacity:.75}
+.lbl.dim{opacity:.3}
+.worldlbl{position:absolute;left:0;top:0;pointer-events:none;display:flex;flex-direction:column;gap:1px;white-space:nowrap}
+.worldlbl b{font:700 15px/1.25 var(--display);color:var(--ink)}
+.worldlbl span{font:12px/1.3 var(--body);color:var(--muted)}
 .elbl{position:absolute;left:0;top:0;font:600 11.5px/1.25 var(--body);padding:2px 6px;border-radius:5px;background:var(--surface);border:1px solid currentColor;pointer-events:none;white-space:nowrap;display:none}
 .elbl.T{color:var(--transform)} .elbl.L{color:var(--limit)}
 .layerlbl{position:absolute;left:0;top:0;font:600 11px/1.2 var(--body);color:var(--muted);pointer-events:none;letter-spacing:.03em;white-space:nowrap}
@@ -163,6 +169,8 @@ footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px so
   #stage{min-height:400px;height:62vh}
   .lbl{font-size:11px;padding:2px 5px}
   .lbl small{display:none}
+  .worldlbl b{font-size:13px}
+  .worldlbl span{display:none}
   .elbl{font-size:10px}
 }
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
@@ -174,7 +182,7 @@ footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px so
   <div class="eyebrow">통계 해설 · 확률분포 21종 관계 지도 · <a href="index.html">목차</a> · <a href="tables.html">분포표 읽기 연구실 →</a></div>
   <h1>확률분포 딕셔너리</h1>
   <div class="byline">글 · 안상선 ((주)M-Robo 대표)</div>
-  <p class="lead">흔히 쓰는 분포는 서로 남남이 아닙니다. 한 분포의 특수한 경우이거나, 변수를 바꿔 얻었거나, 표본이 커질 때 다가가는 극한입니다. 3D 지도에서 분포 모양 카드를 누르면 연결된 길이 밝아지고, 아래 사전 카드에 식·용도·파이썬 호출법·생성 AI 프롬프트가 나옵니다.</p>
+  <p class="lead">흔히 쓰는 분포는 서로 남남이 아닙니다. 한 분포의 특수한 경우이거나, 변수를 바꿔 얻었거나, 표본이 커질 때 다가가는 극한입니다. 3D 지도에서 분포 이름표를 누르면 연결된 길이 밝아지고, 아래 사전 카드에 식·용도·파이썬 호출법·생성 AI 프롬프트가 나옵니다.</p>
   <div class="summary" id="summary"></div>
 </header>
 
@@ -185,12 +193,12 @@ footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px so
       <button class="chip" id="t-T" aria-pressed="true"><span class="swatch-line"></span>변환·특수 경우</button>
       <button class="chip" id="t-L" aria-pressed="true"><span class="swatch-line dash"></span>극한 근사</button>
       <span class="sp"></span>
-      <button class="chip" id="v-front">정면</button>
-      <button class="chip" id="v-side">옆에서 (층 보기)</button>
+      <button class="chip" id="v-front">비스듬히</button>
+      <button class="chip" id="v-side">위에서 보기</button>
       <button class="chip" id="v-spin" aria-pressed="true">자동 회전</button>
       <button class="chip" id="v-reset">선택 해제</button>
     </div>
-    <div id="stage" aria-label="확률분포 관계 3D 그래프. 분포 모양 카드를 누르면 선택됩니다."></div>
+    <div id="stage" aria-label="확률분포 관계 3D 그래프. 이산확률분포의 세계와 연속확률분포의 세계로 나뉘어 있고, 분포 이름표를 누르면 선택됩니다."></div>
     <div class="infobar" id="infobar" aria-live="polite"></div>
     <div class="axisnote" id="axisnote"></div>
   </div>
@@ -846,10 +854,10 @@ const deg={}; D.forEach(d=>deg[d.id]=0); EDGES.forEach(e=>{deg[e.a]++;deg[e.b]++
    `<div class="sumcard"><b>분포</b><span class="big">${D.length}</span> 이산 ${D.filter(d=>d.fam==="count").length} · 연속 ${D.filter(d=>d.fam!=="count").length}</div>
     <div class="sumcard"><b>관계</b><span class="big">${EDGES.length}</span> 변환·특수 경우 ${nT} · 극한 근사 ${nL}</div>
     <div class="sumcard wide"><b>가장 많이 이어진 분포 (연결 수)</b>${hubs.join(" · ")}</div>
-    <div class="sumcard wide"><b>읽는 법</b>극한 근사는 위에서 아래로 흘러 정규로 모이고, 검정 분포는 모두 표준정규에서 만들어집니다.</div>`;
+    <div class="sumcard wide"><b>읽는 법</b>지도는 이산확률분포의 세계와 연속확률분포의 세계로 나뉩니다. 두 세계를 잇는 다리는 대부분 정규로 모이는 극한입니다.</div>`;
 })();
 
-/* ---------- 3D relation map ---------- */
+/* ---------- 3D relation map: two worlds, 3D charts ---------- */
 const stage=$("#stage");
 let sel=null, showT=true, showL=true, spin=!matchMedia("(prefers-reduced-motion: reduce)").matches;
 $("#v-spin").setAttribute("aria-pressed",String(spin));
@@ -857,93 +865,104 @@ const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
 stage.appendChild(renderer.domElement);
 const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(42,1,0.1,300);
+const camera=new THREE.PerspectiveCamera(42,1,0.1,400);
 const world=new THREE.Group(); scene.add(world);
-scene.add(new THREE.AmbientLight(0xffffff,0.75));
-const dl=new THREE.DirectionalLight(0xffffff,0.55); dl.position.set(5,10,12); scene.add(dl);
-let yaw=-0.45, pitch=0.22, tYaw=yaw, tPitch=pitch, zoom=1;
+scene.add(new THREE.AmbientLight(0xffffff,0.62));
+const dl=new THREE.DirectionalLight(0xffffff,0.75); dl.position.set(6,14,10); scene.add(dl);
+const dl2=new THREE.DirectionalLight(0xffffff,0.25); dl2.position.set(-8,6,-6); scene.add(dl2);
+const portrait=()=>stage.clientWidth<stage.clientHeight*1.05;
+const defYaw=()=>portrait()?-Math.PI/2:-0.08, defPitch=()=>portrait()?0.9:0.62;
+let yaw=defYaw(), pitch=defPitch(), tYaw=yaw, tPitch=pitch, zoom=1;
 
-/* layers */
-const LAYERS=[[3,"이산 · 셀 수 있는 사건"],[0,"연속 · 측정값 모형"],[-3,"검정 · 표본 분포"]];
-const layerObjs=[];
-LAYERS.forEach(([z])=>{
-  const g=new THREE.PlaneGeometry(20,17);
-  const m=new THREE.MeshBasicMaterial({transparent:true,opacity:0.03,side:THREE.DoubleSide,depthWrite:false});
-  const p=new THREE.Mesh(g,m); p.position.set(0,-0.3,z); world.add(p);
-  const eg=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({transparent:true,opacity:0.35}));
-  eg.position.copy(p.position); world.add(eg);
-  layerObjs.push({p,eg});
+/* positions on the floor (x, z) */
+const POS={bernoulli:[-15.5,3],geometric:[-15.5,-3],negbin:[-11.5,-7],hypergeom:[-11.5,7],betabinom:[-11.5,-1],binomial:[-7.5,3],poisson:[-7.5,-3],discunif:[-7.5,-8],
+  normal:[1.5,0],lognormal:[0.5,5],stdnormal:[5.5,3],chisq:[9.5,2],t:[7.5,7],f:[11.5,6],cauchy:[3.5,8.5],gamma:[9.5,-3],exponential:[12.5,-7],weibull:[15.5,-3.5],laplace:[15.5,-10],beta:[4.5,-5],uniform:[7.5,-9.5]};
+D.forEach(d=>{ const p=POS[d.id]; d.pos=[p[0],0,p[1]]; d.disc=d.fam==="count"; });
+
+/* two worlds */
+const WORLDS=[{key:"disc",title:"이산확률분포의 세계",sub:"값을 하나, 둘 셀 수 있다 · 막대(확률질량)",x0:-18,x1:-5,z0:-10.5,z1:9.5,col:"--f-count"},
+              {key:"cont",title:"연속확률분포의 세계",sub:"구간 위 어떤 값이든 잴 수 있다 · 곡선(확률밀도)",x0:-2,x1:18,z0:-12.5,z1:11,col:"--f-normal"}];
+WORLDS.forEach(w=>{
+  const g=new THREE.BoxGeometry(w.x1-w.x0,0.3,w.z1-w.z0);
+  w.mesh=new THREE.Mesh(g,new THREE.MeshLambertMaterial({transparent:true,opacity:0.22,depthWrite:false}));
+  w.mesh.position.set((w.x0+w.x1)/2,-0.32,(w.z0+w.z1)/2); world.add(w.mesh);
+  w.edge=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({transparent:true,opacity:0.7}));
+  w.edge.position.copy(w.mesh.position); world.add(w.edge);
+  const el=document.createElement("div"); el.className="worldlbl"; el.innerHTML=`<b>${w.title}</b><span>${w.sub}</span>`; stage.appendChild(el);
+  w.el=el; w.v=new THREE.Vector3(w.x0+0.3,0,w.z0);
 });
-const layerLbls=LAYERS.map(([z,t],li)=>{const el=document.createElement("div");el.className="layerlbl";el.textContent=t;stage.appendChild(el);return {el,v:new THREE.Vector3(-10,-9.3-li*0.7,z)};});
 
-/* nodes: each node is a card showing the distribution's own shape */
-const CW=3.0, CH=2.1;
+/* 3D chart for each distribution */
+const CW=2.8, CHT=2.3, DEP=0.55;
 const CARD_V={beta:2,uniform:1};
-function cardSeries(d){
+function chartSeries(d){
   const sw=d.sw, [x0,x1]=sw.xr;
   const vals=sw.vals; const v=(d.id in CARD_V)?CARD_V[d.id]:vals[Math.floor(vals.length/2)];
   const fn=d.id==="stdnormal"?((x)=>Math.exp(-x*x/2)/Math.sqrt(2*Math.PI)):sw.fn;
   const pts=[];
   if(sw.disc){ for(let k=Math.ceil(x0);k<=Math.floor(x1);k++) pts.push([k,fn(k,v)]); }
-  else { for(let j=0;j<=140;j++){const x=x0+(x1-x0)*j/140; pts.push([x,fn(x,v)]);} }
+  else { for(let j=0;j<=90;j++){const x=x0+(x1-x0)*j/90; pts.push([x,fn(x,v)]);} }
   let cap=0; pts.forEach(([x,y])=>{ if(isFinite(y)&&(sw.disc||x>=x0+0.06*(x1-x0))) cap=Math.max(cap,y); });
-  if(!sw.disc) cap*=1.15; if(!(cap>0)) cap=1;
+  if(!sw.disc) cap*=1.12; if(!(cap>0)) cap=1;
   return {pts,cap,x0,x1,disc:sw.disc};
-}
-function drawCard(cv,d,selected){
-  const g=cv.getContext("2d"), W=cv.width, H=cv.height; g.clearRect(0,0,W,H);
-  const fc=famColor(d.fam), surf=cssv("--surface"), ink=cssv("--ink"), mut=cssv("--muted");
-  const r=22; g.beginPath(); g.moveTo(r,4); g.arcTo(W-4,4,W-4,H-4,r); g.arcTo(W-4,H-4,4,H-4,r); g.arcTo(4,H-4,4,4,r); g.arcTo(4,4,W-4,4,r); g.closePath();
-  g.fillStyle=surf; g.fill(); g.lineWidth=selected?12:5; g.strokeStyle=selected?ink:fc; g.stroke();
-  g.fillStyle=ink; g.font="700 38px "+cssv("--body"); g.textBaseline="alphabetic"; g.fillText(d.ko,22,50);
-  g.fillStyle=mut; g.font="24px "+cssv("--mono"); const sym=d.sym.length>16?d.sym.slice(0,16)+"…":d.sym; g.fillText(sym,22,82);
-  const s=cardSeries(d); const L=26,R=W-26,T=98,B=H-26;
-  const X=x=>L+(x-s.x0)/(s.x1-s.x0)*(R-L), Y=y=>B-Math.min(isFinite(y)?y:s.cap,s.cap)/s.cap*(B-T);
-  g.strokeStyle=mut; g.lineWidth=2; g.beginPath(); g.moveTo(L,B+1); g.lineTo(R,B+1); g.stroke();
-  if(s.disc){
-    const n=s.pts.length, bw=Math.min(26,(R-L)/n*0.7);
-    s.pts.forEach(([k,y])=>{ const px=L+((k-s.x0)+0.5)/(s.x1-s.x0+1)*(R-L); g.fillStyle=fc; g.fillRect(px-bw/2,Y(y),bw,B-Y(y)); });
-  } else {
-    g.beginPath(); g.moveTo(X(s.pts[0][0]),B); s.pts.forEach(([x,y])=>g.lineTo(X(x),Y(y))); g.lineTo(X(s.pts[s.pts.length-1][0]),B); g.closePath();
-    g.globalAlpha=0.32; g.fillStyle=fc; g.fill(); g.globalAlpha=1;
-    g.beginPath(); s.pts.forEach(([x,y],i)=>{const px=X(x),py=Y(y); i?g.lineTo(px,py):g.moveTo(px,py);}); g.strokeStyle=fc; g.lineWidth=5; g.lineJoin="round"; g.stroke();
-  }
 }
 const nodeObj={};
 D.forEach(d=>{
-  const cv=document.createElement("canvas"); cv.width=400; cv.height=280;
-  const tex=new THREE.CanvasTexture(cv); tex.minFilter=THREE.LinearFilter; tex.anisotropy=4;
-  const mesh=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));
-  mesh.scale.set(CW,CH,1); mesh.position.set(...d.pos); world.add(mesh);
+  const root=new THREE.Group(); root.position.set(...d.pos); world.add(root);
+  const bb=new THREE.Group(); root.add(bb);           // billboard (turns to face the viewer)
+  const mats=[];
+  const ped=new THREE.Mesh(new THREE.BoxGeometry(CW+0.4,0.16,DEP+0.5),new THREE.MeshLambertMaterial({transparent:true}));
+  ped.position.y=-0.08; bb.add(ped); mats.push(ped.material);
+  const chart=new THREE.Group(); bb.add(chart);
+  const s=chartSeries(d); const H=y=>Math.max(0,Math.min(isFinite(y)?y:s.cap,s.cap))/s.cap*CHT;
+  const cmat=new THREE.MeshLambertMaterial({transparent:true,opacity:0.95}); mats.push(cmat);
+  if(s.disc){
+    const span=s.x1-s.x0+1, bw=CW/span*0.72;
+    s.pts.forEach(([k,y])=>{ const h=H(y); if(h<0.02)return; const m=new THREE.Mesh(new THREE.BoxGeometry(bw,h,DEP),cmat); m.position.set(-CW/2+((k-s.x0)+0.5)/span*CW,h/2,0); chart.add(m); });
+  } else {
+    const X=x=>-CW/2+(x-s.x0)/(s.x1-s.x0)*CW;
+    const shape=new THREE.Shape(); shape.moveTo(X(s.pts[0][0]),0); s.pts.forEach(([x,y])=>shape.lineTo(X(x),H(y))); shape.lineTo(X(s.pts[s.pts.length-1][0]),0); shape.lineTo(X(s.pts[0][0]),0);
+    const g=new THREE.ExtrudeGeometry(shape,{depth:DEP,bevelEnabled:false,steps:1}); g.translate(0,0,-DEP/2);
+    chart.add(new THREE.Mesh(g,cmat));
+    const top=new THREE.Line(new THREE.BufferGeometry().setFromPoints(s.pts.map(([x,y])=>new THREE.Vector3(X(x),H(y)+0.01,DEP/2+0.01))),new THREE.LineBasicMaterial({transparent:true}));
+    chart.add(top); mats.push(top.material);
+  }
   const el=document.createElement("button");
-  el.className="lbl"; el.type="button"; el.setAttribute("aria-label",d.ko+" 분포 "+d.sym+" 선택");
+  el.className="lbl"; el.type="button"; el.innerHTML=esc(d.ko)+"<small>"+esc(d.sym)+"</small>";
+  el.setAttribute("aria-label",d.ko+" 분포 선택");
   el.addEventListener("click",ev=>{ev.stopPropagation(); if(moved>=6)return; select(d.id,false);});
   stage.appendChild(el);
-  nodeObj[d.id]={mesh,el,cv,tex,d};
+  nodeObj[d.id]={root,bb,chart,ped,cmat,mats,el,d};
 });
-function redrawCards(){ D.forEach(d=>{const n=nodeObj[d.id]; drawCard(n.cv,d,d.id===sel); n.tex.needsUpdate=true;}); }
-/* edges */
+
+/* edges: inside a world → straight path on the floor; between worlds → arched bridge */
 const edgeObj=[];
 EDGES.forEach(e=>{
-  const A=new THREE.Vector3(...byId[e.a].pos), B=new THREE.Vector3(...byId[e.b].pos);
-  const dir=B.clone().sub(A).normalize();
-  const cut=Math.min(2.2,Math.min(CW/2/Math.max(1e-6,Math.abs(dir.x)),CH/2/Math.max(1e-6,Math.abs(dir.y))))+0.15;
-  const s=A.clone().add(dir.clone().multiplyScalar(cut));
-  const t=B.clone().sub(dir.clone().multiplyScalar(cut));
-  const geo=new THREE.BufferGeometry().setFromPoints([s,t]);
-  const mat=e.k==="T"?new THREE.LineBasicMaterial({transparent:true,opacity:0.85})
-                     :new THREE.LineDashedMaterial({transparent:true,opacity:0.9,dashSize:0.32,gapSize:0.22});
+  const da=byId[e.a], db=byId[e.b];
+  const A=new THREE.Vector3(da.pos[0],0.06,da.pos[2]), B=new THREE.Vector3(db.pos[0],0.06,db.pos[2]);
+  const dir=B.clone().sub(A).normalize(); const bridge=da.disc!==db.disc;
+  const s=A.clone().add(dir.clone().multiplyScalar(1.7)), t=B.clone().sub(dir.clone().multiplyScalar(1.7));
+  let pts, conePos, coneDir, mid;
+  if(bridge){
+    const c=s.clone().lerp(t,0.5); c.y=5.5+0.08*s.distanceTo(t);
+    const curve=new THREE.QuadraticBezierCurve3(s,c,t); pts=curve.getPoints(60);
+    conePos=curve.getPoint(0.62); coneDir=curve.getTangent(0.62).normalize(); mid=curve.getPoint(0.5);
+  } else { pts=[s,t]; conePos=s.clone().lerp(t,0.62); coneDir=dir; mid=s.clone().lerp(t,0.5); }
+  const geo=new THREE.BufferGeometry().setFromPoints(pts);
+  const mat=e.k==="T"?new THREE.LineBasicMaterial({transparent:true,opacity:0.9})
+                     :new THREE.LineDashedMaterial({transparent:true,opacity:0.95,dashSize:0.4,gapSize:0.26});
   const line=new THREE.Line(geo,mat); if(e.k==="L") line.computeLineDistances(); world.add(line);
-  const cone=new THREE.Mesh(new THREE.ConeGeometry(0.17,0.5,12),new THREE.MeshBasicMaterial({transparent:true,opacity:0.95}));
-  cone.position.copy(s.clone().lerp(t,0.62)); cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir); world.add(cone);
-  const el=document.createElement("div"); el.className="elbl "+e.k; el.textContent=e.lab; stage.appendChild(el);
-  edgeObj.push({e,line,cone,el,mid:s.clone().lerp(t,0.5)});
+  const cone=new THREE.Mesh(new THREE.ConeGeometry(0.2,0.6,12),new THREE.MeshBasicMaterial({transparent:true,opacity:0.95}));
+  cone.position.copy(conePos); cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),coneDir); world.add(cone);
+  const el=document.createElement("div"); el.className="elbl "+e.k; el.textContent=(bridge?"다리 · ":"")+e.lab; stage.appendChild(el);
+  edgeObj.push({e,line,cone,el,mid,bridge});
 });
 
 function applyTheme(){
-  const ink=new THREE.Color(cssv("--ink")), cT=new THREE.Color(cssv("--transform")), cL=new THREE.Color(cssv("--limit"));
-  layerObjs.forEach(o=>{o.p.material.color=ink.clone(); o.eg.material.color=new THREE.Color(cssv("--muted"));});
-  redrawCards();
+  const cT=new THREE.Color(cssv("--transform")), cL=new THREE.Color(cssv("--limit")), ink=new THREE.Color(cssv("--ink")), surf=new THREE.Color(cssv("--surface"));
+  WORLDS.forEach(w=>{const c=new THREE.Color(cssv(w.col)); w.mesh.material.color=c; w.edge.material.color=c.clone();});
+  D.forEach(d=>{const n=nodeObj[d.id]; const c=new THREE.Color(famColor(d.fam)); n.cmat.color=c; n.ped.material.color=surf.clone().lerp(c,0.25);
+    n.mats.forEach(m=>{ if(m.isLineBasicMaterial) m.color=ink.clone(); });});
   edgeObj.forEach(o=>{const c=o.e.k==="T"?cT:cL;o.line.material.color=c.clone();o.cone.material.color=c.clone();});
   if(ribbon) ribbon.rebuild();
 }
@@ -953,20 +972,21 @@ function refreshVisibility(){
     const vis=(o.e.k==="T"?showT:showL);
     const on=!sel||o.e.a===sel||o.e.b===sel;
     o.line.visible=o.cone.visible=vis;
-    o.line.material.opacity=on?0.9:0.1; o.cone.material.opacity=on?0.95:0.1;
+    o.line.material.opacity=on?0.95:0.08; o.cone.material.opacity=on?0.95:0.08;
     o.el.style.display=(sel&&on&&vis)?"block":"none";
   });
   D.forEach(d=>{const n=nodeObj[d.id];const on=!sel||nb.has(d.id);
-    n.mesh.material.opacity=on?1:0.2; n.el.classList.toggle("sel",d.id===sel);
-    const k=d.id===sel?1.3:1; n.mesh.scale.set(CW*k,CH*k,1); n.mesh.renderOrder=d.id===sel?2:(on?1:0);});
-  redrawCards();
+    n.mats.forEach(m=>m.opacity=on?(m===n.cmat?0.95:1):0.14);
+    n.cmat.emissive=new THREE.Color(d.id===sel?famColor(d.fam):"#000000"); n.cmat.emissiveIntensity=d.id===sel?0.35:0;
+    n.el.classList.toggle("dim",!on); n.el.classList.toggle("sel",d.id===sel);
+    n.root.scale.setScalar(d.id===sel?1.3:1);});
 }
 function resize(){
   const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false);
   camera.aspect=w/h; camera.updateProjectionMatrix();
 }
-function camDist(){ const a=camera.aspect; return Math.max(26,10.2/(0.384*a))/zoom; }
-const tmp=new THREE.Vector3(), tmp2=new THREE.Vector3();
+function camDist(){ const a=camera.aspect; const base=a<1.05?Math.max(36,13.8/(0.384*a)):Math.max(30,22.5/(0.384*a)); return base/zoom; }
+const tmp=new THREE.Vector3();
 function place(el,v,dx,dy){
   tmp.copy(v).applyMatrix4(world.matrixWorld).project(camera);
   if(tmp.z>1){el.style.visibility="hidden";return;}
@@ -974,38 +994,38 @@ function place(el,v,dx,dy){
   const x=(tmp.x*0.5+0.5)*stage.clientWidth, y=(-tmp.y*0.5+0.5)*stage.clientHeight;
   el.style.transform=`translate(${Math.round(x+dx(el))}px,${Math.round(y+dy(el))}px)`;
 }
+const baseV=new THREE.Vector3();
 function frame(){
-  if(spin&&!dragging) tYaw+=0.0022;
+  if(spin&&!dragging) tYaw+=0.0018;
   yaw+=(tYaw-yaw)*0.12; pitch+=(tPitch-pitch)*0.12;
   world.rotation.set(pitch,yaw,0);
+  D.forEach(d=>{ nodeObj[d.id].bb.rotation.y=-yaw; });
   camera.position.set(0,0,camDist()); camera.lookAt(0,0,0);
   world.updateMatrixWorld();
   renderer.render(scene,camera);
-  const fovT=Math.tan(camera.fov*Math.PI/360);
-  D.forEach(d=>{const n=nodeObj[d.id]; n.mesh.getWorldPosition(tmp2); const dist=camera.position.distanceTo(tmp2); const ppu=stage.clientHeight/(2*dist*fovT);
-    const w=CW*n.mesh.scale.x/CW*ppu, h=CH*n.mesh.scale.y/CH*ppu; n.el.style.width=Math.round(w)+"px"; n.el.style.height=Math.round(h)+"px";
-    place(n.el,n.mesh.position,()=>-w/2,()=>-h/2);});
+  D.forEach(d=>{const n=nodeObj[d.id]; baseV.set(d.pos[0],-0.2,d.pos[2]); place(n.el,baseV,el=>-el.offsetWidth/2,()=>4);});
   edgeObj.forEach(o=>{ if(o.el.style.display==="block") place(o.el,o.mid,el=>-el.offsetWidth/2,el=>-el.offsetHeight/2);});
-  layerLbls.forEach(l=>place(l.el,l.v,()=>0,()=>0));
+  WORLDS.forEach(w=>{ w.v.z=portrait()?w.z1:w.z0; place(w.el,w.v,()=>0,el=>-el.offsetHeight-4); });
   requestAnimationFrame(frame);
 }
 /* drag */
 let dragging=false, px=0, py=0, pid=null, moved=0;
 stage.addEventListener("pointerdown",e=>{ dragging=true;pid=e.pointerId;px=e.clientX;py=e.clientY;moved=0;stage.classList.add("dragging");});
 window.addEventListener("pointermove",e=>{ if(!dragging||e.pointerId!==pid)return; const dx=e.clientX-px,dy=e.clientY-py; px=e.clientX;py=e.clientY; moved+=Math.abs(dx)+Math.abs(dy);
-  tYaw+=dx*0.008; if(e.pointerType!=="touch") tPitch=Math.max(-1.3,Math.min(1.3,tPitch+dy*0.006)); });
+  tYaw+=dx*0.008; if(e.pointerType!=="touch") tPitch=Math.max(0.05,Math.min(1.45,tPitch+dy*0.006)); });
 const endDrag=()=>{dragging=false;pid=null;stage.classList.remove("dragging");};
 window.addEventListener("pointerup",endDrag); window.addEventListener("pointercancel",endDrag);
-stage.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(0.6,Math.min(2.6,zoom*Math.exp(-e.deltaY*0.0012)));},{passive:false});
+stage.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(0.6,Math.min(3,zoom*Math.exp(-e.deltaY*0.0012)));},{passive:false});
 stage.addEventListener("click",e=>{ if(!e.target.closest(".lbl")&&moved<6&&sel) select(null); });
 
 $("#t-T").onclick=function(){showT=!showT;this.setAttribute("aria-pressed",showT);refreshVisibility();};
 $("#t-L").onclick=function(){showL=!showL;this.setAttribute("aria-pressed",showL);refreshVisibility();};
-$("#v-front").onclick=()=>{tYaw=Math.round(tYaw/(2*PI))*2*PI;tPitch=0;};
-$("#v-side").onclick=()=>{tYaw=Math.round(tYaw/(2*PI))*2*PI+PI/2.4;tPitch=0.12;};
+const nearTurn=v=>Math.round((tYaw-v)/(2*PI))*2*PI+v;
+$("#v-front").onclick=()=>{tYaw=nearTurn(defYaw());tPitch=defPitch();};
+$("#v-side").onclick=()=>{tYaw=nearTurn(defYaw());tPitch=1.42;};
 $("#v-spin").onclick=function(){spin=!spin;this.setAttribute("aria-pressed",spin);};
 $("#v-reset").onclick=()=>select(null);
-$("#axisnote").innerHTML="<b>세 층(깊이)</b> 앞부터 이산 사건 → 연속 측정값 → 검정 분포. <b>위아래</b> 극한 근사는 위에서 아래로 흘러 정규로 모입니다. <b>조작</b> 끌어서 돌리기, 휠로 확대, 분포 카드를 눌러 선택. 휴대폰에서는 좌우로 밀어 돌리고, 「옆에서」로 층을 봅니다.";
+$("#axisnote").innerHTML="<b>두 세계</b> 이산확률분포의 세계(막대)와 연속확률분포의 세계(곡선)가 나뉘어 있습니다. <b>다리</b> 두 세계를 잇는 공중 아치는 이산 분포가 극한에서 연속 분포가 되거나(이항 → 정규), 한 과정의 두 얼굴인 관계(포아송 → 지수)입니다. <b>조작</b> 끌어서 돌리기, 휠로 확대, 이름표를 눌러 선택. 휴대폰에서는 좌우로 밀어 돌리고, 「위에서 보기」로 전체 배치를 봅니다.";
 
 /* ---------- dictionary index & detail ---------- */
 let famFilter=null;
@@ -1073,7 +1093,7 @@ ${esc(d.py)}</pre></div>
 }
 function renderInfobar(){
   const ib=$("#infobar");
-  if(!sel){ib.innerHTML=`<span class="none">분포 카드를 누르면 연결된 관계와 조건이 지도에 나타납니다.</span>`;return;}
+  if(!sel){ib.innerHTML=`<span class="none">분포 이름표를 누르면 연결된 관계와 조건이 지도에 나타납니다.</span>`;return;}
   const d=byId[sel]; const n=EDGES.filter(e=>e.a===sel||e.b===sel).length;
   ib.innerHTML=`<span class="dot" style="background:var(${FAM[d.fam].v})"></span><span><span class="nm">${esc(d.ko)}</span> · ${esc(d.short)} · 관계 ${n}개</span><span class="sp"></span><button class="chip" id="godetail">사전 카드 보기 ↓</button>`;
   $("#godetail").onclick=()=>$("#detail").scrollIntoView({behavior:"smooth",block:"start"});
@@ -1082,7 +1102,6 @@ function select(id,scroll,keepSpin){
   sel=id||null;
   if(sel){ const d=byId[sel]; if(!keepSpin){spin=false; $("#v-spin").setAttribute("aria-pressed","false");}
     // turn so the node faces the viewer
-    const target=-Math.atan2(d.pos[0],d.pos[2]+14)*0.6; tYaw=Math.round(tYaw/(2*PI))*2*PI+target;
     try{history.replaceState(null,"","#"+sel);}catch(e){}
   } else { try{history.replaceState(null,"",location.pathname+location.search);}catch(e){} }
   refreshVisibility(); renderIndex(); renderInfobar(); renderDetail();

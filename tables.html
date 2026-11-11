@@ -197,6 +197,14 @@ details.fold pre{background:#151726;border-radius:8px;padding:10px 12px;overflow
 .score{display:flex;gap:12px;flex-wrap:wrap;font-weight:700;margin:8px 0}
 .score span{background:var(--panel2);border-radius:8px;padding:4px 12px}
 
+.comic{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.comic figure{margin:0;background:var(--panel);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.comic .ct{padding:10px 14px 0;font-weight:700;font-size:16px}
+.comic .ct span{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.comic svg{display:block;width:100%;height:auto}
+.comic figcaption{padding:8px 14px 12px;font-size:14.5px;color:var(--muted)}
+.comic figcaption b{color:var(--text)}
+@media(max-width:700px){.comic{grid-template-columns:1fr}}
 .gloss{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .gloss div{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:9px 13px;font-size:15px}
 .gloss b{color:var(--gfp)}
@@ -564,6 +572,42 @@ stats.poisson.sf(9, 4)        # 포아송 P(X &gt; 9), λ=4 → 0.0081</pre>
     </tbody>
   </table>
   </div>
+  <div class="comic">
+    <figure><div class="ct">1종 오류 <span>거짓 양성 · 없는 것을 있다고 함</span></div><svg viewBox="0 0 320 230" role="img" aria-label="1종 오류 그림: 박사가 콧수염 난 남자 환자에게 임신이라고 말한다"><defs><linearGradient id="wall1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#262a44"/><stop offset="1" stop-color="#1d2034"/></linearGradient></defs>
+<rect width="320" height="230" fill="url(#wall1)"/><rect x="18" y="22" width="70" height="52" rx="4" fill="#2f3556" stroke="#3d4470"/><line x1="53" y1="22" x2="53" y2="74" stroke="#3d4470"/><line x1="18" y1="48" x2="88" y2="48" stroke="#3d4470"/>
+<rect y="196" width="320" height="34" fill="#171a2b"/><!-- patient: man with mustache in hospital gown -->
+<g transform="translate(60,0)">
+<rect x="-34" y="118" width="68" height="80" rx="18" fill="#9ec3e6"/><circle cx="-18" cy="140" r="2.2" fill="#6f95ba"/><circle cx="6" cy="160" r="2.2" fill="#6f95ba"/><circle cx="-8" cy="182" r="2.2" fill="#6f95ba"/>
+<rect x="-8" y="106" width="16" height="16" fill="#c98f62"/>
+<circle cx="0" cy="88" r="27" fill="#d9a072"/><path d="M-27 82 Q-24 58 0 58 Q24 58 27 82 Q18 70 0 70 Q-18 70 -27 82Z" fill="#2b2523"/>
+<ellipse cx="-27" cy="90" rx="4" ry="6" fill="#c98f62"/><ellipse cx="27" cy="90" rx="4" ry="6" fill="#c98f62"/>
+<circle cx="-9" cy="86" r="4.2" fill="#fff"/><circle cx="9" cy="86" r="4.2" fill="#fff"/><circle cx="-9" cy="86" r="2" fill="#1d1a22"/><circle cx="9" cy="86" r="2" fill="#1d1a22"/>
+<path d="M-15 76 Q-9 71 -3 75" stroke="#2b2523" stroke-width="2.5" fill="none"/><path d="M3 75 Q9 71 15 76" stroke="#2b2523" stroke-width="2.5" fill="none"/>
+<path d="M-12 99 Q-6 94 0 98 Q6 94 12 99 Q6 103 0 100 Q-6 103 -12 99Z" fill="#2b2523"/><ellipse cx="0" cy="107" rx="4" ry="3.5" fill="#7a3b2e"/>
+<text x="34" y="64" font-size="26" font-weight="700" fill="#f1b646">?!</text>
+</g>
+<image data-k="doc_front" x="170" y="62" width="136" height="136" style="image-rendering:pixelated"/>
+<g><rect x="112" y="18" width="128" height="40" rx="12" fill="#fff6d6" stroke="#f1b646" stroke-width="2"/><path d="M196 56 L214 74 L206 54Z" fill="#fff6d6" stroke="#f1b646" stroke-width="2"/><rect x="114" y="46" width="124" height="10" fill="#fff6d6"/><text x="176.0" y="44" text-anchor="middle" font-size="18" font-weight="700" fill="#1d1a22" font-family="IBM Plex Sans KR, sans-serif">임신입니다!</text></g></svg><figcaption><b>H₀(임신 아님)가 참인데 기각</b>했습니다. 확률은 우리가 정한 α입니다.</figcaption></figure>
+    <figure><div class="ct">2종 오류 <span>거짓 음성 · 있는 것을 없다고 함</span></div><svg viewBox="0 0 320 230" role="img" aria-label="2종 오류 그림: 박사가 배가 크게 부른 여성에게 임신이 아니라고 말한다"><defs><linearGradient id="wall2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#262a44"/><stop offset="1" stop-color="#1d2034"/></linearGradient></defs>
+<rect width="320" height="230" fill="url(#wall2)"/><rect x="18" y="22" width="70" height="52" rx="4" fill="#2f3556" stroke="#3d4470"/><line x1="53" y1="22" x2="53" y2="74" stroke="#3d4470"/><line x1="18" y1="48" x2="88" y2="48" stroke="#3d4470"/>
+<rect y="196" width="320" height="34" fill="#171a2b"/><!-- patient: woman with a very round belly -->
+<g transform="translate(232,0)">
+<path d="M-26 70 Q-30 120 -20 128 L20 128 Q30 120 26 70Z" fill="#6b4231"/>
+<path d="M-22 120 Q-34 160 -26 198 L26 198 Q34 160 22 120Z" fill="#c9b6ea"/>
+<circle cx="4" cy="166" r="31" fill="#c9b6ea"/><path d="M-14 160 Q4 150 22 160" stroke="#a892d4" stroke-width="2" fill="none"/>
+<ellipse cx="-8" cy="170" rx="9" ry="6" fill="#e4b08a"/><ellipse cx="16" cy="176" rx="9" ry="6" fill="#e4b08a"/>
+<rect x="-7" y="104" width="14" height="16" fill="#d9a07a"/>
+<circle cx="0" cy="88" r="25" fill="#e8b48a"/><path d="M-25 86 Q-26 60 0 60 Q26 60 25 86 Q16 70 -4 72 Q-18 74 -25 86Z" fill="#6b4231"/>
+<circle cx="-8" cy="88" r="2.4" fill="#1d1a22"/><circle cx="8" cy="88" r="2.4" fill="#1d1a22"/>
+<path d="M-14 80 L-3 82" stroke="#6b4231" stroke-width="2.2"/><path d="M3 80 L14 79" stroke="#6b4231" stroke-width="2.2"/>
+<path d="M-5 101 Q0 98 5 101" stroke="#9a4b3c" stroke-width="2.2" fill="none"/>
+<circle cx="-15" cy="96" r="4" fill="#f2a0a0" opacity=".55"/><circle cx="15" cy="96" r="4" fill="#f2a0a0" opacity=".55"/>
+<text x="26" y="66" font-size="24" font-weight="700" fill="#82b8ff">…?</text>
+</g>
+<image data-k="doc_judge" x="10" y="62" width="136" height="136" style="image-rendering:pixelated"/>
+<g><rect x="70" y="18" width="150" height="40" rx="12" fill="#fff6d6" stroke="#f1b646" stroke-width="2"/><path d="M110 56 L94 74 L124 56Z" fill="#fff6d6" stroke="#f1b646" stroke-width="2"/><rect x="72" y="46" width="146" height="10" fill="#fff6d6"/><text x="145.0" y="44" text-anchor="middle" font-size="18" font-weight="700" fill="#1d1a22" font-family="IBM Plex Sans KR, sans-serif">임신 아니에요.</text></g></svg><figcaption><b>H₁(임신)이 참인데 기각하지 못했</b>습니다. 확률은 β, 놓치지 않을 힘이 검정력 1 − β입니다.</figcaption></figure>
+  </div>
+  <div class="ez" data-dlg="comic"></div>
   <div class="gen"><p class="lead">아래 그림은 한 표본 z검정입니다. 효과 크기 d = (μ₁ − μ₀)/σ, 표본 n이면 H₁ 아래 검정통계량은 평균 δ = d√n인 정규분포를 따릅니다. 검정력은 이 분포가 기각역에 들어가는 넓이입니다. 검정력 0.8을 얻는 표본 크기는 n = ((z<sub>1−α/2</sub> + z<sub>0.8</sub>)/d)²입니다.</p></div>
   <div class="ez"><p class="lead">어두운 방에서 물건을 찾는다고 해 봐요. <b>손전등이 밝을수록</b>(표본이 많을수록), <b>물건이 클수록</b>(효과가 클수록) 잘 찾아요. 이 “찾아내는 힘”이 검정력이에요. 대신 “아무것도 없는데 있다고 외치는 실수”(1종 오류)는 α만큼 일부러 허용해요.</p></div>
   <div class="ez" data-dlg="s4"></div>
@@ -717,6 +761,9 @@ const DLG={
      ["robo","robo_happy","그럼 α를 0.001로 확 낮추면 헛경보가 없잖아. 완벽!"],
      ["fly","fly_point","그러면 진짜 효과도 놓쳐. α를 0.01로 바꿔 보고 노란 넓이가 어떻게 되는지 봐."],
      ["moa","moa_cheer","표본 n을 늘리면 초록 넓이가 커져요! 손전등이 밝아지는 거예요."]],
+ comic:[["robo","robo_blush","첫 번째 그림의 박사님… 그거 나도 들어 본 말이야. 내 화면 속엔 주판알밖에 없는데."],
+        ["fly","fly_arms","외우는 법: <b>1종은 없는 걸 있다고</b>(헛경보), <b>2종은 있는 걸 놓침</b>. 그림 순서 그대로야."],
+        ["doc","doc_think","재판으로 말하면 1종은 죄 없는 사람을 유죄로, 2종은 범인을 놓치는 것이다."]],
  duel0:[["sia","sia_signal","대결 시작 신호 드립니다. 판정 기준은 검정력 0.8."],
         ["moa","moa_cheer","두 분 다 힘내세요!"]],
  outro:[["doc","doc_magic","오늘의 세 줄입니다.<br>① 표는 머리부터 읽는다 — 왼쪽 넓이인가, 꼬리 넓이인가.<br>② 양측은 α를 반씩 나누고, 방향은 자료 전에 정한다.<br>③ 신뢰구간과 검정은 같은 판단이고, 검정력이 낮으면 “유의하지 않음”을 믿을 수 없다."],
@@ -726,6 +773,8 @@ const DLG={
 };
 function renderDialogues(){ $$("[data-dlg]").forEach(el=>{ const d=DLG[el.dataset.dlg]; if(!d)return; el.innerHTML=d.map((x,i)=>say(x[0],x[1],x[2],i%2===1)).join(""); }); }
 
+/* comic sprites */
+$$("image[data-k]").forEach(im=>im.setAttribute("href",spr(im.dataset.k)));
 /* cast */
 const CAST=[["doc","doc_front","박사","해설과 판정. 판정은 늘 숫자대로."],["asst","asst_smile","조수 하루","처음 배우는 사람의 눈으로 묻고, 숫자를 발표해요."],["fly","fly_point","초파리 연구원","의심하는 쪽. 표 머리와 반칙을 찾아내요."],["robo","robo_coin","주판봇","확신하는 쪽. 큰 숫자를 보면 서두르곤 해요."],["sia","sia_explain","인턴 시아","순서를 정리하고 대결 신호를 들어요. 긴 표에선 졸기도."],["moa","moa_tea","인턴 모아","기록을 모으고 응원해요. 차를 챙겨요."]];
 $("#castgrid").innerHTML=CAST.map(c=>`<div class="castc" style="--cc:var(--c-${c[0]})"><img src="${spr(c[1])}" alt="" aria-hidden="true"><div><b>${c[2]}</b><p>${c[3]}</p></div></div>`).join("");
