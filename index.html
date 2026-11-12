@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>확률분포 딕셔너리와 분포표 연구실</title>
+<meta property="og:image" content="https://adminmrobo.github.io/probability_distribution_dictionary/thumbs/part1.webp">
+<meta property="og:title" content="확률분포 딕셔너리와 분포표 연구실">
 <meta name="description" content="확률분포 21종의 관계를 3D 지도로 보는 딕셔너리와, 분포표 읽는 법·단측과 양측검정·신뢰구간·검정력을 다루는 연구실 해설.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +19,9 @@ body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 "IBM Plex San
 h1{font-size:clamp(28px,5vw,46px);line-height:1.25;margin:8px 0 10px;text-wrap:balance}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:28px 0}
 @media(max-width:700px){.cards{grid-template-columns:1fr}}
-a.card{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 20px}
+a.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+a.card img{display:block;width:100%;height:auto;flex:none;aspect-ratio:16/9;object-fit:cover;border-bottom:1px solid var(--rule);background:#0f1018}
+a.card .body{padding:16px 20px 18px}
 a.card:hover{border-color:var(--gfp)}
 a.card b{display:block;font-size:13px;color:var(--gfp);margin-bottom:4px}
 a.card h2{margin:0 0 6px;font-size:22px}
@@ -32,8 +36,8 @@ footer{border-top:1px solid var(--rule);padding-top:18px;color:var(--muted);font
   <h1>확률분포 딕셔너리와 분포표 연구실</h1>
   <p>분포들이 어떻게 이어지는지 먼저 지도로 보고, 그 분포의 표를 읽어 검정과 신뢰구간에 쓰는 법까지 이어 봅니다.</p>
   <div class="cards">
-    <a class="card" href="dictionary.html"><b>1편</b><h2>확률분포 딕셔너리</h2><p>이산확률분포의 세계와 연속확률분포의 세계로 나눈 3D 지도. 21개 분포를 각자의 3D 그래프로 보여 주고 관계를 잇습니다. 분포마다 식, 용도, 파이썬 호출, 생성 AI 프롬프트.</p></a>
-    <a class="card" href="tables.html"><b>2편</b><h2>분포표 읽기 연구실</h2><p>Z·t·χ²·F·이항·포아송 표 읽는 법, 단측과 양측, 검정과 신뢰구간, 1종·2종 오류와 검정력. 일반 설명과 쉬운 설명 선택.</p></a>
+    <a class="card" href="dictionary.html"><img src="thumbs/part1.webp" width="960" height="540" alt="이산확률분포의 세계와 연속확률분포의 세계로 나뉜 3D 관계 지도. 분포마다 입체 그래프가 서 있다."><div class="body"><b>1편</b><h2>확률분포 딕셔너리</h2><p>이산확률분포의 세계와 연속확률분포의 세계로 나눈 3D 지도. 21개 분포를 각자의 3D 그래프로 보여 주고 관계를 잇습니다. 분포마다 식, 용도, 파이썬 호출, 생성 AI 프롬프트.</p></div></a>
+    <a class="card" href="tables.html"><img src="thumbs/part2.webp" width="960" height="540" alt="Z값 1.96을 넣어 표준정규 곡선 왼쪽 넓이 0.9750을 찾는 화면."><div class="body"><b>2편</b><h2>분포표 읽기 연구실</h2><p>Z·t·χ²·F·이항·포아송 표 읽는 법, 단측과 양측, 검정과 신뢰구간, 1종·2종 오류와 검정력. 일반 설명과 쉬운 설명 선택.</p></div></a>
   </div>
   <footer>글 · 안상선 ((주)M-Robo 대표) · <a href="https://adminmrobo.github.io/who_am_i/who_am_i.html">저자 소개</a></footer>
 </div>
