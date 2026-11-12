@@ -108,6 +108,13 @@ button.chip:hover{border-color:var(--accent)}
 .ebnote{font-size:13.5px;color:var(--muted);margin-bottom:8px}
 .ebbtns{display:flex;gap:6px;flex-wrap:wrap}
 @media (max-width:520px){.ebflow{grid-template-columns:1fr}.ebarrow{flex-direction:row;gap:8px;max-width:none}.ebarrow i{transform:rotate(90deg)}.ebdl{grid-template-columns:1fr}.ebdl dt{margin-top:4px}}
+.tbadge{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:0 6px;vertical-align:1px}
+.ix[aria-current="true"] .tbadge{color:var(--surface);border-color:var(--surface)}
+a.tablego{display:block;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--accent);border-left:4px solid var(--accent);border-radius:8px;padding:9px 12px;margin:0 0 14px}
+a.tablego b{color:var(--accent);display:block}
+a.tablego span{font-size:13.5px;color:var(--muted)}
+a.tablechip{text-decoration:none;border-color:var(--accent);color:var(--accent);font-weight:600}
+.infobar{flex-wrap:wrap}
 .layerlbl{position:absolute;left:0;top:0;font:600 11px/1.2 var(--body);color:var(--muted);pointer-events:none;letter-spacing:.03em;white-space:nowrap}
 .infobar{display:flex;gap:10px;align-items:center;padding:10px 12px;border-top:1px solid var(--line);font-size:14.5px;min-height:52px}
 .infobar .nm{font-weight:700}
@@ -1138,6 +1145,15 @@ $("#v-reset").onclick=()=>select(null);
 $("#axisnote").innerHTML="<b>두 세계</b> 이산확률분포의 세계(막대)와 연속확률분포의 세계(곡선)가 나뉘어 있습니다. <b>다리</b> 두 세계를 잇는 공중 아치는 이산 분포가 극한에서 연속 분포가 되거나(이항 → 정규), 한 과정의 두 얼굴인 관계(포아송 → 지수)입니다. <b>조작</b> 끌어서 돌리기, 휠로 확대, 이름표를 눌러 분포 선택, <b>선 위의 점(또는 조건 표시)을 눌러 관계 설명</b>. 휴대폰에서는 좌우로 밀어 돌리고, 「위에서 보기」로 전체 배치를 봅니다.";
 
 /* ---------- dictionary index & detail ---------- */
+const TB="tables.html";
+const TABLE={stdnormal:["z","Z표 (표준정규분포표)","z값을 넣으면 왼쪽 넓이를 표에서 찾아 줍니다."],
+  normal:["z","Z표로 읽기 (표준화한 뒤)","Z = (X − μ)/σ로 바꾼 다음 Z표에서 읽습니다."],
+  t:["t","t표","자유도와 꼬리 넓이로 임계값을 찾습니다. 단측·양측 머리가 함께 있습니다."],
+  chisq:["c","χ²표 (카이제곱분포표)","자유도와 오른쪽 꼬리 넓이로 임계값을 찾습니다."],
+  f:["f","F표","α별 표에서 분자·분모 자유도로 임계값을 찾습니다."],
+  binomial:["b","이항분포표 (누적)","n, p, k로 P(X ≤ k)를 찾습니다."],
+  poisson:["p","포아송분포표 (누적)","λ와 k로 P(X ≤ k)를 찾습니다."]};
+const tableLink=id=>TB+"#table-"+TABLE[id][0];
 let famFilter=null;
 function renderFamChips(){
   $("#famchips").innerHTML=Object.entries(FAM).map(([k,f])=>`<button class="chip" data-fam="${k}" aria-pressed="${famFilter===k}"><span class="dot" style="background:var(${f.v})"></span>${f.ko}</button>`).join("");
@@ -1146,7 +1162,7 @@ function renderFamChips(){
 function renderIndex(){
   const q=$("#q").value.trim().toLowerCase();
   const list=D.filter(d=>(!famFilter||d.fam===famFilter)&&(!q||[d.ko,d.en,d.sym,d.short,d.story,d.uses.join(" "),d.py].join(" ").toLowerCase().includes(q)));
-  $("#index").innerHTML=list.length?list.map(d=>`<button class="ix" data-id="${d.id}" style="--fc:var(${FAM[d.fam].v})" aria-current="${d.id===sel}"><span class="n">${esc(d.ko)}</span><span class="e">${esc(d.en)}</span><div class="s">${esc(d.short)}</div></button>`).join(""):`<p class="none">찾는 분포가 없습니다. 다른 낱말로 찾아 보세요.</p>`;
+  $("#index").innerHTML=list.length?list.map(d=>`<button class="ix" data-id="${d.id}" style="--fc:var(${FAM[d.fam].v})" aria-current="${d.id===sel}"><span class="n">${esc(d.ko)}</span><span class="e">${esc(d.en)}</span>${TABLE[d.id]?'<span class="tbadge">분포표</span>':""}<div class="s">${esc(d.short)}</div></button>`).join(""):`<p class="none">찾는 분포가 없습니다. 다른 낱말로 찾아 보세요.</p>`;
   $("#index").querySelectorAll(".ix").forEach(b=>b.onclick=()=>select(b.dataset.id,true));
 }
 $("#q").addEventListener("input",renderIndex);
@@ -1174,6 +1190,7 @@ function renderDetail(){
       <div class="rels">${out.length?out.map(e=>relBtn(e,"out")).join(""):'<span class="none">없음</span>'}</div>
       <div class="subh">이 분포로 들어오는 길</div>
       <div class="rels">${inn.length?inn.map(e=>relBtn(e,"in")).join(""):'<span class="none">없음</span>'}</div>
+      ${TABLE[d.id]?`<div class="subh">2편 분포표 바로 가기</div><a class="tablego" href="${tableLink(d.id)}"><b>${esc(TABLE[d.id][1])} →</b><span>${esc(TABLE[d.id][2])}</span></a>`:""}
       <div class="subh">어디에 쓰나</div>
       <ul class="uses">${d.uses.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>
     </div>
@@ -1206,7 +1223,7 @@ function renderInfobar(){
   if(selEdge){ib.innerHTML=`<span class="none">관계 설명을 보고 있습니다. 지도 빈 곳을 누르거나 「닫기」를 누르면 돌아갑니다.</span>`;return;}
   if(!sel){ib.innerHTML=`<span class="none">분포 이름표를 누르면 연결된 관계가, 선 위의 점을 누르면 그 관계의 조건 설명이 나옵니다.</span>`;return;}
   const d=byId[sel]; const n=EDGES.filter(e=>e.a===sel||e.b===sel).length;
-  ib.innerHTML=`<span class="dot" style="background:var(${FAM[d.fam].v})"></span><span><span class="nm">${esc(d.ko)}</span> · ${esc(d.short)} · 관계 ${n}개</span><span class="sp"></span><button class="chip" id="godetail">사전 카드 보기 ↓</button>`;
+  ib.innerHTML=`<span class="dot" style="background:var(${FAM[d.fam].v})"></span><span><span class="nm">${esc(d.ko)}</span> · ${esc(d.short)} · 관계 ${n}개</span><span class="sp"></span>${TABLE[sel]?`<a class="chip tablechip" href="${tableLink(sel)}">${esc(TABLE[sel][1])} →</a>`:`<span class="none" style="font-size:13px">분포표 없음</span>`}<button class="chip" id="godetail">사전 카드 보기 ↓</button>`;
   $("#godetail").onclick=()=>$("#detail").scrollIntoView({behavior:"smooth",block:"start"});
 }
 function select(id,scroll,keepSpin){

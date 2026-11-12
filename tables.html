@@ -167,6 +167,8 @@ table.tb{border-collapse:separate;border-spacing:0;font-size:13.5px;font-variant
 .tb .two{color:var(--stain)}
 .tb .one{color:var(--info)}
 
+.maplink{margin:-4px 0 10px;font-size:14px}
+.maplink a{color:var(--info)}
 .quiz{background:rgba(130,184,255,.06);border:1px solid rgba(130,184,255,.35);border-radius:10px;padding:12px 16px;margin:14px 0}
 .quiz .q{font-weight:700;margin-bottom:8px}
 .quiz .opts{display:flex;flex-wrap:wrap;gap:6px}
@@ -323,6 +325,7 @@ footer ul{padding-left:20px}
   <!-- Z -->
   <div class="tabpane on" id="pane-z" role="tabpanel">
     <h3>Z표 (표준정규분포표)</h3>
+    <p class="maplink"><a href="dictionary.html#stdnormal">1편 3D 관계 지도에서 표준정규 분포 보기 →</a></p>
     <p class="gen">칸 안의 숫자는 <b>Φ(z) = P(Z ≤ z)</b>, 곧 z 왼쪽의 넓이입니다. 줄은 z의 소수 첫째 자리까지, 칸은 소수 둘째 자리입니다. 음수 z는 좌우 대칭을 써서 Φ(−z) = 1 − Φ(z)로 읽습니다.</p>
     <p class="ez">Z는 “평균에서 표준편차 몇 개만큼 떨어졌나”를 뜻합니다. 표 안의 숫자는 그 점보다 <b>왼쪽에 있을 확률</b>이에요. 1.96이면 1.9 줄로 가서 0.06 칸을 찾습니다.</p>
     <div class="ez" data-dlg="z"></div>
@@ -347,6 +350,7 @@ footer ul{padding-left:20px}
   <!-- t -->
   <div class="tabpane" id="pane-t" role="tabpanel">
     <h3>t표</h3>
+    <p class="maplink"><a href="dictionary.html#t">1편 3D 관계 지도에서 스튜던트 t 분포 보기 →</a></p>
     <p class="gen">줄은 자유도 df(보통 n − 1), 칸은 꼬리 넓이 α, 칸 안의 숫자는 <b>임계값 t</b>입니다. 이 표의 머리에는 <span class="one">단측 α</span>와 <span class="two">양측 α</span>가 두 줄로 붙어 있습니다. 양측 0.05 칸은 단측 0.025 칸과 같은 열입니다. df가 커지면 마지막 줄 ∞, 곧 Z값에 가까워집니다.</p>
     <p class="ez">t표는 Z표와 반대로, 칸 안에 <b>경계선 숫자</b>가 들어 있어요. 사람 수가 적을수록(자유도가 작을수록) 경계선이 더 멀리 있습니다. 적은 자료로는 더 확실한 증거가 필요하다는 뜻이에요.</p>
     <div class="ez" data-dlg="t"></div>
@@ -371,6 +375,7 @@ footer ul{padding-left:20px}
   <!-- chi2 -->
   <div class="tabpane" id="pane-c" role="tabpanel">
     <h3>χ²표 (카이제곱분포표)</h3>
+    <p class="maplink"><a href="dictionary.html#chisq">1편 3D 관계 지도에서 카이제곱 분포 보기 →</a></p>
     <p class="gen">줄은 자유도, 칸은 <b>오른쪽 꼬리 넓이 α</b>, 칸 안의 숫자는 그 넓이를 만드는 임계값입니다. 분포가 좌우 대칭이 아니므로 왼쪽 경계는 α = 0.95, 0.975 같은 큰 α 칸에서 따로 읽습니다. 적합도·독립성 검정은 오른쪽 꼬리 하나만 씁니다.</p>
     <p class="ez">카이제곱은 “예상과 실제가 얼마나 어긋났나”를 모은 점수예요. 점수는 0보다 작아질 수 없고 오른쪽으로 길게 늘어집니다. 그래서 왼쪽과 오른쪽 경계를 따로 찾아야 해요.</p>
     <div class="ez" data-dlg="c"></div>
@@ -394,6 +399,7 @@ footer ul{padding-left:20px}
   <!-- F -->
   <div class="tabpane" id="pane-f" role="tabpanel">
     <h3>F표</h3>
+    <p class="maplink"><a href="dictionary.html#f">1편 3D 관계 지도에서 F 분포 보기 →</a></p>
     <p class="gen">F표는 α마다 표가 한 장씩입니다. <b>열은 분자 자유도 ν₁</b>, <b>줄은 분모 자유도 ν₂</b>, 칸 안의 숫자는 오른쪽 꼬리 α의 임계값입니다. 왼쪽 경계는 F<sub>1−α</sub>(ν₁, ν₂) = 1 / F<sub>α</sub>(ν₂, ν₁)로 자유도를 바꿔 읽습니다.</p>
     <p class="ez">F는 “두 흩어짐의 비율”이에요. 반 세 개의 평균이 서로 다른지 볼 때(분산분석) 씁니다. 표가 α마다 따로 있고, <b>위쪽 머리가 분자, 왼쪽 줄이 분모</b>예요. 둘을 바꾸면 값이 달라지니 조심해요.</p>
     <div class="ez" data-dlg="f"></div>
@@ -418,6 +424,7 @@ footer ul{padding-left:20px}
   <!-- binom -->
   <div class="tabpane" id="pane-b" role="tabpanel">
     <h3>이항분포표 (누적)</h3>
+    <p class="maplink"><a href="dictionary.html#binomial">1편 3D 관계 지도에서 이항 분포 보기 →</a></p>
     <p class="gen">n과 p를 고른 뒤, 줄 k에서 <b>P(X ≤ k)</b>를 읽습니다. 정확히 k번일 확률은 P(X = k) = P(X ≤ k) − P(X ≤ k − 1), 곧 위아래 두 칸의 차입니다. “k번 이상”은 1 − P(X ≤ k − 1)입니다.</p>
     <p class="ez">동전을 n번 던져 앞면이 k번 <b>이하</b>로 나올 확률이 칸에 있어요. “딱 k번”은 바로 위 칸을 빼면 되고, “k번 이상”은 1에서 위 칸을 빼면 돼요.</p>
     <div class="ez" data-dlg="b"></div>
@@ -438,6 +445,7 @@ footer ul{padding-left:20px}
   <!-- poisson -->
   <div class="tabpane" id="pane-p" role="tabpanel">
     <h3>포아송분포표 (누적)</h3>
+    <p class="maplink"><a href="dictionary.html#poisson">1편 3D 관계 지도에서 포아송 분포 보기 →</a></p>
     <p class="gen">열은 평균 λ, 줄은 k, 칸은 <b>P(X ≤ k)</b>입니다. 단위 시간당 사건 수(콜, 고장, 주문)를 다룰 때 씁니다. 읽는 법은 이항 누적표와 같습니다.</p>
     <p class="ez">한 시간에 평균 λ번 오는 손님이 k명 <b>이하</b>로 올 확률이에요. 평균이 4명인 가게에 손님이 9명 넘게 오는 날은 얼마나 드물까요? 표에서 찾아봐요.</p>
     <div class="ez" data-dlg="p"></div>
@@ -969,7 +977,9 @@ function drawP(scroll){
 
 /* tabs */
 let curTab="z";
-$$("[data-tab]").forEach(b=>b.onclick=()=>{ curTab=b.dataset.tab; $$("[data-tab]").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $$(".tabpane").forEach(p=>p.classList.toggle("on",p.id==="pane-"+curTab)); drawTab(true); });
+$$("[data-tab]").forEach(b=>b.onclick=()=>{ curTab=b.dataset.tab; $$("[data-tab]").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); $$(".tabpane").forEach(p=>p.classList.toggle("on",p.id==="pane-"+curTab)); drawTab(true); try{history.replaceState(null,"","#table-"+curTab);}catch(e){} });
+function openTableHash(){ const m=(location.hash||"").match(/^#table-([ztcfbp])$/); if(!m) return; const b=document.querySelector('[data-tab="'+m[1]+'"]'); if(b){ b.click(); const pane=document.getElementById("pane-"+m[1]); if(pane) setTimeout(()=>pane.scrollIntoView({block:"start"}),60); } }
+window.addEventListener("hashchange",openTableHash);
 function drawTab(scroll){ ({z:drawZ,t:drawT,c:drawC,f:drawF,b:drawB,p:drawP})[curTab](scroll); }
 
 /* ---------- ② sided ---------- */
@@ -1139,6 +1149,7 @@ $("#gloss").innerHTML=GL.map(g=>`<div><b>${esc(g[0])}</b> — ${esc(g[1])}</div>
 renderDialogues(); buildB(); buildF();
 function redrawAll(){ drawTab(false); drawS2(); drawS3(); drawS4(); drawSim(); duelSides(); }
 setMode(m0);
+openTableHash();
 let rt=null; window.addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(redrawAll,120);});
 })();
 </script>
