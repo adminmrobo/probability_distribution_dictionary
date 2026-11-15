@@ -13,7 +13,7 @@
 :root{
   --paper:#f4f6f8; --surface:#ffffff; --ink:#18212c; --muted:#5a6575; --line:#d8dde5;
   --accent:#1f7a80;
-  --transform:#b8402c; --limit:#2c8a55;
+  --transform:#b8402c; --limit:#2c8a55; --closure:#a23a86;
   --f-count:#d4693a; --f-normal:#1f7a80; --f-wait:#b98613; --f-unit:#7357b8; --f-test:#2d63b8; --f-tail:#6b7280;
   --code-bg:#eef2f5;
   --display:"Noto Serif KR", "Nanum Myeongjo", Georgia, serif;
@@ -24,14 +24,14 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --paper:#10151c; --surface:#171f29; --ink:#e5e9ef; --muted:#9ba6b4; --line:#2a3441;
-    --accent:#4fb3b9; --transform:#ef7a63; --limit:#5cc48a;
+    --accent:#4fb3b9; --transform:#ef7a63; --limit:#5cc48a; --closure:#e58cc9;
     --f-count:#f0915f; --f-normal:#4fb3b9; --f-wait:#e2b445; --f-unit:#a58ef0; --f-test:#6e9cf0; --f-tail:#a3abb8;
     --code-bg:#1d2733; color-scheme: dark;
   }
 }
 :root[data-theme="dark"]{
   --paper:#10151c; --surface:#171f29; --ink:#e5e9ef; --muted:#9ba6b4; --line:#2a3441;
-  --accent:#4fb3b9; --transform:#ef7a63; --limit:#5cc48a;
+  --accent:#4fb3b9; --transform:#ef7a63; --limit:#5cc48a; --closure:#e58cc9;
   --f-count:#f0915f; --f-normal:#4fb3b9; --f-wait:#e2b445; --f-unit:#a58ef0; --f-test:#6e9cf0; --f-tail:#a3abb8;
   --code-bg:#1d2733; color-scheme: dark;
 }
@@ -65,6 +65,10 @@ button.chip:hover{border-color:var(--accent)}
 .dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
 .swatch-line{width:22px;height:0;border-top:2.5px solid var(--transform);display:inline-block}
 .swatch-line.dash{border-top:2.5px dashed var(--limit)}
+.swatch-ring{width:12px;height:12px;border:2.5px solid var(--closure);border-radius:50%;display:inline-block}
+.lbl .cl{color:var(--closure);font-weight:700;margin-left:3px}
+.adv{font-size:11px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px;margin-left:5px;white-space:nowrap}
+#t-A[aria-pressed="true"]{outline:2px solid var(--accent)}
 #stage{position:relative;height:min(68vh,620px);min-height:420px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
 #stage canvas{display:block;width:100%;height:100%}
 #stage.dragging{cursor:grabbing}
@@ -149,7 +153,7 @@ dl.facts dd{margin:0;font-family:var(--mono);font-size:13.5px;overflow-wrap:anyw
 .rels{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
 .rel{font:inherit;font-size:13px;border-radius:7px;padding:4px 9px;cursor:pointer;background:var(--paper);border:1px solid var(--line);color:var(--ink);text-align:left}
 .rel .k{font-weight:700}
-.rel.T{border-left:3px solid var(--transform)} .rel.L{border-left:3px dashed var(--limit)}
+.rel.T{border-left:3px solid var(--transform)} .rel.L{border-left:3px dashed var(--limit)} .rel.C{border-left:3px double var(--closure);cursor:default}
 .rel .c{color:var(--muted);margin-left:4px}
 ul.uses{margin:0 0 14px;padding-left:20px}
 ul.uses li{margin:2px 0}
@@ -181,6 +185,7 @@ td.mono{font-family:var(--mono);font-size:12.5px}
 .kind{font-size:12px;font-weight:700;border-radius:5px;padding:1px 7px;white-space:nowrap}
 .kind.T{color:var(--transform);border:1px solid var(--transform)}
 .kind.L{color:var(--limit);border:1px dashed var(--limit)}
+.kind.C{color:var(--closure);border:1px double var(--closure)}
 td button.link{font:inherit;background:none;border:0;padding:0;color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 
 .prose{max-width:70ch}
@@ -231,6 +236,8 @@ footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px so
     <div class="toolbar" role="group" aria-label="지도 보기 설정">
       <button class="chip" id="t-T" aria-pressed="true"><span class="swatch-line"></span>변환·특수 경우</button>
       <button class="chip" id="t-L" aria-pressed="true"><span class="swatch-line dash"></span>극한 근사</button>
+      <button class="chip" id="t-C" aria-pressed="true"><span class="swatch-ring"></span>닫힘 (↻)</button>
+      <button class="chip" id="t-A" aria-pressed="false" title="성립 조건이 까다롭거나 식을 알아야 의미가 보이는 관계">고급 관계 보기</button>
       <span class="sp"></span>
       <button class="chip" id="v-front">비스듬히</button>
       <button class="chip" id="v-side">위에서 보기</button>
@@ -257,8 +264,11 @@ footer{padding:26px 0 40px;color:var(--muted);font-size:13.5px;border-top:1px so
 
 <section id="table" aria-labelledby="h-table">
   <h2 id="h-table">관계 요약표</h2>
-  <p class="prose">지도의 화살표를 한 줄씩 풀었습니다. 실선은 정확히 성립하는 변환이나 특수 경우, 점선은 조건이 극한으로 갈 때 성립하는 근사입니다. 분포 이름을 누르면 사전 카드로 갑니다.</p>
+  <p class="prose">지도의 화살표를 한 줄씩 풀었습니다. 「고급」 표시가 붙은 줄은 지도에서 「고급 관계 보기」를 켰을 때만 나타납니다. 실선은 정확히 성립하는 변환이나 특수 경우, 점선은 조건이 극한으로 갈 때 성립하는 근사입니다. 분포 이름을 누르면 사전 카드로 갑니다.</p>
   <div class="tablewrap"><table id="reltable"></table></div>
+  <h3 class="subh" style="margin-top:22px">닫힘: 같은 분포로 되돌아오는 연산</h3>
+  <p class="prose">같은 분포끼리 더하거나 곱하거나 가장 작은 값을 골라도, 결과가 다시 같은 분포가 되는 경우입니다. 지도에서는 받침대를 두른 고리(↻)로 표시합니다. 모두 서로 독립인 확률변수를 전제로 합니다.</p>
+  <div class="tablewrap"><table id="closetable"></table></div>
 </section>
 
 <section id="notes" aria-labelledby="h-notes">
@@ -470,7 +480,7 @@ const D=[
 {id:"bernoulli",ko:"베르누이",en:"Bernoulli",sym:"Bernoulli(p)",fam:"count",pos:[-8.3,4,3],
  short:"한 번의 예/아니오",story:"동전을 한 번 던져 성공이면 1, 실패면 0. 모든 이산 계수 분포의 벽돌입니다.",
  sup:"{0, 1}",f:"P(X=1)=p, P(X=0)=1−p",mean:"p",vr:"p(1−p)",
- uses:["클릭·구매·청구 같은 0/1 결과","로지스틱 회귀의 목표 변수","A/B 테스트에서 사용자 한 명의 결과"],
+ uses:["클릭·구매·청구 같은 0/1 결과","로지스틱 회귀의 목표 변수","A/B 테스트에서 사용자 한 명의 결과","드롭아웃: 뉴런을 확률 p로 끄는 마스크"],
  py:`X = stats.bernoulli(p=0.3)
 X.pmf([0, 1])                 # [0.7, 0.3]
 X.rvs(size=10, random_state=0)`,
@@ -598,7 +608,7 @@ stats.fisher_exact([[8, 2], [1, 5]])`,
 {id:"normal",ko:"정규",en:"Normal",sym:"N(μ, σ²)",fam:"normal",pos:[-2,0,0],
  short:"작은 요인의 합, 종 모양",story:"작은 요인이 많이 더해진 결과는 원래 분포와 상관없이 종 모양에 다가갑니다(중심극한정리). 그래서 극한 화살표가 대부분 여기로 모입니다.",
  sup:"(−∞, ∞)",f:"f(x)=1/(σ√(2π))·e^(−(x−μ)²/(2σ²))",mean:"μ",vr:"σ²",
- uses:["측정 오차, 회귀 잔차","평균의 신뢰구간","z-점수 이상 탐지","릿지 회귀의 사전분포(L2)"],
+ uses:["측정 오차, 회귀 잔차","평균의 신뢰구간","z-점수 이상 탐지","릿지 회귀의 사전분포(L2)","가우시안 과정, 가중치 초기화(He·Xavier 정규)"],
  py:`X = stats.norm(loc=170, scale=6)   # scale은 표준편차 σ (분산 아님)
 X.cdf(180) - X.cdf(160)            # 160~180 사이 비율
 X.ppf([0.025, 0.975])
@@ -616,7 +626,7 @@ stats.probplot(data, dist="norm")    # QQ 플롯 좌표`,
 {id:"stdnormal",ko:"표준정규",en:"Standard normal",sym:"Z ~ N(0, 1)",fam:"test",pos:[-6,-3.5,-3],
  short:"단위를 지운 정규, 검정의 재료",story:"정규변수에서 평균을 빼고 표준편차로 나누면 표준정규가 됩니다. 카이제곱·t·F·코시가 모두 Z를 재료로 만들어집니다.",
  sup:"(−∞, ∞)",f:"φ(z)=e^(−z²/2)/√(2π)",mean:"0",vr:"1",
- uses:["z-검정, 비율 검정","표준화 점수 비교","분위수 1.645, 1.96, 2.576"],
+ uses:["z-검정, 비율 검정","표준화 점수 비교","분위수 1.645, 1.96, 2.576","확산 모델·VAE의 잡음, 재매개변수화 X = μ + σZ"],
  py:`Z = stats.norm()                # loc=0, scale=1
 Z.ppf(0.975)                     # 1.959964
 2 * Z.sf(2.3)                    # 양측 p-값
@@ -668,7 +678,7 @@ rng = np.random.default_rng(0)
 {id:"uniform",ko:"균등",en:"Uniform",sym:"U(0, 1)",fam:"unit",pos:[8,0,0],
  short:"모든 난수의 출발점",story:"0과 1 사이 어디나 똑같이. U를 cdf의 역함수에 넣으면 어떤 분포든 뽑을 수 있어(역변환 표집) 모든 시뮬레이션의 출발점이 됩니다.",
  sup:"(0, 1)",f:"f(x)=1",mean:"1/2",vr:"1/12",
- uses:["몬테카를로 시뮬레이션","역변환 표집 (−ln U → 지수)","귀무가설 아래 p-값의 분포"],
+ uses:["몬테카를로 시뮬레이션","역변환 표집 (−ln U → 지수)","귀무가설 아래 p-값의 분포","가중치 초기화(Xavier 균등), 하이퍼파라미터 무작위 탐색"],
  py:`U = stats.uniform(loc=0, scale=1)     # 구간 [loc, loc+scale]
 u = U.rvs(5, random_state=0)
 -np.log(u) / 2.0                        # 지수(λ=2) 난수
@@ -684,7 +694,7 @@ stats.norm.ppf(u)                       # 표준정규 난수`,
 {id:"chisq",ko:"카이제곱",en:"Chi-squared",sym:"χ²(ν)",fam:"test",pos:[-1,-3.5,-3],
  short:"표준정규 제곱의 합",story:"표준정규 ν개를 제곱해 더한 값. 표본분산이 이 분포를 따르기 때문에 분산 추정과 적합도 검정에 쓰입니다.",
  sup:"(0, ∞)",f:"f(x)=x^(ν/2−1)e^(−x/2)/(2^(ν/2)Γ(ν/2))",mean:"ν",vr:"2ν",
- uses:["분산의 신뢰구간","적합도·독립성 검정","우도비 검정의 기준 분포"],
+ uses:["분산의 신뢰구간","적합도·독립성 검정","우도비 검정의 기준 분포","특성 선택(SelectKBest의 chi2 점수)"],
  py:`X = stats.chi2(df=4)
 X.ppf(0.95)                      # 임계값 9.488
 stats.chisquare(observed, expected)
@@ -719,7 +729,7 @@ df, loc, scale = stats.t.fit(returns)     # 수익률 꼬리 적합`,
 {id:"f",ko:"F",en:"F (Fisher–Snedecor)",sym:"F(ν₁, ν₂)",fam:"test",pos:[-0.5,-7.5,-3],
  short:"두 분산의 비",story:"자유도로 나눈 카이제곱 둘의 비. 집단 간 변동이 집단 안 변동보다 큰지를 재는 분산분석과 회귀 전체 검정의 기준입니다.",
  sup:"(0, ∞)",f:"X=(χ²₁/ν₁)/(χ²₂/ν₂)",mean:"ν₂/(ν₂−2) (ν₂>2)",vr:"2ν₂²(ν₁+ν₂−2)/[ν₁(ν₂−2)²(ν₂−4)] (ν₂>4)",
- uses:["일원·이원 분산분석","회귀모형 전체 유의성","두 집단 등분산 검정"],
+ uses:["일원·이원 분산분석","회귀모형 전체 유의성","두 집단 등분산 검정","중첩 모형 비교, 특성 선택(f_classif)"],
  py:`F = stats.f(dfn=5, dfd=10)
 F.sf(3.2)                          # p-값
 stats.f_oneway(g1, g2, g3)          # 일원 분산분석
@@ -735,7 +745,7 @@ stats.t(10).ppf(0.975)**2, stats.f(1, 10).ppf(0.95)   # 같음: t² = F(1,ν)`,
 {id:"gamma",ko:"감마",en:"Gamma",sym:"Gamma(r, λ)",fam:"wait",pos:[3.5,-3.5,0],
  short:"r번째 사건까지 대기시간",story:"지수 대기시간 r개의 합. r이 정수가 아니어도 되며, 양수이고 오른쪽으로 치우친 양을 유연하게 맞춥니다. 카이제곱과 지수가 모두 감마의 특수 경우입니다.",
  sup:"(0, ∞)",f:"f(x)=λʳ·x^(r−1)·e^(−λx)/Γ(r)",mean:"r/λ",vr:"r/λ²",
- uses:["보험금 크기, 강우량","포아송 비율 λ의 켤레 사전분포","여러 단계 공정의 총 소요 시간"],
+ uses:["보험금 크기, 강우량","포아송 비율 λ의 켤레 사전분포","여러 단계 공정의 총 소요 시간","베이즈 모형에서 정밀도(1/σ²)의 사전분포"],
  py:`r, lam = 3, 1.0
 X = stats.gamma(a=r, scale=1/lam)   # scale = 1/λ ← 가장 흔한 실수
 X.mean()                             # r/λ = 3
@@ -769,7 +779,7 @@ loc, scale = stats.expon.fit(gaps, floc=0)
 {id:"cauchy",ko:"코시",en:"Cauchy",sym:"Cauchy(x₀, γ)",fam:"tail",pos:[-8,-7,0],
  short:"평균이 없는 분포",story:"표준정규 둘의 비. 꼬리가 너무 두꺼워 평균도 분산도 없습니다. 표본평균을 아무리 모아도 수렴하지 않는 큰수의 법칙의 반례입니다.",
  sup:"(−∞, ∞)",f:"f(x)=1/(πγ[1+((x−x₀)/γ)²])",mean:"없음",vr:"없음",
- uses:["공명 스펙트럼(로런츠 선형)","강건 추정의 스트레스 테스트","t(1)로서 극단 꼬리 모형"],
+ uses:["공명 스펙트럼(로런츠 선형)","강건 추정의 스트레스 테스트","t(1)로서 극단 꼬리 모형","두꺼운 꼬리 잡음, 척도 모수의 반코시 사전분포"],
  py:`X = stats.cauchy(loc=0, scale=1)
 x = X.rvs(10**5, random_state=0)
 np.cumsum(x)[[99, 9999, 99999]] / [100, 10000, 100000]  # 평균이 안정되지 않음
@@ -852,7 +862,14 @@ const EASY={
 "uniform>exponential":["0~1 균등 난수 U를 −ln U ÷ λ로 바꾸면 지수 난수가 됩니다. 컴퓨터가 여러 분포의 난수를 만드는 기본 방법(역변환)입니다.","U = 0.5, λ = 2면 −ln 0.5 ÷ 2 ≈ 0.35입니다."],
 "beta>uniform":["α = β = 1이면 베타 곡선이 평평해져 0~1 균등이 됩니다. ‘아무것도 모른다’는 사전분포로 씁니다.","전환율을 전혀 모를 때 베타(1, 1)에서 출발해 자료로 갱신합니다."],
 "beta>normal":["α와 β가 커지면(자료가 많이 쌓이면) 베타가 좁은 종 모양이 됩니다. 정규로 어림할 수 있습니다.","1,000명 중 300명이 샀다면 베타(301, 701)는 평균 0.30 근처의 좁은 종 모양입니다."],
-"discunif>uniform":["1~n 중 하나를 고른 뒤 n으로 나누면, n이 커질수록 칸이 촘촘해져 0~1 연속 균등이 됩니다.","n = 1000이면 0.001 간격의 값이 거의 0~1 전체를 고르게 채웁니다."]
+"discunif>uniform":["1~n 중 하나를 고른 뒤 n으로 나누면, n이 커질수록 칸이 촘촘해져 0~1 연속 균등이 됩니다.","n = 1000이면 0.001 간격의 값이 거의 0~1 전체를 고르게 채웁니다."],
+"chisq>exponential":["자유도 2인 카이제곱은 모양이 지수와 똑같습니다(λ = ½). 검정 쪽 분포와 대기시간 쪽 분포가 여기서 직접 만납니다.","χ²(2)의 평균은 2이고, 지수(λ = ½)의 평균 1 ÷ ½도 2입니다."],
+"exponential>chisq":["지수 대기시간 X에 2λ를 곱하면 자유도 2의 카이제곱이 됩니다. 수명 자료의 신뢰구간을 카이제곱표로 구하는 근거입니다.","λ = 0.5인 수명 X에 2λ = 1을 곱하면 그대로 χ²(2)입니다."],
+"exponential>uniform":["지수 X를 e^(−λX)로 바꾸면 0~1 균등이 됩니다. −ln U ÷ λ(역변환 표집)를 거꾸로 돌린 것으로, 확률적분변환이라고 부릅니다.","λ = 2, X = 0.35면 e^(−0.7) ≈ 0.50, 딱 중앙값 자리입니다."],
+"laplace>exponential":["중심이 0인 라플라스에서 부호를 떼면(|X|) 지수가 됩니다. 양쪽 꼬리 하나를 접어 포갠 셈입니다.","라플라스(0, b = 2)의 |X|는 지수(λ = ½), 평균 2입니다."],
+"f>chisq":["분모 자유도 ν₂가 아주 커지면 분모가 1에 가까워져, ν₁F가 카이제곱(ν₁)이 됩니다. 표본이 크면 F검정과 카이제곱(왈드) 검정이 같은 답을 냅니다.","F(3, 10000)의 상위 5% 값 ≈ 2.61, ×3 = 7.82로 χ²(3)의 7.81과 거의 같습니다."],
+"stdnormal>normal":["표준정규 Z에 σ를 곱하고 μ를 더하면 어떤 정규든 만들 수 있습니다. VAE가 잡음 Z만 뽑고 μ, σ는 학습하게 하는 재매개변수화 트릭이 바로 이 식입니다.","Z = 1.0, μ = 170, σ = 6이면 X = 176입니다."],
+"weibull>exponential":["와이불 수명을 (X/λ)^k로 펴 주면 고장률이 일정한 지수(1)로 돌아갑니다. 와이불 확률지(그래프 용지)가 이 변환을 씁니다.","k = 2, λ = 10에서 X = 10이면 (10/10)² = 1, 지수(1)의 평균과 같습니다."],
 };
 
 /* ---------- edges ---------- */
@@ -891,8 +908,29 @@ const EDGES=[
 ["uniform","exponential","T","−ln U / λ","역변환 표집"],
 ["beta","uniform","T","α = β = 1","정보 없는 사전분포"],
 ["beta","normal","L","α, β→∞","자료가 많으면 정규 근사"],
-["discunif","uniform","L","n→∞, X/n","격자가 촘촘해지면 연속"]
-].map(([a,b,k,lab,why],i)=>({i,a,b,k,lab,why}));
+["discunif","uniform","L","n→∞, X/n","격자가 촘촘해지면 연속"],
+/* 고급 관계: 「고급 관계 보기」를 켰을 때만 지도에 나타남 */
+["chisq","exponential","T","ν = 2 → 지수(λ = ½)","검정 분포와 대기시간 분포가 만나는 점",1],
+["exponential","chisq","T","2λX ~ χ²(2)","수명 자료의 신뢰구간을 카이제곱표로",1],
+["exponential","uniform","T","e^(−λX) ~ U(0, 1)","확률적분변환(역변환 표집의 반대)",1],
+["laplace","exponential","T","|X| (μ = 0) → 지수(1/b)","라플라스의 양쪽 꼬리를 접음",1],
+["f","chisq","L","ν₁F → χ²(ν₁), ν₂→∞","대표본에서 F검정 ≈ 카이제곱 검정",1],
+["stdnormal","normal","T","X = μ + σZ","재매개변수화(VAE), 정규 난수 만들기",1],
+["weibull","exponential","T","(X/λ)^k ~ Exp(1)","와이불 확률지, 수명 자료 점검",1]
+].map(([a,b,k,lab,why,adv],i)=>({i,a,b,k,lab,why,adv:!!adv}));
+
+/* ---------- closures: 같은 분포로 되돌아오는 연산 (모두 독립 가정) ---------- */
+const CLOSE=[
+{id:"normal",op:"ΣX",res:"N(Σμ, Σσ²)",easy:"정규끼리 더해도 정규입니다. 평균끼리, 분산끼리 더하면 됩니다.",ex:"N(10, 4) + N(20, 9) = N(30, 13)"},
+{id:"poisson",op:"ΣX",res:"Poisson(Σλ)",easy:"가게 두 곳의 시간당 손님 수를 합쳐도 포아송입니다.",ex:"Poisson(3) + Poisson(5) = Poisson(8)"},
+{id:"chisq",op:"ΣX",res:"χ²(Σν)",easy:"카이제곱끼리 더하면 자유도가 더해집니다. 검정 통계량을 칸별로 합산할 수 있는 이유입니다.",ex:"χ²(2) + χ²(3) = χ²(5)"},
+{id:"lognormal",op:"ΠX",res:"LogN(Σμ, Σσ²)",easy:"로그정규끼리 곱해도 로그정규입니다. 곱셈 성장이 여러 번 쌓여도 같은 꼴이라는 뜻입니다.",ex:"해마다 수익률이 로그정규면 10년 누적도 로그정규"},
+{id:"exponential",op:"min X",res:"Exp(Σλ)",easy:"부품 여러 개 중 가장 먼저 고장 나는 시점도 지수입니다. 고장률은 더해집니다(직렬 시스템, 경쟁 위험).",ex:"고장률 0.1, 0.2인 부품 → 첫 고장은 Exp(0.3), 평균 3.3"},
+{id:"geometric",op:"min X",res:"Geom(1 − Π(1 − pᵢ))",easy:"여러 사람이 동시에 시도할 때 누군가 처음 성공하는 시점도 기하분포입니다.",ex:"p = 0.2, 0.3 → 1 − 0.8 × 0.7 = 0.44"},
+{id:"cauchy",op:"X̄ (평균)",res:"Cauchy(x₀, γ) 그대로",easy:"코시 표본을 아무리 많이 평균 내도 다시 같은 코시입니다. 대수의 법칙이 통하지 않는 대표 사례입니다.",ex:"n = 1,000,000개 평균도 n = 1개와 퍼짐이 같음"},
+{id:"gamma",op:"ΣX (λ가 같을 때)",res:"Gamma(Σr, λ)",easy:"비율 λ가 같은 감마끼리 더하면 r이 더해집니다. λ가 다르면 감마가 아닙니다.",ex:"Gamma(2, 1) + Gamma(3, 1) = Gamma(5, 1)",adv:1},
+{id:"cauchy",op:"1/X (x₀ = 0)",res:"Cauchy(0, 1/γ)",easy:"중심이 0인 코시의 역수도 코시입니다. 0 근처 값이 큰 값으로, 큰 값이 0 근처로 자리를 바꿉니다.",ex:"Cauchy(0, 2)의 역수는 Cauchy(0, 0.5)",adv:1}
+];
 
 /* ---------- param table ---------- */
 const PT=[
@@ -923,22 +961,23 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const famColor=f=>cssv(FAM[f].v);
-const deg={}; D.forEach(d=>deg[d.id]=0); EDGES.forEach(e=>{deg[e.a]++;deg[e.b]++;});
+const deg={}; D.forEach(d=>deg[d.id]=0); EDGES.filter(e=>!e.adv).forEach(e=>{deg[e.a]++;deg[e.b]++;});
 
 /* summary */
 (function(){
-  const nT=EDGES.filter(e=>e.k==="T").length, nL=EDGES.length-nT;
+  const BE=EDGES.filter(e=>!e.adv), nT=BE.filter(e=>e.k==="T").length, nL=BE.length-nT, nA=EDGES.length-BE.length, nC=CLOSE.filter(c=>!c.adv).length, nCA=CLOSE.length-nC;
   const hubs=Object.entries(deg).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([id,n])=>byId[id].ko+" "+n);
   $("#summary").innerHTML=
    `<div class="sumcard"><b>분포</b><span class="big">${D.length}</span> 이산 ${D.filter(d=>d.fam==="count").length} · 연속 ${D.filter(d=>d.fam!=="count").length}</div>
-    <div class="sumcard"><b>관계</b><span class="big">${EDGES.length}</span> 변환·특수 경우 ${nT} · 극한 근사 ${nL}</div>
+    <div class="sumcard"><b>관계</b><span class="big">${BE.length}</span> 변환·특수 경우 ${nT} · 극한 근사 ${nL} · 고급 +${nA}</div>
+    <div class="sumcard"><b>닫힘 (↻)</b><span class="big">${nC}</span> 더하기·곱하기·최솟값·평균 · 고급 +${nCA}</div>
     <div class="sumcard wide"><b>가장 많이 이어진 분포 (연결 수)</b>${hubs.join(" · ")}</div>
     <div class="sumcard wide"><b>읽는 법</b>지도는 이산확률분포의 세계와 연속확률분포의 세계로 나뉩니다. 두 세계를 잇는 다리는 대부분 정규로 모이는 극한입니다.</div>`;
 })();
 
 /* ---------- 3D relation map: two worlds, 3D charts ---------- */
 const stage=$("#stage");
-let sel=null, showT=true, showL=true, spin=!matchMedia("(prefers-reduced-motion: reduce)").matches;
+let sel=null, showT=true, showL=true, showC=true, showAdv=false, spin=!matchMedia("(prefers-reduced-motion: reduce)").matches;
 $("#v-spin").setAttribute("aria-pressed",String(spin));
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
@@ -1007,7 +1046,7 @@ D.forEach(d=>{
     chart.add(top); mats.push(top.material);
   }
   const el=document.createElement("button");
-  el.className="lbl"; el.type="button"; el.innerHTML=esc(d.ko)+"<small>"+esc(d.sym)+"</small>";
+  el.className="lbl"; el.type="button"; el.innerHTML=esc(d.ko)+(CLOSE.some(c=>c.id===d.id&&!c.adv)?'<span class="cl" title="닫힘 관계가 있음">↻</span>':"")+"<small>"+esc(d.sym)+"</small>";
   el.setAttribute("aria-label",d.ko+" 분포 선택");
   el.addEventListener("click",ev=>{ev.stopPropagation(); if(moved>=6)return; select(d.id,false);});
   stage.appendChild(el);
@@ -1040,22 +1079,31 @@ EDGES.forEach(e=>{
   edgeObj.push({e,line,cone,el,mid,bridge});
 });
 
+/* closure rings: 받침대를 두른 고리 */
+const ringObj={};
+[...new Set(CLOSE.map(c=>c.id))].forEach(id=>{
+  const d=byId[id];
+  const m=new THREE.Mesh(new THREE.TorusGeometry(1.75,0.07,8,64),new THREE.MeshBasicMaterial({transparent:true,opacity:0.9}));
+  m.rotation.x=Math.PI/2; m.position.set(d.pos[0],0.04,d.pos[2]); world.add(m);
+  ringObj[id]={mesh:m,basic:CLOSE.some(c=>c.id===id&&!c.adv)};
+});
 function applyTheme(){
   const cT=new THREE.Color(cssv("--transform")), cL=new THREE.Color(cssv("--limit")), ink=new THREE.Color(cssv("--ink")), surf=new THREE.Color(cssv("--surface"));
   WORLDS.forEach(w=>{const c=new THREE.Color(cssv(w.col)); w.mesh.material.color=c; w.edge.material.color=c.clone();});
   D.forEach(d=>{const n=nodeObj[d.id]; const c=new THREE.Color(famColor(d.fam)); n.cmat.color=c; n.ped.material.color=surf.clone().lerp(c,0.25);
     n.mats.forEach(m=>{ if(m.isLineBasicMaterial) m.color=ink.clone(); });});
   edgeObj.forEach(o=>{const c=o.e.k==="T"?cT:cL;o.line.material.color=c.clone();o.cone.material.color=c.clone();});
+  const cC=new THREE.Color(cssv("--closure")); Object.values(ringObj).forEach(r=>r.mesh.material.color=cC.clone());
   if(ribbon) ribbon.rebuild();
 }
 let selEdge=null;
 function refreshVisibility(){
   const nb=new Set();
   if(selEdge){ nb.add(selEdge.a); nb.add(selEdge.b); }
-  else if(sel){nb.add(sel); EDGES.forEach(e=>{if(e.a===sel)nb.add(e.b); if(e.b===sel)nb.add(e.a);});}
+  else if(sel){nb.add(sel); EDGES.forEach(e=>{if(e.adv&&!showAdv)return; if(e.a===sel)nb.add(e.b); if(e.b===sel)nb.add(e.a);});}
   const any=!!(sel||selEdge);
   edgeObj.forEach(o=>{
-    const vis=(o.e.k==="T"?showT:showL);
+    const vis=(o.e.k==="T"?showT:showL)&&(!o.e.adv||showAdv);
     const on=selEdge?o.e===selEdge:(!sel||o.e.a===sel||o.e.b===sel);
     o.line.visible=o.cone.visible=vis;
     o.line.material.opacity=on?0.95:0.08; o.cone.material.opacity=on?0.95:0.08;
@@ -1063,6 +1111,7 @@ function refreshVisibility(){
     o.el.classList.toggle("dot",!any);
     o.el.classList.toggle("on",o.e===selEdge);
   });
+  Object.entries(ringObj).forEach(([id,r])=>{ r.mesh.visible=showC&&(r.basic||showAdv); r.mesh.material.opacity=(selEdge?false:(!sel||sel===id))?0.9:0.12; });
   D.forEach(d=>{const n=nodeObj[d.id];const on=!any||nb.has(d.id);
     n.mats.forEach(m=>m.opacity=on?(m===n.cmat?0.95:1):0.14);
     const hl=d.id===sel||(selEdge&&nb.has(d.id));
@@ -1085,7 +1134,7 @@ function openEdge(e){
   refreshVisibility(); renderIndex(); renderInfobar();
   const A=byId[e.a], B=byId[e.b], ez=EASY[e.a+">"+e.b]||["",""]; const bridge=A.fam==="count"&&B.fam!=="count";
   const box=$("#edgebox"); box.hidden=false;
-  box.innerHTML=`<div class="ebhead"><span class="kind ${e.k}">${e.k==="T"?"변환·특수 경우":"극한 근사"}</span>${bridge?'<span class="kind B">두 세계를 잇는 다리</span>':""}<b>${esc(A.ko)} → ${esc(B.ko)}</b><span class="sp"></span><button class="chip" id="ebclose">닫기</button></div>
+  box.innerHTML=`<div class="ebhead"><span class="kind ${e.k}">${e.k==="T"?"변환·특수 경우":"극한 근사"}</span>${e.adv?'<span class="adv">고급</span>':""}${bridge?'<span class="kind B">두 세계를 잇는 다리</span>':""}<b>${esc(A.ko)} → ${esc(B.ko)}</b><span class="sp"></span><button class="chip" id="ebclose">닫기</button></div>
   <div class="ebflow"><figure><canvas id="ebA"></canvas><figcaption>${esc(A.ko)} <small>${esc(A.sym)}</small></figcaption></figure>
   <div class="ebarrow ${e.k}"><span>${esc(e.lab)}</span><i>→</i></div>
   <figure><canvas id="ebB"></canvas><figcaption>${esc(B.ko)} <small>${esc(B.sym)}</small></figcaption></figure></div>
@@ -1137,6 +1186,8 @@ stage.addEventListener("click",e=>{ if(e.target.closest(".lbl,.ebtn")||moved>=6)
 
 $("#t-T").onclick=function(){showT=!showT;this.setAttribute("aria-pressed",showT);refreshVisibility();};
 $("#t-L").onclick=function(){showL=!showL;this.setAttribute("aria-pressed",showL);refreshVisibility();};
+$("#t-C").onclick=function(){showC=!showC;this.setAttribute("aria-pressed",showC);refreshVisibility();};
+$("#t-A").onclick=function(){showAdv=!showAdv;this.setAttribute("aria-pressed",showAdv);if(selEdge&&selEdge.adv&&!showAdv)closeEdge(); refreshVisibility(); renderInfobar(); if(sel)renderDetail();};
 const nearTurn=v=>Math.round((tYaw-v)/(2*PI))*2*PI+v;
 $("#v-front").onclick=()=>{tYaw=nearTurn(defYaw());tPitch=defPitch();};
 $("#v-side").onclick=()=>{tYaw=nearTurn(defYaw());tPitch=1.42;};
@@ -1169,7 +1220,7 @@ $("#q").addEventListener("input",renderIndex);
 
 function relBtn(e,dir){
   const other=dir==="out"?e.b:e.a; const d=byId[other];
-  return `<button class="rel ${e.k}" data-go="${other}"><span class="k">${dir==="out"?"→ ":"← "}${esc(d.ko)}</span><span class="c">${esc(e.lab)}</span></button>`;
+  return `<button class="rel ${e.k}" data-go="${other}"><span class="k">${dir==="out"?"→ ":"← "}${esc(d.ko)}</span><span class="c">${esc(e.lab)}</span>${e.adv?'<span class="adv">고급</span>':""}</button>`;
 }
 function linkList(keys){
   if(!keys.length) return `<p class="none">아직 연결된 해설이 없습니다. 후속 콘텐츠 후보입니다.</p>`;
@@ -1178,7 +1229,9 @@ function linkList(keys){
 function renderDetail(){
   const box=$("#detail");
   if(!sel){ box.innerHTML=`<p class="none" style="margin:0">위 목록이나 3D 지도에서 분포를 고르면 이 자리에 사전 카드가 열립니다.</p>`; if(ribbon) ribbon.clear(); return; }
-  const d=byId[sel]; const out=EDGES.filter(e=>e.a===d.id), inn=EDGES.filter(e=>e.b===d.id);
+  const d=byId[sel]; const okE=e=>!e.adv||showAdv; const out=EDGES.filter(e=>e.a===d.id&&okE(e)), inn=EDGES.filter(e=>e.b===d.id&&okE(e));
+  const hidA=EDGES.filter(e=>e.adv&&!showAdv&&(e.a===d.id||e.b===d.id)).length+CLOSE.filter(c=>c.adv&&!showAdv&&c.id===d.id).length;
+  const cls=CLOSE.filter(c=>c.id===d.id&&(!c.adv||showAdv));
   box.style.setProperty("--fc",`var(${FAM[d.fam].v})`);
   box.innerHTML=`
   <div class="dhead"><h2>${esc(d.ko)} 분포</h2><span class="sym">${esc(d.sym)}</span><span class="fam">${FAM[d.fam].ko}</span><span class="sym" style="font-family:var(--body)">${esc(d.en)}</span></div>
@@ -1190,6 +1243,8 @@ function renderDetail(){
       <div class="rels">${out.length?out.map(e=>relBtn(e,"out")).join(""):'<span class="none">없음</span>'}</div>
       <div class="subh">이 분포로 들어오는 길</div>
       <div class="rels">${inn.length?inn.map(e=>relBtn(e,"in")).join(""):'<span class="none">없음</span>'}</div>
+      ${cls.length?`<div class="subh">자기 자신으로 돌아오는 길 (↻ 닫힘)</div><div class="rels">${cls.map(c=>`<span class="rel C" title="${esc(c.easy)}"><span class="k">↻ ${esc(c.op)}</span><span class="c">→ ${esc(c.res)}</span>${c.adv?'<span class="adv">고급</span>':""}</span>`).join("")}</div><p class="none" style="margin:4px 0 0;font-size:13px">${esc(cls[0].easy)}</p>`:""}
+      ${hidA?`<p class="none" style="margin:6px 0 0;font-size:13px">고급 관계 ${hidA}개가 더 있습니다. 지도 위 「고급 관계 보기」를 켜면 보입니다.</p>`:""}
       ${TABLE[d.id]?`<div class="subh">2편 분포표 바로 가기</div><a class="tablego" href="${tableLink(d.id)}"><b>${esc(TABLE[d.id][1])} →</b><span>${esc(TABLE[d.id][2])}</span></a>`:""}
       <div class="subh">어디에 쓰나</div>
       <ul class="uses">${d.uses.map(u=>`<li>${esc(u)}</li>`).join("")}</ul>
@@ -1222,7 +1277,7 @@ function renderInfobar(){
   const ib=$("#infobar");
   if(selEdge){ib.innerHTML=`<span class="none">관계 설명을 보고 있습니다. 지도 빈 곳을 누르거나 「닫기」를 누르면 돌아갑니다.</span>`;return;}
   if(!sel){ib.innerHTML=`<span class="none">분포 이름표를 누르면 연결된 관계가, 선 위의 점을 누르면 그 관계의 조건 설명이 나옵니다.</span>`;return;}
-  const d=byId[sel]; const n=EDGES.filter(e=>e.a===sel||e.b===sel).length;
+  const d=byId[sel]; const n=EDGES.filter(e=>(!e.adv||showAdv)&&(e.a===sel||e.b===sel)).length;
   ib.innerHTML=`<span class="dot" style="background:var(${FAM[d.fam].v})"></span><span><span class="nm">${esc(d.ko)}</span> · ${esc(d.short)} · 관계 ${n}개</span><span class="sp"></span>${TABLE[sel]?`<a class="chip tablechip" href="${tableLink(sel)}">${esc(TABLE[sel][1])} →</a>`:`<span class="none" style="font-size:13px">분포표 없음</span>`}<button class="chip" id="godetail">사전 카드 보기 ↓</button>`;
   $("#godetail").onclick=()=>$("#detail").scrollIntoView({behavior:"smooth",block:"start"});
 }
@@ -1303,9 +1358,11 @@ const ribbon=(function(){
 
 /* ---------- relation table ---------- */
 function renderTable(){
-  const rows=EDGES.map(e=>`<tr><td><button class="link" data-go="${e.a}">${esc(byId[e.a].ko)}</button> → <button class="link" data-go="${e.b}">${esc(byId[e.b].ko)}</button></td><td><span class="kind ${e.k}">${e.k==="T"?"변환":"극한"}</span></td><td class="mono">${esc(e.lab)}</td><td>${esc(e.why)}</td><td class="easy">${esc((EASY[e.a+">"+e.b]||[""])[0])}</td></tr>`).join("");
+  const rows=EDGES.map(e=>`<tr><td><button class="link" data-go="${e.a}">${esc(byId[e.a].ko)}</button> → <button class="link" data-go="${e.b}">${esc(byId[e.b].ko)}</button></td><td><span class="kind ${e.k}">${e.k==="T"?"변환":"극한"}</span>${e.adv?'<span class="adv">고급</span>':""}</td><td class="mono">${esc(e.lab)}</td><td>${esc(e.why)}</td><td class="easy">${esc((EASY[e.a+">"+e.b]||[""])[0])}</td></tr>`).join("");
   $("#reltable").innerHTML=`<thead><tr><th>출발 → 도착</th><th>종류</th><th>조건·식</th><th>왜 쓰나</th><th>쉽게 말하면</th></tr></thead><tbody>${rows}</tbody>`;
   $("#reltable").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go,true));
+  $("#closetable").innerHTML=`<thead><tr><th>분포</th><th>연산</th><th>결과</th><th>쉽게 말하면</th><th>숫자로 보면</th></tr></thead><tbody>${CLOSE.map(c=>`<tr><td><button class="link" data-go="${c.id}">${esc(byId[c.id].ko)}</button></td><td><span class="kind C">↻ ${esc(c.op)}</span>${c.adv?'<span class="adv">고급</span>':""}</td><td class="mono">${esc(c.res)}</td><td class="easy">${esc(c.easy)}</td><td>${esc(c.ex)}</td></tr>`).join("")}</tbody>`;
+  $("#closetable").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>select(b.dataset.go,true));
   $("#paramtable").innerHTML=`<thead><tr><th>분포</th><th>교과서 표기</th><th>scipy 호출</th><th>주의</th></tr></thead><tbody>${PT.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td class="mono">${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join("")}</tbody>`;
 }
 /* ---------- my content map ---------- */
