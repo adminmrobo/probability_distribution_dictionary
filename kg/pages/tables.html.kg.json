@@ -1,0 +1,574 @@
+{
+ "version": "1.0",
+ "page": "tables",
+ "nodes": [
+  {
+   "id": "lab:concept/power",
+   "type": "Concept",
+   "label": {
+    "ko": "검정력",
+    "en": "statistical power"
+   },
+   "page": "tables",
+   "anchor": "#h-map",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "진짜 효과가 있을 때 그것을 잡아낼 확률(보통 80%)."
+   }
+  },
+  {
+   "id": "lab:concept/mean",
+   "type": "Concept",
+   "label": {
+    "ko": "평균",
+    "en": "mean"
+   },
+   "page": "tables",
+   "anchor": "#h-words",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "fin"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "모든 값을 더해 개수로 나눈 값. 데이터의 가운데를 나타냄."
+   }
+  },
+  {
+   "id": "lab:concept/confidence-interval",
+   "type": "Concept",
+   "label": {
+    "ko": "신뢰구간",
+    "en": "confidence interval"
+   },
+   "page": "tables",
+   "anchor": "#h-map",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "llm",
+    "fin"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "같은 방법으로 반복하면 그중 약 95%가 참값을 포함하는 구간(빈도주의). \"이 구간에 참값이 있을 확률 95%\"로 읽지 않음."
+   }
+  },
+  {
+   "id": "lab:concept/type-i-error",
+   "type": "Concept",
+   "label": {
+    "ko": "1종 오류",
+    "en": "Type I error"
+   },
+   "page": "tables",
+   "anchor": "#h-s4",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "data",
+    "stats",
+    "ai"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "차이가 없는데 있다고 판정하는 실수(헛경보), 확률 α"
+   }
+  },
+  {
+   "id": "lab:concept/p-value",
+   "type": "Concept",
+   "label": {
+    "ko": "p값",
+    "en": "p-value"
+   },
+   "page": "tables",
+   "anchor": "#h-words",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "차이가 없다고 가정할 때 이만큼 또는 더 극단적인 결과가 나올 확률. 가설이 참일 확률이 아님."
+   }
+  },
+  {
+   "id": "lab:concept/type-ii-error",
+   "type": "Concept",
+   "label": {
+    "ko": "2종 오류",
+    "en": "Type II error"
+   },
+   "page": "tables",
+   "anchor": "#h-s4",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "data",
+    "stats",
+    "ai"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "차이가 있는데 놓치는 실수, 확률 β"
+   }
+  },
+  {
+   "id": "lab:concept/alternative",
+   "type": "Concept",
+   "label": {
+    "ko": "대립가설",
+    "en": "alternative hypothesis"
+   },
+   "page": "tables",
+   "anchor": "#h-words",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "id": "lab:concept/standard-deviation",
+   "type": "Concept",
+   "label": {
+    "ko": "표준편차",
+    "en": "standard deviation"
+   },
+   "page": "tables",
+   "anchor": "#h-words",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "fin",
+    "genai"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "데이터가 평균에서 보통 얼마나 떨어져 있는지 나타내는 폭. 표준화의 한 눈금."
+   }
+  },
+  {
+   "id": "lab:dist/binomial",
+   "type": "Distribution",
+   "label": {
+    "ko": "이항분포",
+    "en": "binomial"
+   },
+   "page": "tables",
+   "anchor": "#pane-b",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "id": "lab:concept/sample-size",
+   "type": "Concept",
+   "label": {
+    "ko": "표본 크기",
+    "en": "sample size"
+   },
+   "page": "tables",
+   "anchor": "#h-duel",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "biz"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "전체(모집단) 가운데 실제로 관측한 일부. 표본이 작으면 우연한 차이가 크게 보인다."
+   }
+  },
+  {
+   "id": "lab:method/ab-test",
+   "type": "Method",
+   "label": {
+    "ko": "A/B 테스트",
+    "en": "A/B test"
+   },
+   "page": "tables",
+   "anchor": "#sim-ins",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "biz"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "사용자를 무작위로 두 무리로 나눠 한쪽에만 바꾼 버전을 보여 주고 지표를 비교하는 실험."
+   }
+  },
+  {
+   "id": "lab:concept/cdf",
+   "type": "Concept",
+   "label": {
+    "ko": "누적분포함수",
+    "en": "CDF"
+   },
+   "page": "tables",
+   "anchor": "#tw-p",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "id": "lab:dist/poisson",
+   "type": "Distribution",
+   "label": {
+    "ko": "포아송분포",
+    "en": "Poisson"
+   },
+   "page": "tables",
+   "anchor": "#tw-b",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "id": "lab:topic/statistical-power",
+   "type": "Topic",
+   "label": {
+    "ko": "검정력",
+    "en": "Statistical power"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/central-tendency",
+   "type": "Topic",
+   "label": {
+    "ko": "대표값",
+    "en": "Measures of central tendency"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/confidence-interval",
+   "type": "Topic",
+   "label": {
+    "ko": "신뢰구간",
+    "en": "Confidence interval"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/probability-statistics",
+   "type": "Topic",
+   "label": {
+    "ko": "확률·통계",
+    "en": "Probability and statistics"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "ai"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/p-value",
+   "type": "Topic",
+   "label": {
+    "ko": "p값",
+    "en": "p-value"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/null-alternative",
+   "type": "Topic",
+   "label": {
+    "ko": "귀무·대립가설",
+    "en": "Null and alternative hypotheses"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/dispersion",
+   "type": "Topic",
+   "label": {
+    "ko": "퍼짐",
+    "en": "Measures of dispersion"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/sample-size",
+   "type": "Topic",
+   "label": {
+    "ko": "표본 크기 정하기",
+    "en": "Sample size determination"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/ab-testing",
+   "type": "Topic",
+   "label": {
+    "ko": "A/B 테스트",
+    "en": "A/B testing"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/continuous-distributions",
+   "type": "Topic",
+   "label": {
+    "ko": "연속분포",
+    "en": "Continuous distributions"
+   },
+   "page": "tables",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  }
+ ],
+ "edges": [
+  {
+   "s": "lab:concept/power",
+   "p": "lab:broader",
+   "o": "lab:topic/statistical-power",
+   "anchor": "#h-map",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/mean",
+   "p": "lab:broader",
+   "o": "lab:topic/central-tendency",
+   "anchor": "#h-words",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/confidence-interval",
+   "p": "lab:broader",
+   "o": "lab:topic/confidence-interval",
+   "anchor": "#h-map",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/type-i-error",
+   "p": "lab:broader",
+   "o": "lab:topic/probability-statistics",
+   "anchor": "#h-s4",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/p-value",
+   "p": "lab:broader",
+   "o": "lab:topic/p-value",
+   "anchor": "#h-words",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/type-ii-error",
+   "p": "lab:broader",
+   "o": "lab:topic/probability-statistics",
+   "anchor": "#h-s4",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/alternative",
+   "p": "lab:broader",
+   "o": "lab:topic/null-alternative",
+   "anchor": "#h-words",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/standard-deviation",
+   "p": "lab:broader",
+   "o": "lab:topic/dispersion",
+   "anchor": "#h-words",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/sample-size",
+   "p": "lab:broader",
+   "o": "lab:topic/sample-size",
+   "anchor": "#h-duel",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:method/ab-test",
+   "p": "lab:broader",
+   "o": "lab:topic/ab-testing",
+   "anchor": "#sim-ins",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/cdf",
+   "p": "lab:broader",
+   "o": "lab:topic/continuous-distributions",
+   "anchor": "#tw-p",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/sample-size",
+   "p": "lab:partOf",
+   "o": "lab:method/ab-test",
+   "anchor": "#h-duel",
+   "confidence": "medium",
+   "note": "다른 해설 페이지에서 확인된 관계"
+  },
+  {
+   "s": "lab:concept/type-i-error",
+   "p": "lab:contrastsWith",
+   "o": "lab:concept/type-ii-error",
+   "anchor": "#h-s4",
+   "confidence": "medium",
+   "note": "다른 해설 페이지에서 확인된 관계"
+  },
+  {
+   "s": "lab:dist/binomial",
+   "p": "lab:prerequisiteOf",
+   "o": "lab:dist/poisson",
+   "anchor": "#pane-b",
+   "confidence": "medium",
+   "note": "다른 해설 페이지에서 확인된 관계"
+  }
+ ]
+}

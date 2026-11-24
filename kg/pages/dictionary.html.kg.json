@@ -1,0 +1,512 @@
+{
+ "version": "1.0",
+ "page": "dictionary",
+ "nodes": [
+  {
+   "id": "lab:concept/vector-2d",
+   "type": "Concept",
+   "label": {
+    "ko": "화살표(벡터)",
+    "en": "Vector"
+   },
+   "page": "dictionary",
+   "anchor": "#h-notes",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "geom",
+    "math"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "자리가 아닌 이동. 같은 자리끼리 더한다."
+   }
+  },
+  {
+   "id": "lab:concept/pmf",
+   "type": "Concept",
+   "label": {
+    "ko": "확률질량함수",
+    "en": "PMF"
+   },
+   "page": "dictionary",
+   "anchor": "#h-py",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "id": "lab:concept/distributions",
+   "type": "Concept",
+   "label": {
+    "ko": "확률분포(정규·포아송·지수·균등·이항)",
+    "en": "Probability distributions"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "math",
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "데이터 모양의 이름표. 확률 = 넓이"
+   }
+  },
+  {
+   "id": "lab:concept/independence",
+   "type": "Concept",
+   "label": {
+    "ko": "독립",
+    "en": "Independence"
+   },
+   "page": "dictionary",
+   "anchor": "#reltable",
+   "level": 1,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "id": "lab:concept/cdf",
+   "type": "Concept",
+   "label": {
+    "ko": "누적분포함수",
+    "en": "CDF"
+   },
+   "page": "dictionary",
+   "anchor": "#h-py",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "id": "lab:concept/p-value",
+   "type": "Concept",
+   "label": {
+    "ko": "p값",
+    "en": "p-value"
+   },
+   "page": "dictionary",
+   "anchor": "#h-py",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "차이가 없다고 가정할 때 이만큼 또는 더 극단적인 결과가 나올 확률. 가설이 참일 확률이 아님."
+   }
+  },
+  {
+   "id": "lab:concept/norm",
+   "type": "Concept",
+   "label": {
+    "ko": "길이(노름)",
+    "en": "Norm"
+   },
+   "page": "dictionary",
+   "anchor": "#h-py",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "mentioned",
+   "domain": [
+    "stats",
+    "math"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "피타고라스로 잰 화살표 길이"
+   }
+  },
+  {
+   "id": "lab:concept/pdf",
+   "type": "Concept",
+   "label": {
+    "ko": "확률밀도함수",
+    "en": "PDF"
+   },
+   "page": "dictionary",
+   "anchor": "#h-py",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "id": "lab:method/qq-plot",
+   "type": "Method",
+   "label": {
+    "ko": "QQ 플롯",
+    "en": "Quantile-Quantile plot"
+   },
+   "page": "dictionary",
+   "anchor": "#h-prompt",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "mentioned",
+   "domain": [
+    "data",
+    "stats",
+    "ai"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "내 데이터가 정규분포(또는 기준 분포)를 따르나? 점이 대각선 위에 있으면 기준 분포와 닮았습니다."
+   }
+  },
+  {
+   "id": "lab:concept/variance",
+   "type": "Concept",
+   "label": {
+    "ko": "분산",
+    "en": "variance"
+   },
+   "page": "dictionary",
+   "anchor": "#h-prompt",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "mentioned",
+   "domain": [
+    "stats",
+    "math",
+    "econ"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "값이 평균에서 흩어진 정도. 주성분이 담은 분산의 몫으로 정보량을 가늠한다."
+   }
+  },
+  {
+   "id": "lab:concept/mean",
+   "type": "Concept",
+   "label": {
+    "ko": "평균",
+    "en": "mean"
+   },
+   "page": "dictionary",
+   "anchor": "#h-prompt",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "mentioned",
+   "domain": [
+    "stats",
+    "fin"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "모든 값을 더해 개수로 나눈 값. 데이터의 가운데를 나타냄."
+   }
+  },
+  {
+   "id": "lab:topic/vectors-geometry",
+   "type": "Topic",
+   "label": {
+    "ko": "벡터와 내적의 기하",
+    "en": "Vectors and the geometry of inner products"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "geom"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/discrete-distributions",
+   "type": "Topic",
+   "label": {
+    "ko": "이산분포",
+    "en": "Discrete distributions"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/distribution-family-map",
+   "type": "Topic",
+   "label": {
+    "ko": "분포 사이의 관계",
+    "en": "Relationships among distributions"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/independence",
+   "type": "Topic",
+   "label": {
+    "ko": "독립",
+    "en": "Independence"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/continuous-distributions",
+   "type": "Topic",
+   "label": {
+    "ko": "연속분포",
+    "en": "Continuous distributions"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/p-value",
+   "type": "Topic",
+   "label": {
+    "ko": "p값",
+    "en": "p-value"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/normed-spaces",
+   "type": "Topic",
+   "label": {
+    "ko": "노름공간과 거리",
+    "en": "Normed spaces and metrics"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 3,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "math"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/probability-statistics",
+   "type": "Topic",
+   "label": {
+    "ko": "확률·통계",
+    "en": "Probability and statistics"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "ai"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/dispersion",
+   "type": "Topic",
+   "label": {
+    "ko": "퍼짐",
+    "en": "Measures of dispersion"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/central-tendency",
+   "type": "Topic",
+   "label": {
+    "ko": "대표값",
+    "en": "Measures of central tendency"
+   },
+   "page": "dictionary",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  }
+ ],
+ "edges": [
+  {
+   "s": "lab:concept/vector-2d",
+   "p": "lab:broader",
+   "o": "lab:topic/vectors-geometry",
+   "anchor": "#h-notes",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/pmf",
+   "p": "lab:broader",
+   "o": "lab:topic/discrete-distributions",
+   "anchor": "#h-py",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/distributions",
+   "p": "lab:broader",
+   "o": "lab:topic/distribution-family-map",
+   "anchor": "#kg",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/independence",
+   "p": "lab:broader",
+   "o": "lab:topic/independence",
+   "anchor": "#reltable",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/cdf",
+   "p": "lab:broader",
+   "o": "lab:topic/continuous-distributions",
+   "anchor": "#h-py",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/p-value",
+   "p": "lab:broader",
+   "o": "lab:topic/p-value",
+   "anchor": "#h-py",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/norm",
+   "p": "lab:broader",
+   "o": "lab:topic/normed-spaces",
+   "anchor": "#h-py",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/pdf",
+   "p": "lab:broader",
+   "o": "lab:topic/continuous-distributions",
+   "anchor": "#h-py",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:method/qq-plot",
+   "p": "lab:broader",
+   "o": "lab:topic/probability-statistics",
+   "anchor": "#h-prompt",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/variance",
+   "p": "lab:broader",
+   "o": "lab:topic/dispersion",
+   "anchor": "#h-prompt",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/mean",
+   "p": "lab:broader",
+   "o": "lab:topic/central-tendency",
+   "anchor": "#h-prompt",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/pmf",
+   "p": "lab:prerequisiteOf",
+   "o": "lab:concept/pdf",
+   "anchor": "#h-py",
+   "confidence": "medium",
+   "note": "다른 해설 페이지에서 확인된 관계"
+  }
+ ]
+}
