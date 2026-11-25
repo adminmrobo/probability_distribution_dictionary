@@ -20,7 +20,10 @@ bn=[5,10,15,20]; bp=[0.05,0.10,0.20,0.25,0.30,0.40,0.50]
 B={str(n):[[r(stats.binom.cdf(k,n,p)) for p in bp] for k in range(n+1)] for n in bn}
 pl=[0.5,1,1.5,2,2.5,3,4,5,6,7,8,9,10]
 P=[[r(stats.poisson.cdf(k,l)) for l in pl] for k in range(21)]
-D=dict(Z=Z,T=dict(df=tdf,a=ta,v=T),C=dict(df=cdf_,a=ca,v=C),F=dict(d1=f1,d2=f2,a=fa,v=F),B=dict(n=bn,p=bp,v=B),P=dict(l=pl,v=P))
+tcdf=[1,2,3,4,5,6,7,8,9,10,12,15,20,25,30,40,50,60,80,100,120,200,500,1000,"inf"]
+tca=[0.10,0.05,0.01]
+TC=[[r(stats.norm.isf(a/2) if d=="inf" else stats.t.isf(a/2,d),3) for a in tca] for d in tcdf]
+D=dict(TC=dict(df=tcdf,a=tca,v=TC),Z=Z,T=dict(df=tdf,a=ta,v=T),C=dict(df=cdf_,a=ca,v=C),F=dict(d1=f1,d2=f2,a=fa,v=F),B=dict(n=bn,p=bp,v=B),P=dict(l=pl,v=P))
 open("data.json","w").write(json.dumps(D,separators=(",",":")))
 # checks
 print(stats.t.isf(.025,10),stats.chi2.isf(.05,10),stats.f.isf(.05,5,10),stats.norm.cdf(1.96))
