@@ -260,6 +260,17 @@ nav.top .links a[aria-current="page"]{color:#fff;background:var(--slate);font-we
 .chcard p{margin:0;font-size:14px;color:var(--muted);line-height:1.6}
 @media(max-width:860px){.chcards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.chcards{grid-template-columns:1fr}}
+/* 신뢰구간 설명 */
+.steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.steps4>div{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:10px 12px;font-size:15px;display:flex;gap:8px;align-items:flex-start}
+.steps4 span b{color:var(--gfp)}
+.steps4>div>b{flex:none;width:24px;height:24px;border-radius:6px;background:var(--gfp);color:#fff;display:grid;place-items:center;font-size:14px}
+@media(max-width:860px){.steps4{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.steps4{grid-template-columns:1fr}}
+.cwrap canvas.band{height:92px;margin-top:6px}
+figure.info{margin:14px 0 6px}
+figure.info img{display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:10px}
+figure.info figcaption{font-size:13px;color:var(--muted);margin-top:4px}
 footer{border-top:1px solid var(--rule);padding:28px 0 44px;color:var(--muted);font-size:14px}
 footer ul{padding-left:20px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
@@ -292,6 +303,7 @@ footer ul{padding-left:20px}
   <div class="eyebrow"><a href="tables.html">분포표 읽기 연구실</a> · 1장</div>
   <h1 id="h-z"><span class="hex">1</span>Z분포 — 표준정규분포표</h1>
   <div class="byline">글 · 안상선 ((주)M-Robo 대표)</div>
+  <figure class="info"><img src="assets/info_z.png" width="960" height="540" alt="Z분포 — 표준정규분포표 한눈에 보기 인포그래픽. 무엇을: Z표에서 값 → 왼쪽 넓이를 읽고, 거꾸로 경계값을 찾습니다. 핵심: 표 안의 숫자는 “z보다 왼쪽에 있을 확률”입니다. 오른쪽 꼬리는 1에서 뺍니다. 다음 장과의 관계: σ를 모르면 Z 대신 t표를 씁니다."><figcaption>한눈에 보기 — 이 장의 내용을 그림 한 장으로 먼저 훑어보세요.</figcaption></figure>
   <div class="three"><b>이 장을 3줄로</b><ol><li><b>무엇을</b>: Z표에서 값 → 왼쪽 넓이를 읽고, 거꾸로 경계값을 찾습니다.</li><li><b>핵심</b>: 표 안의 숫자는 “z보다 왼쪽에 있을 확률”입니다. 오른쪽 꼬리는 1에서 뺍니다.</li><li><b>다음 장과의 관계</b>: σ를 모르면 Z 대신 t표를 씁니다.</li></ol></div>
   <details class="fold ez" id="castfold"><summary>연구실 식구와 말·기호 (처음이면 펼쳐 보세요)</summary>
 <div class="cast" id="castgrid" style="margin-top:10px"></div>
@@ -331,6 +343,31 @@ footer ul{padding-left:20px}
     <div class="insight" id="z-ins" aria-live="polite"></div>
   </div>
   <div class="tw" id="tw-z"></div>
+
+  <h3 id="why975">왜 95% 신뢰구간인데 표에서 0.975를 찾을까?</h3>
+  <p class="lead">처음 배울 때 가장 많이 막히는 곳입니다. “95%를 원하는데 왜 표에서 0.95가 아니라 0.975를 찾지?” 답은 <b>Z표가 ‘왼쪽 넓이’만 알려 주기 때문</b>입니다. 네 단계로 나눠 보겠습니다.</p>
+  <div class="steps4">
+    <div><b>1</b><span>95% 구간은 <b>가운데</b> 95%입니다.</span></div>
+    <div><b>2</b><span>남은 5%는 양쪽 꼬리로 <b>반씩</b>: 왼쪽 2.5%, 오른쪽 2.5%.</span></div>
+    <div><b>3</b><span>오른쪽 경계보다 <b>왼쪽</b>에는 2.5% + 95% = <b>97.5%</b>가 있습니다.</span></div>
+    <div><b>4</b><span>Z표에서 0.9750을 찾으면 1.9 줄 · .06 열 → <b>z = 1.96</b>. 왼쪽 경계는 대칭이라 −1.96.</span></div>
+  </div>
+  <div class="ez" data-dlg="why975"></div>
+  <div class="panel">
+    <div class="ptitle">신뢰수준을 바꿔 보세요. 아래 띠가 “경계 왼쪽에 있는 넓이”입니다.</div>
+    <div class="ctrl"><div class="group" id="ciz-lv"><span class="glabel">신뢰수준</span></div></div>
+    <div class="cwrap"><canvas id="ciz-c" aria-label="표준정규분포에서 가운데 신뢰수준 넓이와 양쪽 꼬리"></canvas></div>
+    <div class="cwrap"><canvas id="ciz-b" class="band" aria-label="왼쪽 꼬리, 가운데, 오른쪽 꼬리를 합친 띠와 경계 왼쪽 넓이"></canvas></div>
+    <div class="insight" id="ciz-ins" aria-live="polite"></div>
+  </div>
+  <div class="explain">
+    <h4>줄 세우기로 생각하면</h4>
+    <p style="margin:0">키 순서로 1,000명을 줄 세우고 <b>가운데 950명</b>만 남기려 합니다. 양끝에서 25명씩 내보내야 하지요. 그러면 남은 무리의 <b>오른쪽 끝 사람</b> 앞에는 내보낸 25명 + 남은 950명 = <b>975명</b>이 서 있습니다. Z표는 “내 앞(왼쪽)에 몇 %가 있나”를 적어 둔 표라서 0.975를 찾는 것입니다.</p>
+  </div>
+  <div class="mist">
+    <div><b>자주 하는 실수</b>95%라서 표에서 0.9500을 찾으면 z = 1.645가 나옵니다. 그건 오른쪽 꼬리 하나가 5%인 경계, 곧 <b>90% 신뢰구간</b>의 경계입니다.</div>
+    <div><b>공식으로 쓰면</b>95% 신뢰구간 = x̄ ± <b>1.96</b> × σ/√n. 1.96 = z<sub>0.975</sub>, 곧 “왼쪽 넓이 0.975가 되는 z”입니다.</div>
+  </div>
 
   <h3>Z표로 경계값 찾기 — 단측과 양측</h3>
   <p class="gen">검정에서는 거꾸로 “꼬리 넓이 α를 만드는 z”를 찾습니다. 표 안에서 1 − α에 가장 가까운 값을 찾아 줄과 열을 거꾸로 읽습니다. 양측이면 α를 반씩 나눠 꼬리마다 α/2를 둡니다.</p>
@@ -382,7 +419,7 @@ footer ul{padding-left:20px}
     <li>모의실험은 고정 시드 난수입니다. 다시 눌러도 같은 순서로 결과가 나옵니다.</li>
     <li>판정표 그림은 1종·2종 오류를 설명할 때 널리 쓰이는 “임신 판정” 비유를 연구실 식구(박사·주판봇)와 같은 픽셀 화풍으로 다시 그린 것입니다(build/gen_cm.py).</li>
   </ul>
-  <p><b>출처</b>: 모든 표 값은 scipy 1.18.1(stats.norm·t·chi2·f)로 계산해 소수 셋째(또는 넷째) 자리에서 반올림했습니다. 캐릭터 그림: 연구실 식구 캐릭터 팩(fruitfly-lab-expressions), 저작권자 허락 없이 사용할 수 없습니다.</p>
+  <p><b>출처</b>: 모든 표 값은 scipy 1.18.1(stats.norm·t·chi2·f)로 계산해 소수 셋째(또는 넷째) 자리에서 반올림했습니다. 캐릭터 그림: 연구실 식구 캐릭터 팩(fruitfly-lab-expressions), 저작권자 허락 없이 사용할 수 없습니다. 장 첫머리 인포그래픽 글꼴: 갈무리(Galmuri, SIL Open Font License 1.1).</p>
   <p>글 · 안상선 ((주)M-Robo 대표) · <a href="https://adminmrobo.github.io/who_am_i/who_am_i.html">저자 소개</a></p>
 </footer>
 </div>
@@ -421,6 +458,11 @@ const DLG={
        ["robo","robo_coin","표의 경계를 넘으면 무조건 진짜지! 틀릴 리가 없어."],
        ["sia","sia_explain","순서대로 말씀드릴게요. ① Z ② t ③ 카이제곱 ④ F, 부록 자유도, 그리고 해석의 함정이에요."],
        ["moa","moa_tea","표가 길어요. 차 한 잔 준비해 둘게요. 힘내세요!"]],
+ why975:[["robo","robo_coin","95%를 원하니까 표에서 0.95를 찾으면 되지!"],
+        ["fly","fly_point","그럼 1.645가 나와. 그건 오른쪽 꼬리 하나가 5%인 경계야. 95%는 <b>가운데</b>라고."],
+        ["asst","asst_report","정리하면, 가운데 95% + 왼쪽 꼬리 2.5% = 97.5%. Z표는 왼쪽 넓이를 주니까 0.9750을 찾아요. 답은 1.96!"]],
+ why025:[["sia","sia_explain","순서는 Z와 같아요. 꼬리 2.5%를 찾는 것까지는 똑같고, t표는 열 머리가 오른쪽 꼬리라서 0.025 열로 가요."],
+        ["moa","moa_report","기록했어요. 10명이면 df 9 줄, 0.025 열 → 2.262. Z의 1.96보다 넓어요."]],
  z:[["asst","asst_report","1.96을 넣었더니 1.9 줄과 0.06 열이 만나는 곳에 0.9750이 있어요. 오른쪽 꼬리는 1 − 0.9750 = 0.0250이에요."],
     ["robo","robo_calc","Z표는 한 장뿐이네? 자유도 같은 거 없어서 좋다."],
     ["fly","fly_magnify","그 대신 σ를 알아야 쓸 수 있어. σ를 모르면 다음 표, t로 가야 해."]],
@@ -696,6 +738,58 @@ buildF(); R.push(drawFfam,()=>drawF(false));
 }
 /* 예전 링크(tables.html#table-z 등)를 장 페이지로 보냄 */
 (function(){ const m=(location.hash||"").match(/^#table-([ztcf])$/); if(m && $("#chapters")) location.replace({z:"table_z.html",t:"table_t.html",c:"table_chi2.html",f:"table_f.html"}[m[1]]); })();
+
+/* ---------- 왜 0.975 (신뢰구간) ---------- */
+function ciBand(cv,zc,lv,x0,x1,leftLabel){
+  const {g,w,h}=setup(cv); const c=COL(); const L=14,R=14,W=w-L-R; const X=x=>L+(x-x0)/(x1-x0)*W; const a=(1-lv)/2;
+  const y=18, hh=24, xl=X(Math.max(-zc,x0)), xr=X(Math.min(zc,x1));
+  g.fillStyle=hexA(c.red,.55); g.fillRect(L,y,xl-L,hh); g.fillRect(xr,y,L+W-xr,hh);
+  g.fillStyle=hexA(c.green,.55); g.fillRect(xl,y,xr-xl,hh);
+  g.font="600 12px "+cssv("--font"); g.textAlign="center"; g.fillStyle=c.text;
+  g.fillText((a*100).toFixed(1)+"%",(L+xl)/2,y+16); g.fillText((lv*100)+"%",(xl+xr)/2,y+16); g.fillText((a*100).toFixed(1)+"%",(xr+L+W)/2,y+16);
+  // 왼쪽 넓이 괄호
+  g.strokeStyle=c.pink; g.lineWidth=2; g.beginPath(); g.moveTo(L,y+hh+8); g.lineTo(L,y+hh+14); g.lineTo(xr,y+hh+14); g.lineTo(xr,y+hh+8); g.stroke();
+  g.fillStyle=c.pink; g.font="700 13px "+cssv("--font"); g.fillText(leftLabel,Math.min(Math.max((L+xr)/2,150),w-150),y+hh+32);
+}
+function ciCurve(cv,f,zc,x0,x1,lab){
+  const c=COL(); const vz=Math.min(zc,x1);
+  plot(cv,{x0,x1,ticks:[-4,-3,-2,-1,0,1,2,3,4].filter(t=>t>x0&&t<x1),curves:[{f,color:c.slate,fills:[[x0,-vz,hexA(c.red,.5)],[-vz,vz,hexA(c.green,.28)],[vz,x1,hexA(c.red,.5)]]}],
+    marks:[{x:-zc,label:"−"+lab,color:c.red},{x:zc,label:lab,color:c.red}]});
+}
+if($("#ciz-c")){
+  let lv=0.95; const zq={0.90:1.645,0.95:1.960,0.99:2.576};
+  btnGroup($("#ciz-lv"),[0.90,0.95,0.99],v=>(v*100)+"%",lv,v=>{lv=v;drawCIZ();});
+  function drawCIZ(){
+    const z=zq[lv], a=(1-lv)/2, left=1-a; const easy=isEasy();
+    ciCurve($("#ciz-c"),phi,z,-4,4,z.toFixed(3));
+    ciBand($("#ciz-b"),z,lv,-4,4,`경계 ${z.toFixed(2)}의 왼쪽 넓이 = ${(a*100).toFixed(1)}% + ${lv*100}% = ${(left*100).toFixed(1)}% → 표에서 ${left.toFixed(4)}`);
+    const hund=Math.round(z*100), ri=Math.floor(hund/10)/10, ci=hund%10;
+    ins($("#ciz-ins"),[
+      ["g",easy?`${lv*100}% 구간이면 양쪽 꼬리가 ${(a*100).toFixed(1)}%씩이에요. 오른쪽 경계의 왼쪽에는 <b>${(left*100).toFixed(1)}%</b>가 있으니 Z표에서 <b>${left.toFixed(4)}</b>를 찾아요.`:`신뢰수준 ${lv}: α = ${(1-lv).toFixed(2)}, 꼬리마다 α/2 = ${a.toFixed(3)}. Φ(z) = 1 − α/2 = <b>${left.toFixed(3)}</b>인 z를 찾습니다.`],
+      ["m",`표에서 ${left.toFixed(4)}에 가장 가까운 자리는 <b>${ri.toFixed(1)} 줄 · .0${ci} 열</b>(z = ${z.toFixed(2)}${lv===0.90||lv===0.99?", 두 값 사이라 보통 "+z.toFixed(3)+"을 씁니다":""}).`],
+      ["a",`${lv*100}% 신뢰구간 = x̄ ± <b>${z.toFixed(z===1.96?2:3)}</b> × σ/√n.`]
+    ]);
+  }
+  R.push(drawCIZ);
+}
+if($("#cit-c")){
+  const T=DATA.T; let lv=0.95, di=T.df.indexOf(9);
+  $("#cit-df").innerHTML=T.df.map((d,i)=>`<option value="${i}" ${i===di?"selected":""}>${fdf(d)}</option>`).join("");
+  $("#cit-df").onchange=e=>{di=+e.target.value;drawCIT();};
+  btnGroup($("#cit-lv"),[0.90,0.95,0.99],v=>(v*100)+"%",lv,v=>{lv=v;drawCIT();});
+  function drawCIT(){
+    const a=+((1-lv)/2).toFixed(3); const ai=T.a.indexOf(a); const t=T.v[di][ai]; const z=T.v[T.v.length-1][ai]; const df=T.df[di]; const nu=df==="inf"?1e7:df; const easy=isEasy();
+    const xr=Math.min(6,Math.max(4.2,t+0.8));
+    ciCurve($("#cit-c"),x=>tpdf(x,nu),t,-xr,xr,t.toFixed(3));
+    ciBand($("#cit-b"),t,lv,-xr,xr,`경계 ${t.toFixed(3)}의 왼쪽 = ${((1-a)*100).toFixed(1)}%, 오른쪽 꼬리 ${(a*100).toFixed(1)}% → t표 단측 ${a} 열 (양측 ${+(2*a).toFixed(3)})`);
+    ins($("#cit-ins"),[
+      ["g",easy?`${lv*100}% 구간이면 오른쪽 꼬리가 ${(a*100).toFixed(1)}%예요. t표에서 <b>df ${fdf(df)} 줄</b>과 <b>단측 ${a} 열</b>이 만나는 값은 <b>${t.toFixed(3)}</b>이에요.`:`t<sub>${a}, ${fdf(df)}</sub> = ${t.toFixed(3)} (누적으로 쓰면 t<sub>${1-a}</sub>).`],
+      ["m",`${lv*100}% 신뢰구간 = x̄ ± <b>${t.toFixed(3)}</b> × s/√n${df!=="inf"?` (표본 ${df+1}명)`:""}.`],
+      ["a",df==="inf"?`자유도가 무한대이면 Z와 같습니다: ${z.toFixed(3)}.`:`같은 ${lv*100}%를 Z로 구하면 ${z.toFixed(3)}. t가 ${(t-z).toFixed(3)} 더 커서 구간이 ${((t/z-1)*100).toFixed(0)}% 넓습니다.`]
+    ]);
+  }
+  R.push(drawCIT);
+}
 
 /* ---------- 부록 자유도 ---------- */
 if($("#five")){

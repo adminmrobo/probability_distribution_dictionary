@@ -98,6 +98,9 @@ for i, c in enumerate(CH):
     title_txt = re.sub(r'<[^>]+>', '', re.sub(r'<span class="hex[^"]*">.*?</span>', '', inner)).strip()
     hexspan = re.search(r'<span class="hex[^"]*">.*?</span>', inner).group(0)
     s = s.replace(m.group(0), '', 1).replace('class="sec"', 'class="sec first"', 1)
+    ikey = {'ch_z': 'z', 'ch_t': 't', 'ch_c': 'c', 'ch_f': 'f', 'ch_df': 'df', 'ch_trap': 'trap'}[c['thumb']]
+    info = '<figure class="info"><img src="assets/info_%s.png" width="960" height="540" alt="%s 한눈에 보기 인포그래픽. %s"><figcaption>한눈에 보기 — 이 장의 내용을 그림 한 장으로 먼저 훑어보세요.</figcaption></figure>' % (
+        ikey, html.escape(title_txt), html.escape(' '.join(re.sub('<[^>]+>', '', t) for t in (c['three'] or [c['desc']]))))
     three = ''
     if c['three']:
         three = '<div class="three"><b>이 장을 3줄로</b><ol>%s</ol></div>' % ''.join('<li>%s</li>' % t for t in c['three'])
@@ -107,7 +110,7 @@ for i, c in enumerate(CH):
         '<a href="%s" class="nx">%s %s →</a>' % (nxt['f'], nxt['no'], nxt['short']) if nxt else '<span></span>')
     outro = sec('outro') if c['sid'] == 's-trap' else ''
     page = (set_head('%s %s — 분포표 읽기 연구실' % (c['no'], title_txt), c['desc'], c['thumb']) + '<body>\n' + nav(c['f']) +
-        '<div class="wrap">\n<header class="hero chap">\n  <div class="eyebrow"><a href="tables.html">분포표 읽기 연구실</a> · %s</div>\n  <h1 id="%s">%s%s</h1>\n  <div class="byline">글 · 안상선 ((주)M-Robo 대표)</div>\n  %s\n  %s\n</header>\n' % (c['no'], hid, hexspan, title_txt, three, cast_words) +
+        '<div class="wrap">\n<header class="hero chap">\n  <div class="eyebrow"><a href="tables.html">분포표 읽기 연구실</a> · %s</div>\n  <h1 id="%s">%s%s</h1>\n  <div class="byline">글 · 안상선 ((주)M-Robo 대표)</div>\n  %s\n  %s\n  %s\n</header>\n' % (c['no'], hid, hexspan, title_txt, info, three, cast_words) +
         s + '\n' + outro + '\n' + pager + '\n' + footer + '\n</div>\n' + script + '</body>\n</html>\n')
     (ROOT/c['f']).write_text(page)
     out.append(c['f'])
