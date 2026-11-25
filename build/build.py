@@ -118,7 +118,7 @@ for i, c in enumerate(CH):
 # 허브
 cards = ''.join('<a class="chcard" href="%s"><img src="thumbs/%s.webp" width="960" height="540" alt="%s 화면"><div><b>%s</b><h3>%s</h3><p>%s</p></div></a>' % (
     c['f'], c['thumb'], html.escape(c['short']), c['no'], c['short'], html.escape(c['desc'])) for c in CH)
-hub_hero = hero_hub.replace('<div class="ez" data-dlg="hero"></div>', '<div class="ez" data-dlg="hero"></div>')
+hub_hero = hero_hub.replace('<div class="byline">글 · 안상선 ((주)M-Robo 대표)</div>', '<div class="byline">글 · 안상선 ((주)M-Robo 대표)</div>\n  <figure class="info"><img src="assets/info_hub.png" width="960" height="540" alt="분포표 읽기 연구실 한눈에 보기 인포그래픽. 1~4장 Z·t·카이제곱·F, 부록 자유도, 해석의 함정 1종·2종 오류."><figcaption>한눈에 보기 — 2편 전체를 그림 한 장으로.</figcaption></figure>', 1)
 hub = (set_head('분포표 읽기 연구실', 'Z분포·t분포·카이제곱분포·F분포를 장마다 따로 읽고, 부록 자유도와 해석의 함정(1종·2종 오류)까지. 일반 설명과 쉬운 설명.', 'part2') +
     '<body>\n' + nav('tables.html') + '<div class="wrap">\n' + hub_hero +
     '\n<section class="sec" id="chapters" aria-labelledby="h-chapters">\n  <h2 id="h-chapters">장 고르기</h2>\n  <p class="lead">장마다 독립된 페이지입니다. 어느 장부터 읽어도 됩니다. 처음이면 1장부터 차례로 읽기를 권합니다.</p>\n  <div class="chcards">' + cards + '</div>\n' +

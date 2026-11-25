@@ -203,6 +203,23 @@ def ill_trap(d, c, box):
         d.rectangle([x, y, x+5, y+5], fill=(207, 58, 40) if i in red else (200, 206, 222))
     text(d, (ox+43, oy+82), '5번은 뚫린다 (α 5%)', F9, (207, 58, 40), 'ma')
 
+def ill_hub(d, c, box):
+    x0, y0, x1, y1 = box
+    text(d, (x0+8, y0+6), '네 장의 분포표', F11B, dark(c, .7))
+    cells = [('Z', '#17894f', lambda x: phi(x), -3.5, 3.5, .42), ('t', '#a23fa3', lambda x: tpdf(x, 2), -4.5, 4.5, .42),
+             ('χ²', '#a86a00', lambda x: c2(max(x, .05), 4), .05, 14, .2), ('F', '#2a64c8', lambda x: fpdf(max(x, .02), 5, 10), .02, 4.5, .8)]
+    cw, ch = (x1-x0-24)//2, (y1-y0-34)//2
+    for k, (nm, col, f, a, b, ym) in enumerate(cells):
+        cx, cy = x0+8+(k % 2)*(cw+8), y0+24+(k//2)*(ch+6)
+        colr = rgb(col)
+        d.rectangle([cx, cy, cx+cw, cy+ch], fill=WHITE, outline=light(colr, .4))
+        px0, px1, py0, py1 = cx+30, cx+cw-6, cy+6, cy+ch-6
+        X = lambda x, a=a, b=b, px0=px0, px1=px1: px0+(x-a)/(b-a)*(px1-px0)
+        Y = lambda y, ym=ym, py0=py0, py1=py1: py1-min(y, ym)/ym*(py1-py0)
+        d.line([(px0, py1), (px1, py1)], fill=INK)
+        curve(d, f, a, b, X, Y, colr, w=2, fill_to=(a, b), fill_col=light(colr, .75))
+        d.rectangle([cx+4, cy+4, cx+24, cy+20], fill=colr); text(d, (cx+14, cy+7), nm, F11B, WHITE, 'ma')
+
 CH = {
  'z': dict(no='1장', title='Z분포 — 표준정규분포표', col='#17894f', ill=ill_z, who='asst_report',
            say='1.9 줄과 .06 열이 만나면\n0.9750이에요!',
@@ -219,6 +236,9 @@ CH = {
  'df': dict(no='부록', title='자유도란? 왜 표본 수 − 1인가', col='#3f5f8f', ill=ill_df, who='moa_report',
            say='마지막 사람은\n고를 수가 없어요.',
            pts=[('마음대로 고르는 개수', '그 개수가\n자유도다'), ('평균이 하나를 묶는다', '평균과의 차이를\n다 더하면 늘 0'), ('그래서 n − 1', '분산도, t표의 줄도\nn − 1')]),
+ 'hub': dict(no='2편', title='분포표 읽기 연구실', col='#3f5f8f', ill=ill_hub, who='doc_judge',
+           say='네 장의 표와 부록, 함정까지\n차례로 정복합니다.',
+           pts=[('1~4장 Z · t · χ² · F', '장마다 독립된 페이지\n그림 → 표 읽기 → 퀴즈'), ('부록: 자유도', '왜 표본 수 − 1인가\n피자값으로 쉽게'), ('해석의 함정', '1종·2종 오류\n표의 기준도 뚫린다')]),
  'trap': dict(no='해석의 함정', title='1종 오류와 2종 오류', col='#cf3a28', ill=ill_trap, who='fly_point',
            say='표의 기준을 넘어도\n틀릴 수 있어!',
            pts=[('1종: 없는데 있다', 'α = 5%면 100번에 5번\n기준은 뚫린다'), ('검정 20번 → 64%', '여러 번 보면\n헛경보가 쌓인다'), ('2종: 있는데 놓침', '너무 엄격하면(β↑)\n진짜도 놓친다')]),
@@ -254,6 +274,6 @@ def make(key, spec):
     text(d, (bx1, H-10), '글 · 안상선 ((주)M-Robo 대표)', F9, MUT, 'ra')
     out = im.resize((W*S, H*S), Image.NEAREST).convert('RGB')
     out.save(ROOT/'assets'/('info_%s.png' % key), optimize=True)
-    out.save(ROOT/'thumbs'/('ch_%s.webp' % ('trap' if key == 'trap' else key)), quality=90)
+    out.save(ROOT/'thumbs'/('part2.webp' if key == 'hub' else 'ch_%s.webp' % key), quality=90)
 for k, v in CH.items(): make(k, v)
 print('ok', list(CH))

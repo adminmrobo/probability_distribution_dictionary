@@ -11,7 +11,7 @@
 <style>
 /* 지도 먼저, 사전은 아래: 3D 관계 지도 → 선택 분포 카드 → 관계표 → 파이썬 → 프롬프트 → 내 콘텐츠 */
 :root{
-  --paper:#f4f6f8; --surface:#ffffff; --ink:#18212c; --muted:#5a6575; --line:#d8dde5;
+  --paper:#ffffff; --surface:#ffffff; --ink:#18212c; --muted:#5a6575; --line:#d8dde5;
   --accent:#1f7a80;
   --transform:#b8402c; --limit:#2c8a55; --closure:#a23a86;
   --f-count:#d4693a; --f-normal:#1f7a80; --f-wait:#b98613; --f-unit:#7357b8; --f-test:#2d63b8; --f-tail:#6b7280;
@@ -20,14 +20,6 @@
   --body:"IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
   color-scheme: light;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#10151c; --surface:#171f29; --ink:#e5e9ef; --muted:#9ba6b4; --line:#2a3441;
-    --accent:#4fb3b9; --transform:#ef7a63; --limit:#5cc48a; --closure:#e58cc9;
-    --f-count:#f0915f; --f-normal:#4fb3b9; --f-wait:#e2b445; --f-unit:#a58ef0; --f-test:#6e9cf0; --f-tail:#a3abb8;
-    --code-bg:#1d2733; color-scheme: dark;
-  }
 }
 :root[data-theme="dark"]{
   --paper:#10151c; --surface:#171f29; --ink:#e5e9ef; --muted:#9ba6b4; --line:#2a3441;
