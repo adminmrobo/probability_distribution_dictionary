@@ -1,0 +1,74 @@
+{
+ "version": "1.0",
+ "page": "table_z",
+ "nodes": [
+  {
+   "id": "lab:topic/continuous-distributions",
+   "type": "Topic",
+   "label": {
+    "ko": "연속분포",
+    "en": "Continuous distributions"
+   },
+   "page": "table_z",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:concept/cdf",
+   "type": "Concept",
+   "label": {
+    "ko": "누적분포함수",
+    "en": "CDF"
+   },
+   "page": "table_z",
+   "anchor": "#tw-z",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24"
+  },
+  {
+   "page": "table_z",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "match": [],
+   "auto": "edit-2026-11-25",
+   "id": "lab:dist/standard-normal",
+   "type": "Distribution",
+   "label": {
+    "ko": "표준정규분포",
+    "en": "standard normal distribution"
+   },
+   "anchor": "#h-z",
+   "domain": [
+    "stats"
+   ],
+   "definition": {
+    "ko": "평균 0, 표준편차 1인 정규분포. Z표는 z 왼쪽 넓이를 담는다."
+   }
+  }
+ ],
+ "edges": [
+  {
+   "s": "lab:concept/cdf",
+   "p": "lab:broader",
+   "o": "lab:topic/continuous-distributions",
+   "anchor": "#tw-z",
+   "confidence": "medium"
+  }
+ ]
+}

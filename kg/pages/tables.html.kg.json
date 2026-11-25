@@ -3,138 +3,22 @@
  "page": "tables",
  "nodes": [
   {
-   "id": "lab:concept/power",
-   "type": "Concept",
-   "label": {
-    "ko": "검정력",
-    "en": "statistical power"
-   },
-   "page": "tables",
-   "anchor": "#h-trap",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "domain": [
-    "stats"
-   ],
-   "match": [],
-   "auto": "autokg-2026-11-24",
-   "definition": {
-    "ko": "진짜 효과가 있을 때 그것을 잡아낼 확률(보통 80%)."
-   }
-  },
-  {
-   "id": "lab:concept/mean",
-   "type": "Concept",
-   "label": {
-    "ko": "평균",
-    "en": "mean"
-   },
-   "page": "tables",
-   "anchor": "#h-words",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "domain": [
-    "stats",
-    "fin"
-   ],
-   "match": [],
-   "auto": "autokg-2026-11-24",
-   "definition": {
-    "ko": "모든 값을 더해 개수로 나눈 값. 데이터의 가운데를 나타냄."
-   }
-  },
-  {
-   "id": "lab:concept/type-i-error",
-   "type": "Concept",
-   "label": {
-    "ko": "1종 오류",
-    "en": "Type I error"
-   },
-   "page": "tables",
-   "anchor": "#h-trap",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "domain": [
-    "data",
-    "stats",
-    "ai"
-   ],
-   "match": [],
-   "auto": "autokg-2026-11-24",
-   "definition": {
-    "ko": "차이가 없는데 있다고 판정하는 실수(헛경보), 확률 α"
-   }
-  },
-  {
-   "id": "lab:concept/p-value",
-   "type": "Concept",
+   "id": "lab:topic/p-value",
+   "type": "Topic",
    "label": {
     "ko": "p값",
     "en": "p-value"
    },
    "page": "tables",
-   "anchor": "#h-words",
+   "anchor": "#kg",
    "level": 2,
    "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
+   "confidence": "high",
+   "coverage": "mentioned",
    "domain": [
     "stats"
    ],
-   "match": [],
-   "auto": "autokg-2026-11-24",
-   "definition": {
-    "ko": "차이가 없다고 가정할 때 이만큼 또는 더 극단적인 결과가 나올 확률. 가설이 참일 확률이 아님."
-   }
-  },
-  {
-   "id": "lab:concept/type-ii-error",
-   "type": "Concept",
-   "label": {
-    "ko": "2종 오류",
-    "en": "Type II error"
-   },
-   "page": "tables",
-   "anchor": "#h-trap",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "domain": [
-    "data",
-    "stats",
-    "ai"
-   ],
-   "match": [],
-   "auto": "autokg-2026-11-24",
-   "definition": {
-    "ko": "차이가 있는데 놓치는 실수, 확률 β"
-   }
-  },
-  {
-   "id": "lab:concept/alternative",
-   "type": "Concept",
-   "label": {
-    "ko": "대립가설",
-    "en": "alternative hypothesis"
-   },
-   "page": "tables",
-   "anchor": "#h-words",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "domain": [
-    "stats"
-   ],
-   "match": [],
-   "auto": "autokg-2026-11-24"
+   "match": []
   },
   {
    "id": "lab:concept/standard-deviation",
@@ -161,60 +45,36 @@
    }
   },
   {
-   "id": "lab:concept/sample-size",
+   "id": "lab:concept/p-value",
    "type": "Concept",
    "label": {
-    "ko": "표본 크기",
-    "en": "sample size"
+    "ko": "p값",
+    "en": "p-value"
    },
    "page": "tables",
-   "anchor": "#duel",
+   "anchor": "#h-words",
    "level": 2,
    "status": "known",
    "confidence": "medium",
    "coverage": "explained",
    "domain": [
-    "stats",
-    "biz"
+    "stats"
    ],
    "match": [],
    "auto": "autokg-2026-11-24",
    "definition": {
-    "ko": "전체(모집단) 가운데 실제로 관측한 일부. 표본이 작으면 우연한 차이가 크게 보인다."
+    "ko": "차이가 없다고 가정할 때 이만큼 또는 더 극단적인 결과가 나올 확률. 가설이 참일 확률이 아님."
    }
   },
   {
-   "id": "lab:method/ab-test",
-   "type": "Method",
-   "label": {
-    "ko": "A/B 테스트",
-    "en": "A/B test"
-   },
-   "page": "tables",
-   "anchor": "#sim-ins",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "domain": [
-    "stats",
-    "biz"
-   ],
-   "match": [],
-   "auto": "autokg-2026-11-24",
-   "definition": {
-    "ko": "사용자를 무작위로 두 무리로 나눠 한쪽에만 바꾼 버전을 보여 주고 지표를 비교하는 실험."
-   }
-  },
-  {
-   "id": "lab:concept/cdf",
+   "id": "lab:concept/alternative",
    "type": "Concept",
    "label": {
-    "ko": "누적분포함수",
-    "en": "CDF"
+    "ko": "대립가설",
+    "en": "alternative hypothesis"
    },
    "page": "tables",
-   "anchor": "#tw-z",
+   "anchor": "#h-words",
    "level": 2,
    "status": "known",
    "confidence": "medium",
@@ -226,15 +86,38 @@
    "auto": "autokg-2026-11-24"
   },
   {
-   "id": "lab:topic/statistical-power",
+   "id": "lab:concept/mean",
+   "type": "Concept",
+   "label": {
+    "ko": "평균",
+    "en": "mean"
+   },
+   "page": "tables",
+   "anchor": "#h-words",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "fin"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "모든 값을 더해 개수로 나눈 값. 데이터의 가운데를 나타냄."
+   }
+  },
+  {
+   "id": "lab:topic/dispersion",
    "type": "Topic",
    "label": {
-    "ko": "검정력",
-    "en": "Statistical power"
+    "ko": "퍼짐",
+    "en": "Measures of dispersion"
    },
    "page": "tables",
    "anchor": "#kg",
-   "level": 2,
+   "level": 1,
    "status": "known",
    "confidence": "high",
    "coverage": "mentioned",
@@ -262,42 +145,6 @@
    "match": []
   },
   {
-   "id": "lab:topic/probability-statistics",
-   "type": "Topic",
-   "label": {
-    "ko": "확률·통계",
-    "en": "Probability and statistics"
-   },
-   "page": "tables",
-   "anchor": "#kg",
-   "level": 1,
-   "status": "known",
-   "confidence": "high",
-   "coverage": "mentioned",
-   "domain": [
-    "ai"
-   ],
-   "match": []
-  },
-  {
-   "id": "lab:topic/p-value",
-   "type": "Topic",
-   "label": {
-    "ko": "p값",
-    "en": "p-value"
-   },
-   "page": "tables",
-   "anchor": "#kg",
-   "level": 2,
-   "status": "known",
-   "confidence": "high",
-   "coverage": "mentioned",
-   "domain": [
-    "stats"
-   ],
-   "match": []
-  },
-  {
    "id": "lab:topic/null-alternative",
    "type": "Topic",
    "label": {
@@ -314,265 +161,9 @@
     "stats"
    ],
    "match": []
-  },
-  {
-   "id": "lab:topic/dispersion",
-   "type": "Topic",
-   "label": {
-    "ko": "퍼짐",
-    "en": "Measures of dispersion"
-   },
-   "page": "tables",
-   "anchor": "#kg",
-   "level": 1,
-   "status": "known",
-   "confidence": "high",
-   "coverage": "mentioned",
-   "domain": [
-    "stats"
-   ],
-   "match": []
-  },
-  {
-   "id": "lab:topic/sample-size",
-   "type": "Topic",
-   "label": {
-    "ko": "표본 크기 정하기",
-    "en": "Sample size determination"
-   },
-   "page": "tables",
-   "anchor": "#kg",
-   "level": 2,
-   "status": "known",
-   "confidence": "high",
-   "coverage": "mentioned",
-   "domain": [
-    "stats"
-   ],
-   "match": []
-  },
-  {
-   "id": "lab:topic/ab-testing",
-   "type": "Topic",
-   "label": {
-    "ko": "A/B 테스트",
-    "en": "A/B testing"
-   },
-   "page": "tables",
-   "anchor": "#kg",
-   "level": 2,
-   "status": "known",
-   "confidence": "high",
-   "coverage": "mentioned",
-   "domain": [
-    "stats"
-   ],
-   "match": []
-  },
-  {
-   "id": "lab:topic/continuous-distributions",
-   "type": "Topic",
-   "label": {
-    "ko": "연속분포",
-    "en": "Continuous distributions"
-   },
-   "page": "tables",
-   "anchor": "#kg",
-   "level": 1,
-   "status": "known",
-   "confidence": "high",
-   "coverage": "mentioned",
-   "domain": [
-    "stats"
-   ],
-   "match": []
-  },
-  {
-   "page": "tables",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "match": [],
-   "auto": "edit-2026-11-25",
-   "id": "lab:dist/standard-normal",
-   "type": "Distribution",
-   "label": {
-    "ko": "표준정규분포",
-    "en": "standard normal distribution"
-   },
-   "anchor": "#h-z",
-   "domain": [
-    "stats"
-   ],
-   "definition": {
-    "ko": "평균 0, 표준편차 1인 정규분포. Z표는 z 왼쪽 넓이를 담는다."
-   }
-  },
-  {
-   "page": "tables",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "match": [],
-   "auto": "edit-2026-11-25",
-   "id": "lab:dist/t",
-   "type": "Distribution",
-   "label": {
-    "ko": "t분포",
-    "en": "Student t distribution"
-   },
-   "anchor": "#h-t",
-   "domain": [
-    "stats"
-   ],
-   "definition": {
-    "ko": "σ를 모를 때 쓰는 분포. 자유도가 커지면 표준정규분포로 수렴하고, 표의 t값이 z값에 다가간다."
-   }
-  },
-  {
-   "page": "tables",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "match": [],
-   "auto": "edit-2026-11-25",
-   "id": "lab:dist/chi-square",
-   "type": "Distribution",
-   "label": {
-    "ko": "카이제곱분포",
-    "en": "chi-square distribution"
-   },
-   "anchor": "#h-c",
-   "domain": [
-    "stats"
-   ],
-   "definition": {
-    "ko": "독립인 표준정규 k개의 제곱합. 적합도·독립성 검정, 분산의 신뢰구간에 쓴다."
-   }
-  },
-  {
-   "page": "tables",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "match": [],
-   "auto": "edit-2026-11-25",
-   "id": "lab:dist/f",
-   "type": "Distribution",
-   "label": {
-    "ko": "F분포",
-    "en": "F distribution"
-   },
-   "anchor": "#h-f",
-   "domain": [
-    "stats"
-   ],
-   "definition": {
-    "ko": "두 카이제곱을 각자의 자유도로 나눈 비율. 분산분석에 쓴다."
-   }
-  },
-  {
-   "page": "tables",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "match": [],
-   "auto": "edit-2026-11-25",
-   "id": "lab:concept/degrees-of-freedom",
-   "type": "Concept",
-   "label": {
-    "ko": "자유도",
-    "en": "degrees of freedom"
-   },
-   "anchor": "#h-df",
-   "domain": [
-    "stats"
-   ],
-   "definition": {
-    "ko": "자료 수에서 추정에 쓴 값의 수를 뺀 것. 평균 하나를 추정하면 n − 1."
-   }
-  },
-  {
-   "page": "tables",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "match": [],
-   "auto": "edit-2026-11-25",
-   "id": "lab:concept/multiple-testing",
-   "type": "Concept",
-   "label": {
-    "ko": "다중검정",
-    "en": "multiple testing"
-   },
-   "anchor": "#h-trap",
-   "domain": [
-    "stats"
-   ],
-   "definition": {
-    "ko": "검정 k개를 각각 α로 하면 헛경보가 한 번 이상 날 확률이 1 − (1 − α)^k로 커진다."
-   }
-  },
-  {
-   "page": "tables",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "match": [],
-   "auto": "edit-2026-11-25",
-   "id": "lab:concept/false-discovery-rate",
-   "type": "Concept",
-   "label": {
-    "ko": "거짓 발견 비율",
-    "en": "false discovery rate"
-   },
-   "anchor": "#h-trap",
-   "domain": [
-    "stats"
-   ],
-   "definition": {
-    "ko": "양성 판정 가운데 실제로는 효과가 없는 비율 P(Y=0 | Ŷ=1). α와 다르다."
-   }
-  },
-  {
-   "page": "tables",
-   "level": 2,
-   "status": "known",
-   "confidence": "medium",
-   "coverage": "explained",
-   "match": [],
-   "auto": "edit-2026-11-25",
-   "id": "lab:concept/confusion-matrix",
-   "type": "Concept",
-   "label": {
-    "ko": "판정표(혼동행렬)",
-    "en": "confusion matrix"
-   },
-   "anchor": "#cmgrid",
-   "domain": [
-    "stats",
-    "ai"
-   ],
-   "definition": {
-    "ko": "실제 Y와 판정 Ŷ의 네 조합 TN·FP·FN·TP."
-   }
   }
  ],
  "edges": [
-  {
-   "s": "lab:concept/power",
-   "p": "lab:broader",
-   "o": "lab:topic/statistical-power",
-   "anchor": "#h-trap",
-   "confidence": "medium"
-  },
   {
    "s": "lab:concept/mean",
    "p": "lab:broader",
@@ -581,24 +172,10 @@
    "confidence": "medium"
   },
   {
-   "s": "lab:concept/type-i-error",
-   "p": "lab:broader",
-   "o": "lab:topic/probability-statistics",
-   "anchor": "#h-trap",
-   "confidence": "medium"
-  },
-  {
    "s": "lab:concept/p-value",
    "p": "lab:broader",
    "o": "lab:topic/p-value",
    "anchor": "#h-words",
-   "confidence": "medium"
-  },
-  {
-   "s": "lab:concept/type-ii-error",
-   "p": "lab:broader",
-   "o": "lab:topic/probability-statistics",
-   "anchor": "#h-trap",
    "confidence": "medium"
   },
   {
@@ -613,87 +190,6 @@
    "p": "lab:broader",
    "o": "lab:topic/dispersion",
    "anchor": "#h-words",
-   "confidence": "medium"
-  },
-  {
-   "s": "lab:concept/sample-size",
-   "p": "lab:broader",
-   "o": "lab:topic/sample-size",
-   "anchor": "#duel",
-   "confidence": "medium"
-  },
-  {
-   "s": "lab:method/ab-test",
-   "p": "lab:broader",
-   "o": "lab:topic/ab-testing",
-   "anchor": "#sim-ins",
-   "confidence": "medium"
-  },
-  {
-   "s": "lab:concept/cdf",
-   "p": "lab:broader",
-   "o": "lab:topic/continuous-distributions",
-   "anchor": "#tw-z",
-   "confidence": "medium"
-  },
-  {
-   "s": "lab:concept/sample-size",
-   "p": "lab:partOf",
-   "o": "lab:method/ab-test",
-   "anchor": "#duel",
-   "confidence": "medium",
-   "note": "다른 해설 페이지에서 확인된 관계"
-  },
-  {
-   "s": "lab:concept/type-i-error",
-   "p": "lab:contrastsWith",
-   "o": "lab:concept/type-ii-error",
-   "anchor": "#h-trap",
-   "confidence": "medium",
-   "note": "다른 해설 페이지에서 확인된 관계"
-  },
-  {
-   "s": "lab:dist/t",
-   "p": "lab:relatedTo",
-   "o": "lab:dist/standard-normal",
-   "anchor": "#h-t",
-   "confidence": "medium",
-   "note": "자유도 → ∞이면 t분포가 표준정규분포가 됨"
-  },
-  {
-   "s": "lab:dist/chi-square",
-   "p": "lab:relatedTo",
-   "o": "lab:dist/f",
-   "anchor": "#h-f",
-   "confidence": "medium",
-   "note": "F는 두 카이제곱의 비율"
-  },
-  {
-   "s": "lab:concept/degrees-of-freedom",
-   "p": "lab:partOf",
-   "o": "lab:dist/t",
-   "anchor": "#h-df",
-   "confidence": "medium"
-  },
-  {
-   "s": "lab:concept/type-i-error",
-   "p": "lab:partOf",
-   "o": "lab:concept/confusion-matrix",
-   "anchor": "#cmgrid",
-   "confidence": "medium"
-  },
-  {
-   "s": "lab:concept/type-ii-error",
-   "p": "lab:partOf",
-   "o": "lab:concept/confusion-matrix",
-   "anchor": "#cmgrid",
-   "confidence": "medium"
-  },
-  {
-   "s": "lab:concept/multiple-testing",
-   "p": "lab:relatedTo",
-   "o": "lab:concept/type-i-error",
-   "anchor": "#h-trap",
    "confidence": "medium"
   }
  ]

@@ -1,0 +1,29 @@
+{
+ "version": "1.0",
+ "page": "table_t",
+ "nodes": [
+  {
+   "page": "table_t",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "match": [],
+   "auto": "edit-2026-11-25",
+   "id": "lab:dist/t",
+   "type": "Distribution",
+   "label": {
+    "ko": "t분포",
+    "en": "Student t distribution"
+   },
+   "anchor": "#h-t",
+   "domain": [
+    "stats"
+   ],
+   "definition": {
+    "ko": "σ를 모를 때 쓰는 분포. 자유도가 커지면 표준정규분포로 수렴하고, 표의 t값이 z값에 다가간다."
+   }
+  }
+ ],
+ "edges": []
+}

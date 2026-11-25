@@ -1,0 +1,29 @@
+{
+ "version": "1.0",
+ "page": "table_chi2",
+ "nodes": [
+  {
+   "page": "table_chi2",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "match": [],
+   "auto": "edit-2026-11-25",
+   "id": "lab:dist/chi-square",
+   "type": "Distribution",
+   "label": {
+    "ko": "카이제곱분포",
+    "en": "chi-square distribution"
+   },
+   "anchor": "#h-c",
+   "domain": [
+    "stats"
+   ],
+   "definition": {
+    "ko": "독립인 표준정규 k개의 제곱합. 적합도·독립성 검정, 분산의 신뢰구간에 쓴다."
+   }
+  }
+ ],
+ "edges": []
+}

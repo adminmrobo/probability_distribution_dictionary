@@ -1,0 +1,29 @@
+{
+ "version": "1.0",
+ "page": "appendix_df",
+ "nodes": [
+  {
+   "page": "appendix_df",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "match": [],
+   "auto": "edit-2026-11-25",
+   "id": "lab:concept/degrees-of-freedom",
+   "type": "Concept",
+   "label": {
+    "ko": "자유도",
+    "en": "degrees of freedom"
+   },
+   "anchor": "#h-df",
+   "domain": [
+    "stats"
+   ],
+   "definition": {
+    "ko": "자료 수에서 추정에 쓴 값의 수를 뺀 것. 평균 하나를 추정하면 n − 1."
+   }
+  }
+ ],
+ "edges": []
+}

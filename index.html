@@ -27,6 +27,11 @@ a.card b{display:block;font-size:13px;color:var(--gfp);margin-bottom:4px}
 a.card h2{margin:0 0 6px;font-size:22px}
 a.card p{margin:0;color:var(--muted);font-size:15px}
 a{color:var(--info)}
+h2.sub{font-size:20px;margin:8px 0 0}
+.cards.three{grid-template-columns:repeat(3,1fr)}
+.cards.three h2{font-size:18px}
+@media(max-width:800px){.cards.three{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.cards.three{grid-template-columns:1fr}}
 footer{border-top:1px solid var(--rule);padding-top:18px;color:var(--muted);font-size:14px}
 </style>
 <!-- px-fix v1 --><style id="px-fix">img{image-rendering:auto!important}</style><script id="px-fix-js">(function(){var R=window.ResizeObserver;function f(i){var n=i.naturalWidth,w=i.getBoundingClientRect().width;if(!n||!w)return;var s=w*(window.devicePixelRatio||1)/n;i.style.setProperty("image-rendering",s>=1.95?"pixelated":"auto","important")}var ro=R?new R(function(es){es.forEach(function(e){f(e.target)})}):null;function a(i){if(i.__px)return;i.__px=1;i.addEventListener("load",function(){f(i)});if(ro)ro.observe(i);f(i)}function all(r){(r||document).querySelectorAll&&(r||document).querySelectorAll("img").forEach(a)}function go(){all();if(window.MutationObserver)new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==="IMG")a(n);else all(n)})})}).observe(document.documentElement,{childList:true,subtree:true});window.addEventListener("resize",function(){document.querySelectorAll("img").forEach(f)})}if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()})();</script><!-- /px-fix --></head>
@@ -37,7 +42,16 @@ footer{border-top:1px solid var(--rule);padding-top:18px;color:var(--muted);font
   <p>분포들이 어떻게 이어지는지 먼저 지도로 보고, 그 분포의 표를 읽어 검정과 신뢰구간에 쓰는 법까지 이어 봅니다.</p>
   <div class="cards">
     <a class="card" href="dictionary.html"><img src="thumbs/part1.webp" width="960" height="540" alt="이산확률분포의 세계와 연속확률분포의 세계로 나뉜 3D 관계 지도. 분포마다 입체 그래프가 서 있다."><div class="body"><b>1편</b><h2>확률분포 딕셔너리</h2><p>이산확률분포의 세계와 연속확률분포의 세계로 나눈 3D 지도. 21개 분포를 각자의 3D 그래프로 보여 주고 관계를 잇습니다. 분포마다 식, 용도, 파이썬 호출, 생성 AI 프롬프트.</p></div></a>
-    <a class="card" href="tables.html"><img src="thumbs/part2.webp" width="960" height="540" alt="Z값 1.96을 넣어 표준정규 곡선 왼쪽 넓이 0.9750을 찾는 화면."><div class="body"><b>2편</b><h2>분포표 읽기 연구실</h2><p>Z·t·카이제곱·F 분포표를 하나씩 읽고(자유도에 따라 t값이 z값에 다가가는 모습), 부록 자유도(왜 n − 1인가), 해석의 함정 1종·2종 오류. 일반 설명과 쉬운 설명 선택.</p></div></a>
+    <a class="card" href="tables.html"><img src="thumbs/part2.webp" width="960" height="540" alt="분포표 읽기 연구실 목차"><div class="body"><b>2편</b><h2>분포표 읽기 연구실</h2><p>분포표마다 독립된 장으로 나눴습니다. 아래에서 장을 바로 고르거나, 목차 페이지에서 연구실 식구·말과 기호·정리를 봅니다.</p></div></a>
+  </div>
+  <h2 class="sub">2편 분포표 읽기 연구실 — 장별로 보기</h2>
+  <div class="cards three">
+    <a class="card" href="table_z.html"><img src="thumbs/ch_z.webp" width="960" height="540" alt="Z분포 장 화면"><div class="body"><b>1장</b><h2>Z분포</h2><p>표준정규분포표. 표준화, 왼쪽 넓이, 단측·양측 경계값.</p></div></a>
+    <a class="card" href="table_t.html"><img src="thumbs/ch_t.webp" width="960" height="540" alt="t분포 장 화면"><div class="body"><b>2장</b><h2>t분포</h2><p>t분포 그리기. 자유도가 커지면 표의 t값이 z값 1.96에 다가간다.</p></div></a>
+    <a class="card" href="table_chi2.html"><img src="thumbs/ch_c.webp" width="960" height="540" alt="카이제곱분포 장 화면"><div class="body"><b>3장</b><h2>카이제곱분포</h2><p>어긋남을 모은 점수. 적합도·독립성 검정과 χ²표.</p></div></a>
+    <a class="card" href="table_f.html"><img src="thumbs/ch_f.webp" width="960" height="540" alt="F분포 장 화면"><div class="body"><b>4장</b><h2>F분포</h2><p>두 흩어짐의 비율. 분자·분모 자유도와 α별 F표.</p></div></a>
+    <a class="card" href="appendix_df.html"><img src="thumbs/ch_df.webp" width="960" height="540" alt="자유도 장 화면"><div class="body"><b>부록</b><h2>자유도</h2><p>자유도란 무엇인가, 왜 표본 수 − 1인가.</p></div></a>
+    <a class="card" href="trap_errors.html"><img src="thumbs/ch_trap.webp" width="960" height="540" alt="1종·2종 오류 장 화면"><div class="body"><b>해석의 함정</b><h2>1종·2종 오류</h2><p>판정표 Y·Ŷ. 표의 기준을 넘어도 뚫린다. 분포표 주의사항.</p></div></a>
   </div>
   <footer>글 · 안상선 ((주)M-Robo 대표) · <a href="https://adminmrobo.github.io/who_am_i/who_am_i.html">저자 소개</a></footer>
 </div>

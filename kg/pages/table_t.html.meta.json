@@ -1,0 +1,29 @@
+{
+ "title": "2장 t분포 — 자유도가 커지면 Z가 된다",
+ "number": "03-1",
+ "series": "확률분포 딕셔너리와 분포표 연구실",
+ "date": "2026-11-25",
+ "version": "2.1",
+ "creator": [
+  {
+   "name": "안상선",
+   "role": "author"
+  }
+ ],
+ "contributor": [
+  {
+   "name": "AI 보조 제작",
+   "role": "assistant"
+  }
+ ],
+ "about": [
+  "lab:dist/t"
+ ],
+ "basedOn": [],
+ "educationalLevel": "입문~중급",
+ "license": "",
+ "url": "https://adminmrobo.github.io/probability_distribution_dictionary/table_t.html",
+ "registry": "KG_00_registry 0.3",
+ "seeAlso": "",
+ "suggestedCitation": "안상선 (2026). 2장 t분포 — 자유도가 커지면 Z가 된다. 확률분포 딕셔너리와 분포표 연구실, v2.1."
+}

@@ -1,0 +1,29 @@
+{
+ "title": "4장 F분포 — 두 흩어짐의 비율",
+ "number": "03-3",
+ "series": "확률분포 딕셔너리와 분포표 연구실",
+ "date": "2026-11-25",
+ "version": "2.1",
+ "creator": [
+  {
+   "name": "안상선",
+   "role": "author"
+  }
+ ],
+ "contributor": [
+  {
+   "name": "AI 보조 제작",
+   "role": "assistant"
+  }
+ ],
+ "about": [
+  "lab:dist/f"
+ ],
+ "basedOn": [],
+ "educationalLevel": "입문~중급",
+ "license": "",
+ "url": "https://adminmrobo.github.io/probability_distribution_dictionary/table_f.html",
+ "registry": "KG_00_registry 0.3",
+ "seeAlso": "",
+ "suggestedCitation": "안상선 (2026). 4장 F분포 — 두 흩어짐의 비율. 확률분포 딕셔너리와 분포표 연구실, v2.1."
+}

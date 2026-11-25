@@ -1,0 +1,29 @@
+{
+ "version": "1.0",
+ "page": "table_f",
+ "nodes": [
+  {
+   "page": "table_f",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "match": [],
+   "auto": "edit-2026-11-25",
+   "id": "lab:dist/f",
+   "type": "Distribution",
+   "label": {
+    "ko": "F분포",
+    "en": "F distribution"
+   },
+   "anchor": "#h-f",
+   "domain": [
+    "stats"
+   ],
+   "definition": {
+    "ko": "두 카이제곱을 각자의 자유도로 나눈 비율. 분산분석에 쓴다."
+   }
+  }
+ ],
+ "edges": []
+}

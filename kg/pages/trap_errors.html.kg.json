@@ -1,0 +1,335 @@
+{
+ "version": "1.0",
+ "page": "trap_errors",
+ "nodes": [
+  {
+   "page": "trap_errors",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "match": [],
+   "auto": "edit-2026-11-25",
+   "id": "lab:concept/false-discovery-rate",
+   "type": "Concept",
+   "label": {
+    "ko": "거짓 발견 비율",
+    "en": "false discovery rate"
+   },
+   "anchor": "#h-trap",
+   "domain": [
+    "stats"
+   ],
+   "definition": {
+    "ko": "양성 판정 가운데 실제로는 효과가 없는 비율 P(Y=0 | Ŷ=1). α와 다르다."
+   }
+  },
+  {
+   "page": "trap_errors",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "match": [],
+   "auto": "edit-2026-11-25",
+   "id": "lab:concept/multiple-testing",
+   "type": "Concept",
+   "label": {
+    "ko": "다중검정",
+    "en": "multiple testing"
+   },
+   "anchor": "#h-trap",
+   "domain": [
+    "stats"
+   ],
+   "definition": {
+    "ko": "검정 k개를 각각 α로 하면 헛경보가 한 번 이상 날 확률이 1 − (1 − α)^k로 커진다."
+   }
+  },
+  {
+   "id": "lab:concept/type-ii-error",
+   "type": "Concept",
+   "label": {
+    "ko": "2종 오류",
+    "en": "Type II error"
+   },
+   "page": "trap_errors",
+   "anchor": "#h-trap",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "data",
+    "stats",
+    "ai"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "차이가 있는데 놓치는 실수, 확률 β"
+   }
+  },
+  {
+   "id": "lab:concept/sample-size",
+   "type": "Concept",
+   "label": {
+    "ko": "표본 크기",
+    "en": "sample size"
+   },
+   "page": "trap_errors",
+   "anchor": "#duel",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "biz"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "전체(모집단) 가운데 실제로 관측한 일부. 표본이 작으면 우연한 차이가 크게 보인다."
+   }
+  },
+  {
+   "id": "lab:topic/sample-size",
+   "type": "Topic",
+   "label": {
+    "ko": "표본 크기 정하기",
+    "en": "Sample size determination"
+   },
+   "page": "trap_errors",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/probability-statistics",
+   "type": "Topic",
+   "label": {
+    "ko": "확률·통계",
+    "en": "Probability and statistics"
+   },
+   "page": "trap_errors",
+   "anchor": "#kg",
+   "level": 1,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "ai"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/ab-testing",
+   "type": "Topic",
+   "label": {
+    "ko": "A/B 테스트",
+    "en": "A/B testing"
+   },
+   "page": "trap_errors",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "id": "lab:topic/statistical-power",
+   "type": "Topic",
+   "label": {
+    "ko": "검정력",
+    "en": "Statistical power"
+   },
+   "page": "trap_errors",
+   "anchor": "#kg",
+   "level": 2,
+   "status": "known",
+   "confidence": "high",
+   "coverage": "mentioned",
+   "domain": [
+    "stats"
+   ],
+   "match": []
+  },
+  {
+   "page": "trap_errors",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "match": [],
+   "auto": "edit-2026-11-25",
+   "id": "lab:concept/confusion-matrix",
+   "type": "Concept",
+   "label": {
+    "ko": "판정표(혼동행렬)",
+    "en": "confusion matrix"
+   },
+   "anchor": "#cmgrid",
+   "domain": [
+    "stats",
+    "ai"
+   ],
+   "definition": {
+    "ko": "실제 Y와 판정 Ŷ의 네 조합 TN·FP·FN·TP."
+   }
+  },
+  {
+   "id": "lab:concept/type-i-error",
+   "type": "Concept",
+   "label": {
+    "ko": "1종 오류",
+    "en": "Type I error"
+   },
+   "page": "trap_errors",
+   "anchor": "#h-trap",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "data",
+    "stats",
+    "ai"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "차이가 없는데 있다고 판정하는 실수(헛경보), 확률 α"
+   }
+  },
+  {
+   "id": "lab:concept/power",
+   "type": "Concept",
+   "label": {
+    "ko": "검정력",
+    "en": "statistical power"
+   },
+   "page": "trap_errors",
+   "anchor": "#h-trap",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "진짜 효과가 있을 때 그것을 잡아낼 확률(보통 80%)."
+   }
+  },
+  {
+   "id": "lab:method/ab-test",
+   "type": "Method",
+   "label": {
+    "ko": "A/B 테스트",
+    "en": "A/B test"
+   },
+   "page": "trap_errors",
+   "anchor": "#sim-ins",
+   "level": 2,
+   "status": "known",
+   "confidence": "medium",
+   "coverage": "explained",
+   "domain": [
+    "stats",
+    "biz"
+   ],
+   "match": [],
+   "auto": "autokg-2026-11-24",
+   "definition": {
+    "ko": "사용자를 무작위로 두 무리로 나눠 한쪽에만 바꾼 버전을 보여 주고 지표를 비교하는 실험."
+   }
+  }
+ ],
+ "edges": [
+  {
+   "s": "lab:concept/power",
+   "p": "lab:broader",
+   "o": "lab:topic/statistical-power",
+   "anchor": "#h-trap",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/type-i-error",
+   "p": "lab:broader",
+   "o": "lab:topic/probability-statistics",
+   "anchor": "#h-trap",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/type-ii-error",
+   "p": "lab:broader",
+   "o": "lab:topic/probability-statistics",
+   "anchor": "#h-trap",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/sample-size",
+   "p": "lab:broader",
+   "o": "lab:topic/sample-size",
+   "anchor": "#duel",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:method/ab-test",
+   "p": "lab:broader",
+   "o": "lab:topic/ab-testing",
+   "anchor": "#sim-ins",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/sample-size",
+   "p": "lab:partOf",
+   "o": "lab:method/ab-test",
+   "anchor": "#duel",
+   "confidence": "medium",
+   "note": "다른 해설 페이지에서 확인된 관계"
+  },
+  {
+   "s": "lab:concept/type-i-error",
+   "p": "lab:contrastsWith",
+   "o": "lab:concept/type-ii-error",
+   "anchor": "#h-trap",
+   "confidence": "medium",
+   "note": "다른 해설 페이지에서 확인된 관계"
+  },
+  {
+   "s": "lab:concept/type-i-error",
+   "p": "lab:partOf",
+   "o": "lab:concept/confusion-matrix",
+   "anchor": "#cmgrid",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/type-ii-error",
+   "p": "lab:partOf",
+   "o": "lab:concept/confusion-matrix",
+   "anchor": "#cmgrid",
+   "confidence": "medium"
+  },
+  {
+   "s": "lab:concept/multiple-testing",
+   "p": "lab:relatedTo",
+   "o": "lab:concept/type-i-error",
+   "anchor": "#h-trap",
+   "confidence": "medium"
+  }
+ ]
+}

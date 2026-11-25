@@ -440,7 +440,7 @@ print("max |Bin − Poi|     ", gap)   # 약 0.0004</pre></div>
 <!-- /lab-kg:body -->
 <footer>
   <div>원 그림: “How Probability Distributions Are Connected” (matharium) 인포그래픽을 바탕으로 관계를 다시 정리하고, 스튜던트 t와 몇 가지 관계를 보충했습니다.</div>
-  <div style="margin-top:6px"><a href="tables.html">다음: 분포표 읽기 연구실 (Z·t·카이제곱·F 표, 자유도, 1종·2종 오류)</a></div>
+  <div style="margin-top:6px"><a href="tables.html">다음: 분포표 읽기 연구실 (1장 Z · 2장 t · 3장 카이제곱 · 4장 F · 부록 자유도 · 해석의 함정)</a></div>
   <div style="margin-top:6px">글 · 안상선 ((주)M-Robo 대표) · <a href="https://adminmrobo.github.io/who_am_i/who_am_i.html">저자 소개</a></div>
 </footer>
 </div>
@@ -728,7 +728,7 @@ chi2, p, dof, exp = stats.chi2_contingency(table)
 stats.gamma(a=2, scale=2).ppf(0.95)   # 9.488`,
  pr:`성별(2) × 선호 요금제(3) 교차표가 있어.
 1) 카이제곱 독립성 검정과 자유도 계산 이유
-2) 기대빈도 5 미만 칸이 있으면 대안(피셔 정확검정, 범주 합치기)
+2) 기대빈도 5 미만인 자리가 있으면 대안(피셔 정확검정, 범주 합치기)
 3) 효과 크기 크래머 V
 를 scipy 코드와 함께. 카이제곱이 표준정규 제곱합이라는 점을 시뮬레이션 5줄로 보여 줘.`,
  links:["tcf","dof"],
@@ -887,7 +887,7 @@ const EASY={
 "uniform>exponential":["0~1 균등 난수 U를 −ln U ÷ λ로 바꾸면 지수 난수가 됩니다. 컴퓨터가 여러 분포의 난수를 만드는 기본 방법(역변환)입니다.","U = 0.5, λ = 2면 −ln 0.5 ÷ 2 ≈ 0.35입니다."],
 "beta>uniform":["α = β = 1이면 베타 곡선이 평평해져 0~1 균등이 됩니다. ‘아무것도 모른다’는 사전분포로 씁니다.","전환율을 전혀 모를 때 베타(1, 1)에서 출발해 자료로 갱신합니다."],
 "beta>normal":["α와 β가 커지면(자료가 많이 쌓이면) 베타가 좁은 종 모양이 됩니다. 정규로 어림할 수 있습니다.","1,000명 중 300명이 샀다면 베타(301, 701)는 평균 0.30 근처의 좁은 종 모양입니다."],
-"discunif>uniform":["1~n 중 하나를 고른 뒤 n으로 나누면, n이 커질수록 칸이 촘촘해져 0~1 연속 균등이 됩니다.","n = 1000이면 0.001 간격의 값이 거의 0~1 전체를 고르게 채웁니다."],
+"discunif>uniform":["1~n 중 하나를 고른 뒤 n으로 나누면, n이 커질수록 눈금이 촘촘해져 0~1 연속 균등이 됩니다.","n = 1000이면 0.001 간격의 값이 거의 0~1 전체를 고르게 채웁니다."],
 "chisq>exponential":["자유도 2인 카이제곱은 모양이 지수와 똑같습니다(λ = ½). 검정 쪽 분포와 대기시간 쪽 분포가 여기서 직접 만납니다.","χ²(2)의 평균은 2이고, 지수(λ = ½)의 평균 1 ÷ ½도 2입니다."],
 "exponential>chisq":["지수 대기시간 X에 2λ를 곱하면 자유도 2의 카이제곱이 됩니다. 수명 자료의 신뢰구간을 카이제곱표로 구하는 근거입니다.","λ = 0.5인 수명 X에 2λ = 1을 곱하면 그대로 χ²(2)입니다."],
 "exponential>uniform":["지수 X를 e^(−λX)로 바꾸면 0~1 균등이 됩니다. −ln U ÷ λ(역변환 표집)를 거꾸로 돌린 것으로, 확률적분변환이라고 부릅니다.","λ = 2, X = 0.35면 e^(−0.7) ≈ 0.50, 딱 중앙값 자리입니다."],
@@ -948,7 +948,7 @@ const EDGES=[
 const CLOSE=[
 {id:"normal",op:"ΣX",res:"N(Σμ, Σσ²)",easy:"정규끼리 더해도 정규입니다. 평균끼리, 분산끼리 더하면 됩니다.",ex:"N(10, 4) + N(20, 9) = N(30, 13)"},
 {id:"poisson",op:"ΣX",res:"Poisson(Σλ)",easy:"가게 두 곳의 시간당 손님 수를 합쳐도 포아송입니다.",ex:"Poisson(3) + Poisson(5) = Poisson(8)"},
-{id:"chisq",op:"ΣX",res:"χ²(Σν)",easy:"카이제곱끼리 더하면 자유도가 더해집니다. 검정 통계량을 칸별로 합산할 수 있는 이유입니다.",ex:"χ²(2) + χ²(3) = χ²(5)"},
+{id:"chisq",op:"ΣX",res:"χ²(Σν)",easy:"카이제곱끼리 더하면 자유도가 더해집니다. 검정 통계량을 범주별로 합산할 수 있는 이유입니다.",ex:"χ²(2) + χ²(3) = χ²(5)"},
 {id:"lognormal",op:"ΠX",res:"LogN(Σμ, Σσ²)",easy:"로그정규끼리 곱해도 로그정규입니다. 곱셈 성장이 여러 번 쌓여도 같은 꼴이라는 뜻입니다.",ex:"해마다 수익률이 로그정규면 10년 누적도 로그정규"},
 {id:"exponential",op:"min X",res:"Exp(Σλ)",easy:"부품 여러 개 중 가장 먼저 고장 나는 시점도 지수입니다. 고장률은 더해집니다(직렬 시스템, 경쟁 위험).",ex:"고장률 0.1, 0.2인 부품 → 첫 고장은 Exp(0.3), 평균 3.3"},
 {id:"geometric",op:"min X",res:"Geom(1 − Π(1 − pᵢ))",easy:"여러 사람이 동시에 시도할 때 누군가 처음 성공하는 시점도 기하분포입니다.",ex:"p = 0.2, 0.3 → 1 − 0.8 × 0.7 = 0.44"},
@@ -1227,7 +1227,7 @@ const TABLE={stdnormal:["z","Z표 (표준정규분포표)","z값을 넣으면 �
   t:["t","t표","자유도와 꼬리 넓이로 임계값을 찾습니다. 단측·양측 머리가 함께 있습니다."],
   chisq:["c","χ²표 (카이제곱분포표)","자유도와 오른쪽 꼬리 넓이로 임계값을 찾습니다."],
   f:["f","F표","α별 표에서 분자·분모 자유도로 임계값을 찾습니다."]};
-const tableLink=id=>TB+"#table-"+TABLE[id][0];
+const tableLink=id=>({z:"table_z.html",t:"table_t.html",c:"table_chi2.html",f:"table_f.html"})[TABLE[id][0]]||TB;
 let famFilter=null;
 function renderFamChips(){
   $("#famchips").innerHTML=Object.entries(FAM).map(([k,f])=>`<button class="chip" data-fam="${k}" aria-pressed="${famFilter===k}"><span class="dot" style="background:var(${f.v})"></span>${f.ko}</button>`).join("");
